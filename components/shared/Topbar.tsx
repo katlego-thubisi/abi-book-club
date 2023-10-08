@@ -1,4 +1,10 @@
-import { ClerkProvider, OrganizationSwitcher, SignOutButton, SignedIn } from "@clerk/nextjs";
+import { 
+    ClerkProvider, 
+    OrganizationSwitcher, 
+    SignOutButton, 
+    SignedIn 
+} from "@clerk/nextjs";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,8 +17,7 @@ function Topbar() {
                     <p className="text-heading3-bold text-light-1 max-xs:hidden ">Abi's Book Club</p>
                 </Link> 
                 <div className="flex items-center gap-1">
-                    <div className="block md:hidden">
-                        
+                    <div className="block md:hidden">  
                         <SignedIn>
                             <SignOutButton>
                                 <div className="flex cursor-pointer">
