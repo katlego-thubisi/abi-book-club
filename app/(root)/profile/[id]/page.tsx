@@ -18,6 +18,8 @@ async function Page({ params }: { params: { id: string } }) {
 
   if (!userInfo?.onboarded) redirect("/onboarding");
 
+  console.log("user info object", userInfo);
+
   return (
     <section>
       <ProfileHeader

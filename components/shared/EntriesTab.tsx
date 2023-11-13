@@ -12,6 +12,7 @@ interface Props {
 const EntriesTab = async ({ currentUserId, accountId, accountType }: Props) => {
   //TODO: Fetch profile threads
   let result = await fetchUserPosts(accountId);
+  console.log("User posts", result);
 
   if (!result) redirect("/");
 
