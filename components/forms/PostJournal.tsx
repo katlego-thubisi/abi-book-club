@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { JournalValidation } from "@/lib/validations/journal";
+import { createEntry } from "@/lib/actions/journal.actions";
 
 interface Props {
     userId: string;
@@ -35,8 +36,15 @@ function PostJournal({ userId }: {userId: string}) {
 
       }
     })
-const onSubmit = () => {
-    
+    const onSubmit = async (values: z.infer<typeof JournalValidation>) => {
+        await createEntry({
+            text: values.journal,
+            author: userId,
+            communityId: null,
+            path: pathname,
+        });
+
+        router.push("/");
 }
 
     return (
@@ -59,9 +67,13 @@ const onSubmit = () => {
               <FormMessage />
             </FormItem>
           )}
-        />        
-            </form>
-        </Form>
+        />
+          <Button type='submit' className='bg-red-800'>
+          Post Entry
+        </Button>
+
+        </form>
+    </Form>
 
     )
 }
