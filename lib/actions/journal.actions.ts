@@ -25,7 +25,7 @@ export async function createEntry({ text, author, communityId, path }: Params) {
 
     // Update journal model
     await User.findByIdAndUpdate(author, {
-      $push: { entry: createdEntry._id },
+      $push: { threads: createdEntry._id },
     });
 
     revalidatePath(path);
