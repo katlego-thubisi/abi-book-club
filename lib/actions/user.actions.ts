@@ -87,6 +87,34 @@ export async function fetchUserPosts(userId: string) {
   }
 }
 
+export async function getActivity(userId: string) {
+  try {
+    connectToDB();
+
+    //Find all threads authored by user with given user id
+    const userThreads = await Entry.find({ author: userId });
+
+    //Collect all the child thread ids (replies/comments) from the 'children' field of each thread
+    const childThreadIds = userThreads.reduce((acc, thread) => {
+      return acc.concat(thread.children);
+    }, []);
+
+    //Exclude threads authored by user with given user id
+    const replies = await Entry.find({
+      _id: { $in: childThreadIds },
+      author: { $ne: userId },
+    }).populate({
+      path: "author",
+      model: User,
+      select: "name image _id",
+    });
+
+    return replies;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user activity: ${error.message}`);
+  }
+}
+
 // Almost similar to Thead (search + pagination) and Community (search + pagination)
 export async function fetchUsers({
   userId,
