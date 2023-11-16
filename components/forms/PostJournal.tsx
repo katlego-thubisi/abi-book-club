@@ -2,9 +2,9 @@
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname, useRouter } from "next/navigation";
+import { useOrganization } from "@clerk/nextjs";
 
 import {
   Form,
@@ -26,6 +26,7 @@ interface Props {
 function PostJournal({ userId }: Props) {
   const router = useRouter();
   const pathname = usePathname();
+  const organization = useOrganization();
 
   const form = useForm({
     resolver: zodResolver(JournalValidation),
@@ -35,10 +36,15 @@ function PostJournal({ userId }: Props) {
     },
   });
   const onSubmit = async (values: z.infer<typeof JournalValidation>) => {
+    console.log(`ORG ID`, organization);
+    console.log(`Organization object`, organization.organization);
     await createEntry({
       text: values.journal,
       author: userId,
-      communityId: null,
+      communityId:
+        organization && organization.organization
+          ? organization.organization.id
+          : null,
       path: pathname,
     });
 
