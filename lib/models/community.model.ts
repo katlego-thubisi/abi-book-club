@@ -26,11 +26,12 @@ const communitySchema = new mongoose.Schema({
       ref: "Entry",
     },
   ],
-  onboarded: {
-    type: Boolean,
-    default: false,
-  },
-  members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  members: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 const Community =
