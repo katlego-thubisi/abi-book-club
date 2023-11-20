@@ -119,7 +119,6 @@ const EntryCard = ({
 
         {/* TODO: Delete thread */}
         {/* TODO: Show comment logos */}
-        {console.log("Community", community)}
       </div>
       {!isComment && community && (
         <Link
