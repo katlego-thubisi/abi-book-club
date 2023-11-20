@@ -2,6 +2,7 @@ import { fetchUserPosts } from "@/lib/actions/user.actions";
 import React from "react";
 import { redirect } from "next/navigation";
 import EntryCard from "../cards/EntryCard";
+import { fetchCommunityPosts } from "@/lib/actions/community.actions";
 
 interface Props {
   currentUserId: string;
@@ -11,7 +12,13 @@ interface Props {
 
 const EntriesTab = async ({ currentUserId, accountId, accountType }: Props) => {
   //TODO: Fetch profile threads
-  let result = await fetchUserPosts(accountId);
+
+  let result: any;
+  if (accountType === "Community") {
+    result = await fetchCommunityPosts(accountId);
+  } else {
+    result = await fetchUserPosts(accountId);
+  }
 
   if (!result) redirect("/");
 
