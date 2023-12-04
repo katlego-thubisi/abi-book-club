@@ -37,7 +37,6 @@ const Comment = ({ entryId, currentUserImg, currentUserId }: Props) => {
   });
 
   const onSubmit = async (values: z.infer<typeof CommentValidation>) => {
-    console.log("Form being submitted");
     await addCommentToEntry(
       entryId,
       values.journal,

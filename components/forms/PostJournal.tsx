@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { JournalValidation } from "@/lib/validations/journal";
 import { createEntry } from "@/lib/actions/journal.actions";
+import { useState } from "react";
+import { Editor } from "@tinymce/tinymce-react";
 
 interface Props {
   userId: string;
@@ -28,18 +30,18 @@ function PostJournal({ userId }: Props) {
   const pathname = usePathname();
   const organization = useOrganization();
 
+  const [blocks, setBlocks] = useState("");
+
   const form = useForm({
     resolver: zodResolver(JournalValidation),
     defaultValues: {
-      journal: "",
+      journal: "This is the test entry",
       accountId: userId,
     },
   });
   const onSubmit = async (values: z.infer<typeof JournalValidation>) => {
-    console.log(`ORG ID`, organization);
-    console.log(`Organization object`, organization.organization);
     await createEntry({
-      text: values.journal,
+      text: blocks,
       author: userId,
       communityId:
         organization && organization.organization
@@ -66,8 +68,21 @@ function PostJournal({ userId }: Props) {
                 Content
               </FormLabel>
               <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
-                <Textarea rows={15} {...field} />
+                {/* <Textarea rows={15} {...field} /> */}
+                <Editor
+                  apiKey="w4dg63t3nvw0nejcjlzvx5odxzjj84d8hg8oat4i7t6j3353"
+                  plugins={["link", "paste", "table", "image", "code"]}
+                  value={blocks}
+                  onEditorChange={setBlocks}
+                  init={{
+                    skin: "oxide-dark",
+                    content_css: "dark",
+                    height: 500,
+                  }}
+                  // {...field}
+                />
               </FormControl>
+              {/* <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1"></FormControl> */}
               <FormMessage />
             </FormItem>
           )}

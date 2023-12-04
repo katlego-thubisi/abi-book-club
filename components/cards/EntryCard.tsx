@@ -1,3 +1,4 @@
+import { likeEntry } from "@/lib/actions/journal.actions";
 import { formatDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,6 +22,7 @@ interface Props {
   comments: {
     author: {
       image: string;
+      name: string;
     };
   }[];
   isComment?: boolean;
@@ -64,23 +66,26 @@ const EntryCard = ({
               </h4>
             </Link>
 
-            <p
+            <div
               className={`${
                 isComment && "mb-5"
               } mt-2 text-small-regular text-light-2`}
             >
-              {content}
-            </p>
+              <div dangerouslySetInnerHTML={{ __html: content }}></div>
+            </div>
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
               <div className="flex gap-3.5">
-                <Image
-                  src="/assets/heart-gray.svg"
-                  alt="heart"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                />
+                <div>
+                  <Image
+                    // onClick={handleLike}
+                    src="/assets/heart-gray.svg"
+                    alt="heart"
+                    width={24}
+                    height={24}
+                    className="cursor-pointer object-contain"
+                  />
+                </div>
                 <Link href={`/journal/${id}`}>
                   <Image
                     src="/assets/reply.svg"
@@ -90,7 +95,7 @@ const EntryCard = ({
                     className="cursor-pointer object-contain"
                   />
                 </Link>
-                <Image
+                {/* <Image
                   src="/assets/repost.svg"
                   alt="repost"
                   width={24}
@@ -103,15 +108,33 @@ const EntryCard = ({
                   width={24}
                   height={24}
                   className="cursor-pointer object-contain"
-                />
+                /> */}
               </div>
 
-              {isComment && comments.length > 0 && (
-                <Link href={`/journal/${id}`}>
-                  <p className="mt-1 text-subtle-medium text-gray-1">
-                    {comments.length} replies
-                  </p>
-                </Link>
+              {comments.length > 0 && (
+                <div className="flex gap-2">
+                  <div className="flex relative ml-2.5">
+                    {comments.map((comment, index) => {
+                      return (
+                        index < 4 && (
+                          <Image
+                            src={comment.author.image}
+                            alt={`${comment.author.name} profile image`}
+                            width={24}
+                            height={24}
+                            className="cursor-pointer object-contain -ml-2.5 bg-dark-2 rounded-full border-2 border-dark-2"
+                          />
+                        )
+                      );
+                    })}
+                  </div>
+
+                  <Link href={`/journal/${id}`}>
+                    <p className="mt-1 text-subtle-medium text-gray-1">
+                      {comments.length} replies
+                    </p>
+                  </Link>
+                </div>
               )}
             </div>
           </div>

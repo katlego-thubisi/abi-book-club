@@ -21,6 +21,12 @@ const entrySchema = new mongoose.Schema({
   parentId: {
     type: String,
   },
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   children: [
     {
       type: mongoose.Schema.Types.ObjectId,
