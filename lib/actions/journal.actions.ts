@@ -238,7 +238,11 @@ export async function addCommentToEntry(
   }
 }
 
-export async function likeEntry(threadId: string, userId: string) {
+export async function likeEntry(
+  threadId: string,
+  userId: string,
+  path: string
+) {
   connectToDB();
 
   try {
@@ -249,11 +253,19 @@ export async function likeEntry(threadId: string, userId: string) {
       throw new Error("Thread not found");
     }
 
-    // Add the user's ID to the thread's likes array
-    thread.likes.push(userId);
+    // Check if the user has already liked the thread
+    if (thread.likes.includes(userId)) {
+      // Remove the user's ID from the thread's likes array
+      thread.likes.pull(userId);
+    } else {
+      // Add the user's ID to the thread's likes array
+      thread.likes.push(userId);
+    }
 
     // Save the updated thread to the database
     await thread.save();
+
+    revalidatePath(path);
   } catch (err) {
     console.error("Error while liking thread:", err);
     throw new Error("Unable to like thread");

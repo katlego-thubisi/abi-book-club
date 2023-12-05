@@ -1,14 +1,18 @@
 import EntryCard from "@/components/cards/EntryCard";
 import NewCard from "@/components/cards/NewCard";
 import { fetchPosts } from "@/lib/actions/journal.actions";
-import { UserButton } from "@clerk/nextjs";
+import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 
 export default async function Home() {
   const result = await fetchPosts(1, 30);
   const user = await currentUser();
 
-  console.log("Zee result", result.posts);
+  console.log("Zee posts", result.posts[0].likes);
+
+  let userInfo: any = null;
+
+  if (user) userInfo = await fetchUser(user?.id);
 
   return (
     <>
@@ -23,7 +27,7 @@ export default async function Home() {
               <NewCard
                 key={post._id}
                 id={post._id}
-                // currentUserId={user?.id || ""}
+                currentUserId={userInfo?._id || ""}
                 // parentId={post.parentId}
                 content={post.text}
                 author={{
@@ -41,7 +45,8 @@ export default async function Home() {
                     : null
                 }
                 createdAt={post.createdAt}
-                comments={[...post.children]}
+                comments={JSON.parse(JSON.stringify(post.children))}
+                likes={JSON.parse(JSON.stringify(post.likes))}
                 // comments={[]}
               />
             ))}

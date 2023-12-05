@@ -4,10 +4,12 @@ import { likeEntry } from "@/lib/actions/journal.actions";
 import { formatDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface Props {
   id: string;
   content: string;
+  currentUserId: string;
   author: {
     name: string;
     image: string;
@@ -25,6 +27,7 @@ interface Props {
       name: string;
     };
   }[];
+  likes: [];
   isComment?: boolean;
 }
 
@@ -35,8 +38,16 @@ const NewCard = ({
   community,
   createdAt,
   comments,
+  likes,
   isComment,
+  currentUserId,
 }: Props) => {
+  const pathname = usePathname();
+  const handleLike = async () => {
+    await likeEntry(id, currentUserId, pathname);
+  };
+
+  const isLiked = likes.find((l) => l === currentUserId);
   return (
     <article
       className={`flex w-full flex-col rounded-xl  ${
@@ -73,16 +84,23 @@ const NewCard = ({
             </div>
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
-              <div className="flex gap-3.5">
-                <div>
+              <div className="flex items-center gap-3.5">
+                <div className="flex items-center gap-1">
                   <Image
-                    // onClick={handleLike}
-                    src="/assets/heart-gray.svg"
+                    onClick={() => handleLike()}
+                    src={`${
+                      isLiked
+                        ? "/assets/heart-filled.svg"
+                        : "/assets/heart-gray.svg"
+                    }`}
                     alt="heart"
                     width={24}
                     height={24}
                     className="cursor-pointer object-contain"
                   />
+                  <p className="text-subtle-medium text-gray-1 bg- items-center">
+                    {likes.length}
+                  </p>
                 </div>
                 <Link href={`/journal/${id}`}>
                   <Image
@@ -116,6 +134,7 @@ const NewCard = ({
                       return (
                         index < 4 && (
                           <Image
+                            key={index}
                             src={comment.author.image}
                             alt={`${comment.author.name} profile image`}
                             width={24}
@@ -129,7 +148,7 @@ const NewCard = ({
 
                   <Link href={`/journal/${id}`}>
                     <p className="mt-1 text-subtle-medium text-gray-1">
-                      {comments.length} replies
+                      {comments.length} comments
                     </p>
                   </Link>
                 </div>

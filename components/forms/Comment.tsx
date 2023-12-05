@@ -17,7 +17,6 @@ import { Input } from "@/components/ui/input";
 import { CommentValidation } from "@/lib/validations/journal";
 import Image from "next/image";
 import { addCommentToEntry } from "@/lib/actions/journal.actions";
-// import { createEntry } from "@/lib/actions/journal.actions";
 
 interface Props {
   entryId: string;
