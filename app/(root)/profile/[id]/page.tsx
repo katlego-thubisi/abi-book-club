@@ -18,8 +18,6 @@ async function Page({ params }: { params: { id: string } }) {
 
   if (!userInfo?.onboarded) redirect("/onboarding");
 
-  console.log("user info object", userInfo);
-
   return (
     <section>
       <ProfileHeader
@@ -61,7 +59,7 @@ async function Page({ params }: { params: { id: string } }) {
               className="w-full text-light-1"
             >
               <EntriesTab
-                currentUserId={user.id}
+                currentUserId={userInfo._id}
                 accountId={userInfo.id}
                 accountType="User"
               />

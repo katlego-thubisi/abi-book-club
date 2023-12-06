@@ -1,12 +1,16 @@
+"use client";
+
+import { likeEntry } from "@/lib/actions/journal.actions";
 import { formatDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface Props {
   id: string;
-  currentUserId: string;
-  parentId: string | null;
   content: string;
+  currentUserId: string;
+  parentId?: string;
   author: {
     name: string;
     image: string;
@@ -21,22 +25,30 @@ interface Props {
   comments: {
     author: {
       image: string;
+      name: string;
     };
   }[];
+  likes: [];
   isComment?: boolean;
 }
 
 const EntryCard = ({
   id,
-  currentUserId,
-  parentId,
   content,
   author,
   community,
   createdAt,
   comments,
+  likes,
   isComment,
+  currentUserId,
 }: Props) => {
+  const pathname = usePathname();
+  const handleLike = async () => {
+    await likeEntry(id, currentUserId, pathname);
+  };
+  console.log("The likes", likes);
+  const isLiked = likes.find((l) => l === currentUserId);
   return (
     <article
       className={`flex w-full flex-col rounded-xl  ${
@@ -64,23 +76,33 @@ const EntryCard = ({
               </h4>
             </Link>
 
-            <p
+            <div
               className={`${
                 isComment && "mb-5"
-              } mt-2 text-small-regular text-light-2`}
+              } mt-2 text-small-regular text-light-2 max-w-lg text-wrap`}
             >
-              {content}
-            </p>
+              <div dangerouslySetInnerHTML={{ __html: content }}></div>
+            </div>
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
-              <div className="flex gap-3.5">
-                <Image
-                  src="/assets/heart-gray.svg"
-                  alt="heart"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                />
+              <div className="flex items-center gap-3.5">
+                <div className="flex items-center gap-1">
+                  <Image
+                    onClick={() => handleLike()}
+                    src={`${
+                      isLiked
+                        ? "/assets/heart-filled.svg"
+                        : "/assets/heart-gray.svg"
+                    }`}
+                    alt="heart"
+                    width={24}
+                    height={24}
+                    className="cursor-pointer object-contain"
+                  />
+                  <p className="text-subtle-medium text-gray-1 bg- items-center">
+                    {likes.length}
+                  </p>
+                </div>
                 <Link href={`/journal/${id}`}>
                   <Image
                     src="/assets/reply.svg"
@@ -90,7 +112,7 @@ const EntryCard = ({
                     className="cursor-pointer object-contain"
                   />
                 </Link>
-                <Image
+                {/* <Image
                   src="/assets/repost.svg"
                   alt="repost"
                   width={24}
@@ -103,15 +125,34 @@ const EntryCard = ({
                   width={24}
                   height={24}
                   className="cursor-pointer object-contain"
-                />
+                /> */}
               </div>
 
-              {isComment && comments.length > 0 && (
-                <Link href={`/journal/${id}`}>
-                  <p className="mt-1 text-subtle-medium text-gray-1">
-                    {comments.length} replies
-                  </p>
-                </Link>
+              {comments.length > 0 && (
+                <div className="flex gap-2">
+                  <div className="flex relative ml-2.5">
+                    {comments.map((comment, index) => {
+                      return (
+                        index < 4 && (
+                          <Image
+                            key={index}
+                            src={comment.author.image}
+                            alt={`${comment.author.name} profile image`}
+                            width={24}
+                            height={24}
+                            className="cursor-pointer object-contain -ml-2.5 bg-dark-2 rounded-full border-2 border-dark-2"
+                          />
+                        )
+                      );
+                    })}
+                  </div>
+
+                  <Link href={`/journal/${id}`}>
+                    <p className="mt-1 text-subtle-medium text-gray-1">
+                      {comments.length} comments
+                    </p>
+                  </Link>
+                </div>
               )}
             </div>
           </div>
