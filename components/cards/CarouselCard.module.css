@@ -13,22 +13,22 @@
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 
-  /*
-    scroll-snap-points-x: repeat(300px);
-    scroll-snap-type: mandatory;
-    */
+  scroll-snap-points-x: repeat(300px);
+  scroll-snap-type: mandatory;
 }
 .slides::-webkit-scrollbar {
   width: 10px;
-  height: 10px;
+  height: 5px;
 }
 .slides::-webkit-scrollbar-thumb {
-  background: black;
+  background: rgb(31, 31, 31);
   border-radius: 10px;
+  display: none;
 }
 .slides::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .slides > div {
   scroll-snap-align: start;
   flex-shrink: 0;
@@ -36,7 +36,7 @@
   height: 300px;
   margin-right: 50px;
   border-radius: 10px;
-  background: #333333;
+  background: rgb(47, 52, 59);
   /* transform-origin: center center; */
   transform: scale(1);
   transition: transform 0.5s;
@@ -74,22 +74,28 @@
   height: 100%;
 } */
 
-.slider > a {
-  display: inline-flex;
-  width: 1.5rem;
-  height: 1.5rem;
-  background: white;
+.navigation {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 5px;
+  width: 100%;
+}
+
+.navigation > a {
+  width: 1.7rem;
+  height: 0.7rem;
+  background: rgb(47, 52, 59);
   text-decoration: none;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+
   margin: 0 0 0.5rem 0;
   position: relative;
 }
-.slider > a:active {
+.navigation > a:active {
   top: 1px;
 }
-.slider > a:focus {
+.navigation > a:focus {
   background: #000;
 }
 

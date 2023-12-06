@@ -30,12 +30,12 @@ const ProfileCard = ({
             className="rounded-full object-cover"
           />
         </div>
-        <div className="flex flex-col gap-1 text-white">
-          <p className="text-base-regular">{name}</p>
-          <p className="text-small-medium">@{username}</p>
+        <div className="flex flex-col  text-white">
+          <p className="text-heading3-bold">{name}</p>
+          <p className="text-small-medium text-gray-1">@{username}</p>
         </div>
       </div>
-      <div className=" text-white">{bio}</div>
+      <div className="text-white mt-2">{bio}</div>
     </div>
   );
 };
