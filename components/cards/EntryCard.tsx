@@ -47,7 +47,7 @@ const EntryCard = ({
   const handleLike = async () => {
     await likeEntry(id, currentUserId, pathname);
   };
-  console.log("The likes", likes);
+
   const isLiked = likes.find((l) => l === currentUserId);
   return (
     <article

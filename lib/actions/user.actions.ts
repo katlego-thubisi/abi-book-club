@@ -175,7 +175,24 @@ export async function getActivity(userId: string) {
       select: "name image _id",
     });
 
-    return replies;
+    const likes = await Entry.find({
+      likes: { $in: userId },
+    }).populate({
+      path: "likes",
+      model: User,
+      select: "name image _id",
+    });
+
+    const repliesWithType = replies.map((reply) => ({
+      ...reply.toObject(),
+      type: "reply",
+    }));
+    const likesWithType = likes.map((like) => ({
+      ...like.toObject(),
+      type: "like",
+    }));
+
+    return [...repliesWithType, ...likesWithType];
   } catch (error) {
     console.error("Error fetching replies: ", error);
     throw error;
