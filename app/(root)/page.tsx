@@ -1,5 +1,5 @@
 import EntryCard from "@/components/cards/EntryCard";
-import NewCard from "@/components/cards/NewCard";
+
 import { fetchPosts } from "@/lib/actions/journal.actions";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
@@ -7,8 +7,6 @@ import { currentUser } from "@clerk/nextjs";
 export default async function Home() {
   const result = await fetchPosts(1, 30);
   const user = await currentUser();
-
-  console.log("Zee posts", result.posts[0].likes);
 
   let userInfo: any = null;
 
@@ -24,7 +22,7 @@ export default async function Home() {
         ) : (
           <>
             {result.posts.map((post: any, index) => (
-              <NewCard
+              <EntryCard
                 key={post._id}
                 id={post._id}
                 currentUserId={userInfo?._id || ""}

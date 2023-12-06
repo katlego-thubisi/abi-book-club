@@ -1,13 +1,16 @@
+"use client";
+
 import { likeEntry } from "@/lib/actions/journal.actions";
 import { formatDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface Props {
   id: string;
-  currentUserId: string;
-  parentId: string | null;
   content: string;
+  currentUserId: string;
+  parentId?: string;
   author: {
     name: string;
     image: string;
@@ -25,20 +28,27 @@ interface Props {
       name: string;
     };
   }[];
+  likes: [];
   isComment?: boolean;
 }
 
 const EntryCard = ({
   id,
-  currentUserId,
-  parentId,
   content,
   author,
   community,
   createdAt,
   comments,
+  likes,
   isComment,
+  currentUserId,
 }: Props) => {
+  const pathname = usePathname();
+  const handleLike = async () => {
+    await likeEntry(id, currentUserId, pathname);
+  };
+  console.log("The likes", likes);
+  const isLiked = likes.find((l) => l === currentUserId);
   return (
     <article
       className={`flex w-full flex-col rounded-xl  ${
@@ -69,22 +79,29 @@ const EntryCard = ({
             <div
               className={`${
                 isComment && "mb-5"
-              } mt-2 text-small-regular text-light-2`}
+              } mt-2 text-small-regular text-light-2 max-w-lg text-wrap`}
             >
               <div dangerouslySetInnerHTML={{ __html: content }}></div>
             </div>
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
-              <div className="flex gap-3.5">
-                <div>
+              <div className="flex items-center gap-3.5">
+                <div className="flex items-center gap-1">
                   <Image
-                    // onClick={handleLike}
-                    src="/assets/heart-gray.svg"
+                    onClick={() => handleLike()}
+                    src={`${
+                      isLiked
+                        ? "/assets/heart-filled.svg"
+                        : "/assets/heart-gray.svg"
+                    }`}
                     alt="heart"
                     width={24}
                     height={24}
                     className="cursor-pointer object-contain"
                   />
+                  <p className="text-subtle-medium text-gray-1 bg- items-center">
+                    {likes.length}
+                  </p>
                 </div>
                 <Link href={`/journal/${id}`}>
                   <Image
@@ -118,6 +135,7 @@ const EntryCard = ({
                       return (
                         index < 4 && (
                           <Image
+                            key={index}
                             src={comment.author.image}
                             alt={`${comment.author.name} profile image`}
                             width={24}
@@ -131,7 +149,7 @@ const EntryCard = ({
 
                   <Link href={`/journal/${id}`}>
                     <p className="mt-1 text-subtle-medium text-gray-1">
-                      {comments.length} replies
+                      {comments.length} comments
                     </p>
                   </Link>
                 </div>

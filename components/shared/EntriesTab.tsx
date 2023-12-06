@@ -39,10 +39,19 @@ const EntriesTab = async ({ currentUserId, accountId, accountType }: Props) => {
                   image: entry.author.image,
                   id: entry.author.id,
                 }
-          } //TODO: Update
-          community={entry.community} //TODO: Update
+          }
+          community={
+            entry.community
+              ? {
+                  id: entry.community.id,
+                  name: entry.community.name,
+                  image: entry.community.image,
+                }
+              : null
+          }
           createdAt={entry.createdAt}
-          comments={entry.children}
+          comments={JSON.parse(JSON.stringify(entry.children))}
+          likes={JSON.parse(JSON.stringify(entry.likes))}
         />
       ))}
     </section>

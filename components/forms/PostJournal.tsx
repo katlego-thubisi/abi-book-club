@@ -71,7 +71,7 @@ function PostJournal({ userId }: Props) {
                 {/* <Textarea rows={15} {...field} /> */}
                 <Editor
                   apiKey="w4dg63t3nvw0nejcjlzvx5odxzjj84d8hg8oat4i7t6j3353"
-                  plugins={["link", "paste", "table", "image", "code"]}
+                  plugins={["link", "paste", "image", "code"]}
                   value={blocks}
                   onEditorChange={setBlocks}
                   init={{
