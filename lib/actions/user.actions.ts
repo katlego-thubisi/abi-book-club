@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import Community from "../models/community.model";
 import Entry from "../models/entry.model";
 import User from "../models/user.model";
-
+import Like from "../models/like.model";
 import { connectToDB } from "../mongoose";
 
 export async function fetchUser(userId: string) {
@@ -158,7 +158,15 @@ export async function getActivity(userId: string) {
     connectToDB();
 
     // Find all threads created by the user
-    const userThreads = await Entry.find({ author: userId });
+    const userThreads = await Entry.find({ author: userId }).populate({
+      path: "likes",
+      model: Like,
+      populate: {
+        path: "user",
+        model: User,
+        select: "name image _id",
+      },
+    });
 
     // Collect all the child thread ids (replies) from the 'children' field of each user thread
     const childThreadIds = userThreads.reduce((acc, userThread) => {
@@ -175,19 +183,23 @@ export async function getActivity(userId: string) {
       select: "name image _id",
     });
 
-    const likes = await Entry.find({
-      likes: { $in: userId },
-    }).populate({
-      path: "likes",
-      model: User,
-      select: "name image _id",
-    });
+    const likes = userThreads.reduce((acc, userThread) => {
+      return acc.concat(userThread.likes);
+    }, []);
+
+    // const likes = await Entry.find({
+    //   likes: { $in: userId },
+    // }).populate({
+    //   path: "likes",
+    //   model: User,
+    //   select: "name image _id",
+    // });
 
     const repliesWithType = replies.map((reply) => ({
       ...reply.toObject(),
       type: "reply",
     }));
-    const likesWithType = likes.map((like) => ({
+    const likesWithType = likes.map((like: any) => ({
       ...like.toObject(),
       type: "like",
     }));

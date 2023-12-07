@@ -2,6 +2,7 @@
 
 import { likeEntry } from "@/lib/actions/journal.actions";
 import { formatDateString } from "@/lib/utils";
+import { timeDifferenceForDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -48,7 +49,7 @@ const EntryCard = ({
     await likeEntry(id, currentUserId, pathname);
   };
 
-  const isLiked = likes.find((l) => l === currentUserId);
+  const isLiked = likes.find((l: any) => l.user === currentUserId);
   return (
     <article
       className={`flex w-full flex-col rounded-xl  ${
@@ -112,20 +113,6 @@ const EntryCard = ({
                     className="cursor-pointer object-contain"
                   />
                 </Link>
-                {/* <Image
-                  src="/assets/repost.svg"
-                  alt="repost"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                />
-                <Image
-                  src="/assets/share.svg"
-                  alt="heart"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                /> */}
               </div>
 
               {comments.length > 0 && (
@@ -159,7 +146,12 @@ const EntryCard = ({
         </div>
 
         {/* TODO: Delete thread */}
-        {/* TODO: Show comment logos */}
+
+        {
+          <p className="!text-small-regular text-light-3">
+            {timeDifferenceForDate(new Date(createdAt))} ago
+          </p>
+        }
       </div>
       {!isComment && community && (
         <Link
