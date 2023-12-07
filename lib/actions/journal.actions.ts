@@ -7,6 +7,7 @@ import { connectToDB } from "../mongoose";
 import User from "../models/user.model";
 import Entry from "../models/entry.model";
 import Community from "../models/community.model";
+import Like from "../models/like.model";
 
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   connectToDB();
@@ -34,6 +35,10 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
         model: User,
         select: "_id name parentId image", // Select only _id and username fields of the author
       },
+    })
+    .populate({
+      path: "likes", // Populate the likes field
+      model: Like,
     });
 
   // Count the total number of top-level posts (threads) i.e., threads that are not comments.
@@ -190,6 +195,10 @@ export async function fetchEntryById(threadId: string) {
           },
         ],
       })
+      .populate({
+        path: "likes", // Populate the likes field
+        model: Like,
+      })
       .exec();
 
     return thread;
@@ -246,6 +255,8 @@ export async function likeEntry(
   connectToDB();
 
   try {
+    //Create like entry
+
     // Find the thread by its ID
     const thread = await Entry.findById(threadId);
 
@@ -254,12 +265,20 @@ export async function likeEntry(
     }
 
     // Check if the user has already liked the thread
-    if (thread.likes.includes(userId)) {
+    if (thread.likes.includes((l: any) => l.user === userId)) {
       // Remove the user's ID from the thread's likes array
-      thread.likes.pull(userId);
+      thread.likes.pull((l: any) => l.user === userId);
     } else {
-      // Add the user's ID to the thread's likes array
-      thread.likes.push(userId);
+      // Create like record
+
+      const likeEntry = new Like({
+        user: userId,
+        createdAt: Date.now(),
+      });
+
+      const savedLikeEntry = await likeEntry.save();
+      // Add the response _id to the thread's likes array
+      thread.likes.push(savedLikeEntry._id);
     }
 
     // Save the updated thread to the database
