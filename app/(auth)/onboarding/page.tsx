@@ -8,7 +8,7 @@ async function Page() {
   if (!user) return null;
 
   const userInfo = await fetchUser(user?.id);
-  if (!userInfo?.onboarded) redirect("/onboarding");
+  if (userInfo && userInfo.onboarded) redirect("/");
 
   const userData = {
     id: user?.id,
@@ -30,5 +30,6 @@ async function Page() {
     </main>
   );
 }
+
 
 export default Page;

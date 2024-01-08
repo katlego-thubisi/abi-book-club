@@ -159,3 +159,39 @@
 .comment-form_btn {
   @apply rounded-3xl bg-red-800 px-8 py-2 !text-small-regular text-light-1 max-xs:w-full !important;
 }
+
+.tox-statusbar__branding {
+  opacity: 0 !important;
+}
+
+.cl-organizationSwitcherPopoverFooter {
+  display: none !important;
+}
+
+.cl-internal-b3fm6y {
+  display: none !important;
+}
+
+h1 {
+  font-size: xx-large;
+}
+
+h2 {
+  font-size: x-large;
+}
+
+h3 {
+  font-size: large;
+}
+
+h4 {
+  font-size: medium;
+}
+
+h5 {
+  font-size: small;
+}
+
+h6 {
+  font-size: x-small;
+}
