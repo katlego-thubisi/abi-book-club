@@ -15,6 +15,13 @@ async function Page({ params }: { params: { id: string } }) {
   // fetch organization list created by user
 
   const communityDetails = await fetchCommunityDetails(params.id);
+  // check if current user is already a member of the community
+
+  const memberCheck = communityDetails?.members?.some(
+    (m: any) => m.id === user.id
+  );
+
+  const isMember = memberCheck ? true : false;
 
   return (
     <section>
@@ -25,6 +32,7 @@ async function Page({ params }: { params: { id: string } }) {
         username={communityDetails.username}
         imgUrl={communityDetails.image}
         bio={communityDetails.bio}
+        isMember={isMember}
         type="Community"
       />
 
@@ -76,7 +84,7 @@ async function Page({ params }: { params: { id: string } }) {
           <TabsContent value="requests" className="w-full text-light-1">
             <EntriesTab
               currentUserId={user.id}
-              accountId={communityDetails.id}
+              accountId={communityDetails._id}
               accountType="Community"
             />
           </TabsContent>

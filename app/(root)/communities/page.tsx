@@ -41,7 +41,8 @@ async function Page() {
                 username={community.username}
                 imgUrl={community.image}
                 bio={community.bio}
-                members={community.members}
+                members={JSON.parse(JSON.stringify(community.members))}
+                userId={user.id}
               />
             ))}
           </>

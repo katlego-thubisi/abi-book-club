@@ -1,7 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "../ui/button";
+import { usePathname } from "next/navigation";
+import {
+  addMemberToCommunity,
+  removeUserFromCommunity,
+} from "@/lib/actions/community.actions";
 
 interface Props {
   id: string;
@@ -10,11 +17,34 @@ interface Props {
   imgUrl: string;
   bio: string;
   members: {
+    id: string;
     image: string;
   }[];
+  userId: string;
 }
 
-function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
+function CommunityCard({
+  id,
+  name,
+  username,
+  imgUrl,
+  bio,
+  members,
+  userId,
+}: Props) {
+  const memberCheck = members?.some((m: any) => m.id === userId);
+
+  const isMember = memberCheck ? true : false;
+
+  const pathName = usePathname();
+
+  const joinCommunity = async () => {
+    await addMemberToCommunity(id, userId, pathName);
+  };
+
+  const leaveCommunity = async () => {
+    await removeUserFromCommunity(userId, id, pathName);
+  };
   return (
     <article className="community-card">
       <div className="flex flex-wrap items-center gap-3">
@@ -38,11 +68,30 @@ function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
       <p className="mt-4 text-subtle-medium text-gray-1">{bio}</p>
 
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-        <Link href={`/communities/${id}`}>
-          <Button size="sm" className="community-card_btn">
-            View
-          </Button>
-        </Link>
+        <div className="flex gap-3">
+          <Link href={`/communities/${id}`}>
+            <Button size="sm" className="community-card_btn bg-slate-800">
+              View
+            </Button>
+          </Link>
+          {!isMember ? (
+            <Button
+              onClick={() => joinCommunity()}
+              size="sm"
+              className="community-card_btn bg-slate-800"
+            >
+              Join
+            </Button>
+          ) : (
+            <Button
+              onClick={() => leaveCommunity()}
+              size="sm"
+              className="community-card_btn bg-slate-800"
+            >
+              Leave
+            </Button>
+          )}
+        </div>
 
         {members.length > 0 && (
           <div className="flex items-center">

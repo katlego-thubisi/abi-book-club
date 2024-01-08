@@ -7,6 +7,7 @@ import Thread from "../models/entry.model";
 import User from "../models/user.model";
 
 import { connectToDB } from "../mongoose";
+import { revalidatePath } from "next/cache";
 
 export async function createCommunity(
   id: string,
@@ -161,7 +162,8 @@ export async function fetchCommunities({
 
 export async function addMemberToCommunity(
   communityId: string,
-  memberId: string
+  memberId: string,
+  path: string
 ) {
   try {
     connectToDB();
@@ -192,8 +194,8 @@ export async function addMemberToCommunity(
     // Add the community's _id to the communities array in the user
     user.communities.push(community._id);
     await user.save();
-
-    return community;
+    revalidatePath(path);
+    // return community;
   } catch (error) {
     // Handle any errors
     console.error("Error adding member to community:", error);
@@ -203,7 +205,8 @@ export async function addMemberToCommunity(
 
 export async function removeUserFromCommunity(
   userId: string,
-  communityId: string
+  communityId: string,
+  pathName: string
 ) {
   try {
     connectToDB();
@@ -234,7 +237,7 @@ export async function removeUserFromCommunity(
       { $pull: { communities: communityIdObject._id } }
     );
 
-    return { success: true };
+    revalidatePath(pathName);
   } catch (error) {
     // Handle any errors
     console.error("Error removing user from community:", error);
