@@ -10,7 +10,6 @@ import { connectToDB } from "../mongoose";
 import { revalidatePath } from "next/cache";
 
 export async function createCommunity(
-  id: string,
   name: string,
   username: string,
   image: string,
@@ -28,7 +27,6 @@ export async function createCommunity(
     }
 
     const newCommunity = new Community({
-      id,
       name,
       username,
       image,
