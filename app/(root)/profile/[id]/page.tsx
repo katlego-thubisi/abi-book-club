@@ -15,7 +15,7 @@ async function Page({ params }: { params: { id: string } }) {
 
   // fetch organization list created by user
   const userInfo = await fetchUser(params.id);
-
+  console.log("User Info", userInfo);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   return (

@@ -31,7 +31,6 @@ const ProfileHeader = ({
 }: Props) => {
   const pathName = usePathname();
   const joinCommunity = async () => {
-    console.log("joinCommunity");
     await addMemberToCommunity(accountId, authUserId, pathName);
   };
 
@@ -57,7 +56,7 @@ const ProfileHeader = ({
             <p className="text-base-medium text-gray-1">@{username}</p>
           </div>
         </div>
-        {!isMember ? (
+        {!isMember && type === "Community" && (
           <div>
             <Button
               onClick={() => joinCommunity()}
@@ -67,7 +66,8 @@ const ProfileHeader = ({
               Join
             </Button>
           </div>
-        ) : (
+        )}
+        {isMember && type === "Community" && (
           <div>
             <Button
               onClick={() => leaveCommunity()}
