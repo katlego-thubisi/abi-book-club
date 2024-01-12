@@ -7,12 +7,19 @@ import EntriesTab from "@/components/shared/EntriesTab";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fetchCommunityDetails } from "@/lib/actions/community.actions";
 import UserCard from "@/components/cards/UserCard";
+import { fetchUser } from "@/lib/actions/user.actions";
 
 async function Page({ params }: { params: { id: string } }) {
   const user = await currentUser();
   if (!user) return null;
 
   // fetch organization list created by user
+  let userInfo = null;
+  try {
+    userInfo = await fetchUser(user.id);
+  } catch (error) {
+    userInfo = null;
+  }
 
   const communityDetails = await fetchCommunityDetails(params.id);
   // check if current user is already a member of the community
@@ -22,6 +29,9 @@ async function Page({ params }: { params: { id: string } }) {
   );
 
   const isMember = memberCheck ? true : false;
+
+  let isOwner = null;
+  if (userInfo) isOwner = userInfo._id === communityDetails.createdBy;
 
   return (
     <section>
@@ -33,6 +43,7 @@ async function Page({ params }: { params: { id: string } }) {
         imgUrl={communityDetails.image}
         bio={communityDetails.bio}
         isMember={isMember}
+        isOwner={isOwner ? true : false}
         type="Community"
       />
 

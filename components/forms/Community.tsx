@@ -21,6 +21,7 @@ import { Input } from "../ui/input";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import { useRouter } from "next/navigation";
 
 interface Props {
   community: {
@@ -36,6 +37,8 @@ interface Props {
 const Community = ({ community, userId }: Props) => {
   const { startUpload } = useUploadThing("media");
   const [files, setFiles] = useState<File[]>([]);
+
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof CommunityValidation>>({
     resolver: zodResolver(CommunityValidation),
@@ -82,19 +85,21 @@ const Community = ({ community, userId }: Props) => {
       }
     }
 
-    await createCommunity(
+    const response = await createCommunity(
       values.name,
       values.username,
-      community.image,
+      values.image,
       values.bio,
       userId
     );
+
+    router.push(`/communities/${response}`);
   };
 
   return (
     <Form {...form}>
       <form
-        className="flex flex-col justify-start gap-10"
+        className="flex flex-col justify-start gap-5"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
@@ -102,7 +107,7 @@ const Community = ({ community, userId }: Props) => {
           name="image"
           render={({ field }) => (
             <FormItem className="flex items-center gap-4">
-              <FormLabel className="account-form_image-label">
+              <FormLabel className="account-form_image-label overflow-hidden">
                 {field.value ? (
                   <Image
                     src={field.value}
@@ -110,7 +115,7 @@ const Community = ({ community, userId }: Props) => {
                     width={96}
                     height={96}
                     priority
-                    className="rounded-full object-contain"
+                    className="rounded-full object-cover"
                   />
                 ) : (
                   <Image
@@ -118,7 +123,7 @@ const Community = ({ community, userId }: Props) => {
                     alt="profile_icon"
                     width={24}
                     height={24}
-                    className="object-contain"
+                    className="rounded-full object-contain"
                   />
                 )}
               </FormLabel>
@@ -140,7 +145,7 @@ const Community = ({ community, userId }: Props) => {
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem className="flex w-full flex-col gap-3">
+            <FormItem className="flex w-full flex-col gap-1">
               <FormLabel className="text-base-semibold text-light-2">
                 Name
               </FormLabel>
@@ -199,7 +204,7 @@ const Community = ({ community, userId }: Props) => {
         />
 
         <Button type="submit" className="bg-red-800">
-          Create new community
+          Create new club
         </Button>
       </form>
     </Form>

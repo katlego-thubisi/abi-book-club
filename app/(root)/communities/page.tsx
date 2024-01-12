@@ -37,6 +37,10 @@ async function Page() {
     pageSize: 25,
   });
 
+  const activeCommunities = result.communities.filter(
+    (c) => c.status === "active"
+  );
+
   return (
     <section>
       <Dialog>
@@ -54,23 +58,23 @@ async function Page() {
 
         {/* Dialog for community form */}
 
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>Add community</DialogTitle>
+            <DialogTitle>Add book club</DialogTitle>
             <DialogDescription>
-              Add your community. Click save when you're done.
+              Add your book club. Click save when you're done.
             </DialogDescription>
           </DialogHeader>
-          <Community community={communityInfo} userId="" />
+          <Community community={communityInfo} userId={userInfo.id} />
         </DialogContent>
       </Dialog>
 
       <div className="mt-9 flex flex-wrap gap-4">
-        {result.communities.length === 0 ? (
+        {activeCommunities.length === 0 ? (
           <p className="no-result">No Communities</p>
         ) : (
           <>
-            {result.communities.map((community) => (
+            {activeCommunities.map((community) => (
               <CommunityCard
                 key={community.id}
                 id={community.id}
@@ -79,7 +83,10 @@ async function Page() {
                 imgUrl={community.image}
                 bio={community.bio}
                 members={JSON.parse(JSON.stringify(community.members))}
+                requests={JSON.parse(JSON.stringify(community.requests))}
                 userId={user.id}
+                userBaseId={userInfo._id}
+                createdBy={community.createdBy}
               />
             ))}
           </>

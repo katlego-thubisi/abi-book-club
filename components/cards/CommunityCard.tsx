@@ -6,9 +6,22 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
 import {
-  addMemberToCommunity,
+  memberRequestToCommunity,
   removeUserFromCommunity,
+  updateCommunityInfo,
 } from "@/lib/actions/community.actions";
+import { Dialog, DialogTrigger } from "../ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface Props {
   id: string;
@@ -20,7 +33,12 @@ interface Props {
     id: string;
     image: string;
   }[];
+  requests: {
+    id: string;
+  }[];
   userId: string;
+  userBaseId: string;
+  createdBy: string;
 }
 
 function CommunityCard({
@@ -30,20 +48,31 @@ function CommunityCard({
   imgUrl,
   bio,
   members,
+  requests,
   userId,
+  userBaseId,
+  createdBy,
 }: Props) {
+  const requesterCheck = requests?.some((r: any) => r.id === userId);
   const memberCheck = members?.some((m: any) => m.id === userId);
 
+  const isRequesting = requesterCheck ? true : false;
   const isMember = memberCheck ? true : false;
+
+  const isOwner = userBaseId === createdBy;
 
   const pathName = usePathname();
 
   const joinCommunity = async () => {
-    await addMemberToCommunity(id, userId, pathName);
+    await memberRequestToCommunity(id, userId, pathName);
   };
 
   const leaveCommunity = async () => {
     await removeUserFromCommunity(userId, id, pathName);
+  };
+
+  const confirmDeleteCommunity = async () => {
+    await updateCommunityInfo(id, name, username, imgUrl, "delete");
   };
   return (
     <article className="community-card">
@@ -65,7 +94,9 @@ function CommunityCard({
         </div>
       </div>
 
-      <p className="mt-4 text-subtle-medium text-gray-1">{bio}</p>
+      <p className="mt-4 text-subtle-medium text-gray-1 h-8 overflow-hidden text-ellipsis">
+        {bio}
+      </p>
 
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-3">
@@ -74,15 +105,17 @@ function CommunityCard({
               View
             </Button>
           </Link>
-          {!isMember ? (
+          {!isOwner && !isMember && (
             <Button
               onClick={() => joinCommunity()}
+              disabled={isRequesting}
               size="sm"
               className="community-card_btn bg-slate-800"
             >
-              Join
+              {isRequesting ? "Pending" : "Join"}
             </Button>
-          ) : (
+          )}
+          {!isOwner && isMember && (
             <Button
               onClick={() => leaveCommunity()}
               size="sm"
@@ -90,6 +123,34 @@ function CommunityCard({
             >
               Leave
             </Button>
+          )}
+          {isOwner && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  // onClick={() => leaveCommunity()}
+                  size="sm"
+                  className="community-card_btn bg-red-800"
+                >
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your club, remove all your club's entries and members.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => confirmDeleteCommunity()}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </div>
 

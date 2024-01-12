@@ -8,7 +8,7 @@ async function RightSidebar() {
   const commuminutyResult = await fetchCommunities({
     searchString: "",
     pageNumber: 1,
-    pageSize: 5,
+    pageSize: 3,
   });
 
   const userResult = await fetchUsers({
@@ -22,7 +22,7 @@ async function RightSidebar() {
     <section className="custom-scrollbar rightsidebar">
       <div className="flex flex-1 flex-col justify-start">
         <h3 className="text-heading4-medium text-light-1">Suggested Clubs</h3>
-        <div className="flex flex-col gap-3.5 justify-center mt-2.5">
+        <div className="flex flex-col gap-8 justify-center mt-2.5">
           {commuminutyResult.communities.map((community) => (
             <ClubCard
               key={community.id}
@@ -37,7 +37,9 @@ async function RightSidebar() {
         </div>
       </div>
       <div className="flex flex-1 flex-col justify-start">
-        <h3 className="text-heading4-medium text-light-1 mb-2">Suggested Readers</h3>
+        <h3 className="text-heading4-medium text-light-1 mb-2">
+          Suggested Readers
+        </h3>
         <CarouselCard>
           {userResult.users.map((user: any, index: number) => (
             <ProfileCard
