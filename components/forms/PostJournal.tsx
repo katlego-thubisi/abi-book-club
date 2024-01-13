@@ -20,6 +20,8 @@ import { JournalValidation } from "@/lib/validations/journal";
 import { createEntry } from "@/lib/actions/journal.actions";
 import { useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import { isBase64Image } from "@/lib/utils";
+import { useUploadThing } from "@/lib/uploadthing";
 
 interface Props {
   userId: string;
@@ -29,6 +31,9 @@ function PostJournal({ userId }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const organization = useOrganization();
+  const { startUpload } = useUploadThing("media");
+
+  const [files, setFiles] = useState<File[]>([]);
 
   const [blocks, setBlocks] = useState("");
 
@@ -71,14 +76,41 @@ function PostJournal({ userId }: Props) {
                 {/* <Textarea rows={15} {...field} /> */}
                 <Editor
                   apiKey="w4dg63t3nvw0nejcjlzvx5odxzjj84d8hg8oat4i7t6j3353"
-                  plugins={["link", "paste", "image", "code"]}
+                  plugins={["link", "image", "code", "lists"]}
+                  toolbar="undo redo | styleselect  | bold italic underline | numlist | bullist"
                   value={blocks}
                   onEditorChange={setBlocks}
                   init={{
                     skin: "oxide-dark",
                     content_css: "dark",
                     height: 500,
+                    images_upload_handler: async (blobInfo) => {
+                      return new Promise((resolve, reject) => {
+                        const blockFile = new File(
+                          [blobInfo.blob()],
+                          blobInfo.filename(),
+                          { type: blobInfo.blob().type }
+                        ); // Convert BlobInfo to File
+                        console.log("blockFile", blockFile);
+                        const filesArray = [blockFile]; // Create a file array with the converted File object
+                        console.log("filesArray", blockFile);
+                        startUpload(filesArray)
+                          .then((data) => {
+                            if (data && data[0]) {
+                              const url = data[0].fileUrl;
+                              resolve(url);
+                            } else {
+                              resolve(blobInfo.blobUri());
+                            }
+                          })
+                          .catch((e) => {
+                            console.log("Error uploading file", e);
+                            reject(e);
+                          });
+                      });
+                    },
                   }}
+
                   // {...field}
                 />
               </FormControl>

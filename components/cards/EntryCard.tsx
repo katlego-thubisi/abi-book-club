@@ -80,7 +80,7 @@ const EntryCard = ({
             <div
               className={`${
                 isComment && "mb-5"
-              } mt-2 text-small-regular text-light-2 max-w-lg text-wrap`}
+              } entry-body mt-2 text-small-regular text-light-2 max-w-lg text-wrap`}
             >
               <div dangerouslySetInnerHTML={{ __html: content }}></div>
             </div>

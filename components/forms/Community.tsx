@@ -78,6 +78,7 @@ const Community = ({ community, userId }: Props) => {
 
     const hasImageChanged = isBase64Image(blob);
     if (hasImageChanged) {
+      console.log("Files before upload", files);
       const imgRes = await startUpload(files);
 
       if (imgRes && imgRes[0].fileUrl) {

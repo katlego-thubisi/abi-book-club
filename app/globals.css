@@ -171,27 +171,34 @@
 .cl-internal-b3fm6y {
   display: none !important;
 }
-
-h1 {
+.entry-body h1 {
   font-size: xx-large;
 }
 
-h2 {
+.entry-body h2 {
   font-size: x-large;
 }
-
-h3 {
+.entry-body h3 {
   font-size: large;
 }
 
-h4 {
+.entry-body h4 {
   font-size: medium;
 }
 
-h5 {
+.entry-body h5 {
   font-size: small;
 }
-
-h6 {
+.entry-body h6 {
   font-size: x-small;
+}
+
+.entry-body ul {
+  list-style: inside;
+  margin-left: 1rem;
+}
+
+.entry-body ol {
+  list-style: decimal inside;
+  margin-left: 1rem;
 }
