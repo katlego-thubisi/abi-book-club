@@ -86,7 +86,7 @@ const ProfileHeader = ({
             </Button>
           </div>
         )}
-        {!isOwner && isMember && type === "Community" && (
+        {isOwner && isMember && type === "Community" && (
           <div>
             <AlertDialog>
               <AlertDialogTrigger asChild>
@@ -116,7 +116,7 @@ const ProfileHeader = ({
             </AlertDialog>
           </div>
         )}
-        {isOwner && type === "Community" && (
+        {!isOwner && type === "Community" && (
           <div>
             <Button
               onClick={() => leaveCommunity()}
