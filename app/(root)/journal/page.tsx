@@ -13,7 +13,9 @@ async function Page() {
 
   return (
     <>
-      <h1 className="head-text">Create Journal Entry </h1>
+      <h1 className="head-text text-black dark:text-white">
+        Create Journal Entry{" "}
+      </h1>
 
       <PostJournal userId={userInfo._id} />
     </>

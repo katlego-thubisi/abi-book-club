@@ -1,6 +1,8 @@
+import CommunityCard from "@/components/cards/CommunityCard";
 import UserCard from "@/components/cards/UserCard";
 import PostJournal from "@/components/forms/PostJournal";
 import ProfileHeader from "@/components/shared/ProfileHeader";
+import { fetchCommunities } from "@/lib/actions/community.actions";
 import { fetchUser, fetchUsers } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
@@ -14,9 +16,8 @@ async function Page() {
 
   if (!userInfo?.onboarded) redirect("/onboarding");
 
-  // Fetch users
-  const result = await fetchUsers({
-    userId: user.id,
+  // Fetch communities
+  const result = await fetchCommunities({
     searchString: "",
     pageNumber: 1,
     pageSize: 25,
@@ -24,22 +25,24 @@ async function Page() {
 
   return (
     <section>
-      <h1 className="head-text mb-10 text-black dark:text-white">Search</h1>
+      <h1 className="head-text">Book Clubs</h1>
       {/* Search Bar*/}
 
-      <div className="mt-14 flex flex-col gap-9">
-        {result.users.length === 0 ? (
-          <p className="no-result">No Users</p>
+      <div className="mt-9 flex flex-wrap gap-4">
+        {result.communities.length === 0 ? (
+          <p className="no-result">No Communities</p>
         ) : (
           <>
-            {result.users.map((person) => (
-              <UserCard
-                key={person.id}
-                id={person.id}
-                name={person.name}
-                username={person.username}
-                imgUrl={person.image}
-                personType="User"
+            {result.communities.map((community) => (
+              <CommunityCard
+                key={community.id}
+                id={community.id}
+                name={community.name}
+                username={community.username}
+                imgUrl={community.image}
+                bio={community.bio}
+                members={community.members}
+                userId={community.id}
               />
             ))}
           </>

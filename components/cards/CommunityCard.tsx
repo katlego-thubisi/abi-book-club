@@ -109,7 +109,7 @@ function CommunityCard({
             ))}
             {members.length > 3 && (
               <p className="ml-1 text-subtle-medium text-gray-1">
-                {members.length}+ Users
+                {members.length} + Users
               </p>
             )}
           </div>

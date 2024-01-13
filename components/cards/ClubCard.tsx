@@ -17,7 +17,7 @@ const ClubCard = ({ id, name, username, imgUrl, bio, members }: Props) => {
   return (
     <article
       className="bg-transparent rounded-lg cursor-pointer 
-    transform hover:-translate-y-1 hover:bg-dark-4 duration-150 ease-in-out "
+    transform hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-dark-4 duration-150 ease-in-out "
     >
       <Link href={`/communities/${id}`}>
         <div className="flex gap-5 p-2">
@@ -31,7 +31,9 @@ const ClubCard = ({ id, name, username, imgUrl, bio, members }: Props) => {
             />
           </div>
           <div className="flex flex-col justify-center">
-            <p className="text-heading2-medium text-light-2">{name}</p>
+            <p className="text-heading2-medium text-black dark:text-light-2">
+              {name}
+            </p>
             <p className="text-small-regular text-light-3">
               {abbreviateMembers(members.length)} member(s)
             </p>
