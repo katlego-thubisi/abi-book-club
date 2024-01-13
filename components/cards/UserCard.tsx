@@ -1,9 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Button } from "../ui/button";
+import {
+  approveMemberToCommunity,
+  declineRequestCommunity,
+} from "@/lib/actions/community.actions";
 
 interface Props {
   id: string;
@@ -11,12 +15,30 @@ interface Props {
   username: string;
   imgUrl: string;
   personType: string;
+  communityId?: string;
 }
 
-function UserCard({ id, name, username, imgUrl, personType }: Props) {
+function UserCard({
+  id,
+  name,
+  username,
+  imgUrl,
+  personType,
+  communityId,
+}: Props) {
   const router = useRouter();
 
+  const path = usePathname();
+
   const isCommunity = personType === "Community";
+
+  const rejectMemeberRequest = async () => {
+    if (communityId) await declineRequestCommunity(id, communityId, path);
+  };
+
+  const approveMemberRequest = async () => {
+    if (communityId) await approveMemberToCommunity(communityId, id, path);
+  };
 
   return (
     <article className="user-card">
@@ -46,6 +68,29 @@ function UserCard({ id, name, username, imgUrl, personType }: Props) {
       >
         View
       </Button>
+      {personType === "Member" && (
+        <Button className="user-card_btn" variant="destructive">
+          Ban
+        </Button>
+      )}
+
+      {personType === "Request" && (
+        <>
+          <Button
+            className="user-card_btn"
+            variant="destructive"
+            onClick={() => rejectMemeberRequest()}
+          >
+            Reject
+          </Button>
+          <Button
+            className="user-card_btn bg-green-800"
+            onClick={() => approveMemberRequest()}
+          >
+            Accept
+          </Button>
+        </>
+      )}
     </article>
   );
 }

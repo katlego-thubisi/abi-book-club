@@ -1,5 +1,5 @@
 "use client";
-import { OrganizationSwitcher, SignOutButton, SignedIn } from "@clerk/nextjs";
+import { SignOutButton, SignedIn } from "@clerk/nextjs";
 
 import Image from "next/image";
 import Link from "next/link";

@@ -20,14 +20,13 @@ const ClubCard = ({ id, name, username, imgUrl, bio, members }: Props) => {
     transform hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-dark-4 duration-150 ease-in-out "
     >
       <Link href={`/communities/${id}`}>
-        <div className="flex gap-5 p-2">
-          <div className="flex flex-col justify-center">
+        <div className="flex gap-5">
+          <div className="cmgroup flex flex-col justify-center rounded-l-lg overflow-hidden relative w-14 ">
             <Image
               src={imgUrl}
               alt="community_logo"
-              width={36}
-              height={36}
-              className="rounded-full object-cover"
+              fill
+              className=" object-cover -translate-x-8 group-hover:translate-x-0 duration-500 ease-in-out"
             />
           </div>
           <div className="flex flex-col justify-center">

@@ -8,7 +8,7 @@ async function RightSidebar() {
   const commuminutyResult = await fetchCommunities({
     searchString: "",
     pageNumber: 1,
-    pageSize: 5,
+    pageSize: 3,
   });
 
   const userResult = await fetchUsers({
