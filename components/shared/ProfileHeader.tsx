@@ -3,10 +3,22 @@
 import Image from "next/image";
 import { Button } from "../ui/button";
 import {
-  addMemberToCommunity,
+  memberRequestToCommunity,
   removeUserFromCommunity,
+  updateCommunityInfo,
 } from "@/lib/actions/community.actions";
 import { usePathname, useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface Props {
   accountId: string;
@@ -16,6 +28,7 @@ interface Props {
   imgUrl: string;
   bio: string;
   isMember?: boolean;
+  isOwner?: boolean;
   type?: "User" | "Community";
 }
 
@@ -27,16 +40,21 @@ const ProfileHeader = ({
   imgUrl,
   bio,
   isMember,
+  isOwner,
   type,
 }: Props) => {
   const pathName = usePathname();
+
   const joinCommunity = async () => {
-    console.log("joinCommunity");
-    await addMemberToCommunity(accountId, authUserId, pathName);
+    await memberRequestToCommunity(accountId, authUserId, pathName);
   };
 
   const leaveCommunity = async () => {
     await removeUserFromCommunity(authUserId, accountId, pathName);
+  };
+
+  const confirmDeleteCommunity = async () => {
+    await updateCommunityInfo(accountId, name, username, imgUrl, "delete");
   };
   return (
     <div className="flex w-full flex-col justify-start">
@@ -57,7 +75,7 @@ const ProfileHeader = ({
             <p className="text-base-medium text-gray-1">@{username}</p>
           </div>
         </div>
-        {!isMember ? (
+        {!isOwner && !isMember && type === "Community" && (
           <div>
             <Button
               onClick={() => joinCommunity()}
@@ -67,7 +85,38 @@ const ProfileHeader = ({
               Join
             </Button>
           </div>
-        ) : (
+        )}
+        {isOwner && isMember && type === "Community" && (
+          <div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  // onClick={() => leaveCommunity()}
+                  size="sm"
+                  className="community-card_btn bg-red-800"
+                >
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your club, remove all your club's entries and members.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => confirmDeleteCommunity()}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        )}
+        {!isOwner && type === "Community" && (
           <div>
             <Button
               onClick={() => leaveCommunity()}
@@ -79,8 +128,6 @@ const ProfileHeader = ({
           </div>
         )}
       </div>
-
-      {/* TODO: Community */}
 
       <p className="mt-6 max-w-lg text-base-regular text-light-2">{bio}</p>
 

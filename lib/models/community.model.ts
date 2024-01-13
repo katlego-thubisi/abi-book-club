@@ -1,8 +1,11 @@
 import mongoose from "mongoose";
+const { randomUUID } = require("crypto");
 
 const communitySchema = new mongoose.Schema({
   id: {
-    type: String,
+    type: mongoose.Schema.Types.UUID,
+    default: () => randomUUID(),
+    unique: true,
     required: true,
   },
   username: {
@@ -16,6 +19,7 @@ const communitySchema = new mongoose.Schema({
   },
   image: String,
   bio: String,
+  status: String,
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -27,6 +31,12 @@ const communitySchema = new mongoose.Schema({
     },
   ],
   members: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  requests: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
