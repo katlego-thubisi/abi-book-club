@@ -1,56 +1,99 @@
-import EntryCard from "@/components/cards/EntryCard";
-
-import { fetchPosts } from "@/lib/actions/journal.actions";
+import CommunityCard from "@/components/cards/CommunityCard";
+import Community from "@/components/forms/Community";
+import {
+  Dialog,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { fetchCommunities } from "@/lib/actions/community.actions";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
-export default async function Home() {
-  const result = await fetchPosts(1, 30);
+async function Page() {
   const user = await currentUser();
+  if (!user) return null;
 
-  let userInfo: any = null;
+  // fetch organization list created by user
+  const userInfo = await fetchUser(user.id);
 
-  if (user) userInfo = await fetchUser(user?.id);
+  if (!userInfo?.onboarded) redirect("/onboarding");
+
+  const communityInfo = {
+    id: "",
+    username: "",
+    name: "",
+    image: "",
+    bio: "",
+  };
+
+  // Fetch communities
+  const result = await fetchCommunities({
+    searchString: "",
+    pageNumber: 1,
+    pageSize: 25,
+  });
+
+  const activeCommunities = result.communities.filter(
+    (c) => c.status === "active"
+  );
 
   return (
-    <>
-      <h1 className="head-text text-left">Home</h1>
+    <section>
+      <Dialog>
+        <div className="flex justify-between align-middle">
+          <h1 className="head-text">Communities</h1>
+          <div className="flex items-center">
+            <DialogTrigger asChild>
+              <button className="community-card_btn bg-slate-800">
+                Create
+              </button>
+            </DialogTrigger>
+          </div>
+        </div>
+        {/* Search Bar*/}
 
-      <section className="mt-9 flex flex-col gap-10">
-        {result.posts.length === 0 ? (
-          <p className="no-result">No entries found</p>
+        {/* Dialog for community form */}
+
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Add book club</DialogTitle>
+            <DialogDescription>
+              Add your book club. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          <Community community={communityInfo} userId={userInfo.id} />
+        </DialogContent>
+      </Dialog>
+
+      <div className="mt-9 flex flex-wrap gap-4">
+        {activeCommunities.length === 0 ? (
+          <p className="no-result">No Communities</p>
         ) : (
           <>
-            {result.posts.map((post: any, index) => (
-              <EntryCard
-                key={post._id}
-                id={post._id}
-                currentUserId={userInfo?._id || ""}
-                // parentId={post.parentId}
-                content={post.text}
-                author={{
-                  name: post.author.name,
-                  image: post.author.image,
-                  id: post.author.id,
-                }}
-                community={
-                  post.community
-                    ? {
-                        id: post.community.id,
-                        name: post.community.name,
-                        image: post.community.image,
-                      }
-                    : null
-                }
-                createdAt={post.createdAt}
-                comments={JSON.parse(JSON.stringify(post.children))}
-                likes={JSON.parse(JSON.stringify(post.likes))}
-                // comments={[]}
+            {activeCommunities.map((community) => (
+              <CommunityCard
+                key={community.id}
+                id={community.id}
+                name={community.name}
+                username={community.username}
+                imgUrl={community.image}
+                bio={community.bio}
+                members={JSON.parse(JSON.stringify(community.members))}
+                requests={JSON.parse(JSON.stringify(community.requests))}
+                userId={user.id}
+                userBaseId={userInfo._id}
+                createdBy={community.createdBy}
               />
             ))}
           </>
         )}
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
+
+export default Page;
