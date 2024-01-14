@@ -16,7 +16,7 @@ interface Props {
 const ClubCard = ({ id, name, username, imgUrl, bio, members }: Props) => {
   return (
     <article
-      className="bg-transparent rounded-lg cursor-pointer 
+      className="group bg-transparent rounded-lg cursor-pointer 
     transform hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-dark-4 duration-150 ease-in-out "
     >
       <Link href={`/communities/${id}`}>
@@ -29,7 +29,7 @@ const ClubCard = ({ id, name, username, imgUrl, bio, members }: Props) => {
               className=" object-cover -translate-x-8 group-hover:translate-x-0 duration-500 ease-in-out"
             />
           </div>
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col justify-center py-4 -translate-x-8 group-hover:translate-x-0 duration-500 ease-in-out ">
             <p className="text-heading2-medium text-black dark:text-light-2">
               {name}
             </p>

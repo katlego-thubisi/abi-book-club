@@ -76,7 +76,7 @@
   }
 
   .leftsidebar {
-    @apply sticky left-0 top-0 z-20 flex h-screen w-fit flex-col justify-between overflow-auto bg-white dark:bg-dark-2 pb-5 pt-28 mr-5 max-md:hidden;
+    @apply sticky left-0 top-0 z-20 flex h-screen w-fit flex-col justify-between overflow-auto bg-white dark:bg-dark-2 pb-5 pt-28 max-md:hidden;
   }
 
   .leftsidebar_link {
@@ -148,7 +148,7 @@
   @apply cursor-pointer border-none bg-transparent outline-none file:text-blue text-white !important;
 }
 
-.account-form_input {
+.accountg-form_input {
   @apply border border-dark-4 bg-dark-3 text-light-1 !important;
 }
 
@@ -197,31 +197,7 @@ h6 {
   font-size: x-small;
 }
 
-/* Scoller */
-
-.scrollbar-hide::-webkit-scrollbar {
+/* Scollbar */
+.no-scrollbar::-webkit-scrollbar {
   display: none;
-}
-
-/* For IE, Edge and Firefox */
-.scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-
-/* SVG Icons */
-.svg_light > svg {
-  width: 50px;
-
-  height: 50px;
-
-  fill: #000000;
-}
-
-.svg_dark > svg {
-  width: 50px;
-
-  height: 50px;
-
-  fill: #000000;
 }
