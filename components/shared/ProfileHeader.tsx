@@ -75,6 +75,7 @@ const ProfileHeader = ({
             <p className="text-base-medium text-gray-1">@{username}</p>
           </div>
         </div>
+
         {!isOwner && !isMember && type === "Community" && (
           <div>
             <Button
@@ -116,7 +117,7 @@ const ProfileHeader = ({
             </AlertDialog>
           </div>
         )}
-        {!isOwner && type === "Community" && (
+        {!isOwner && isMember && type === "Community" && (
           <div>
             <Button
               onClick={() => leaveCommunity()}
@@ -129,7 +130,7 @@ const ProfileHeader = ({
         )}
       </div>
 
-      <p className="mt-6 max-w-lg text-base-regular text-light-2">{bio}</p>
+      <p className="mt-6 text-base-regular text-light-2">{bio}</p>
 
       <div className="mt-12 h-0.5 w-full bg-dark-3" />
     </div>

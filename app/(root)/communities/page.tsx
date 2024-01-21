@@ -45,7 +45,6 @@ async function Page() {
     <section>
       <Dialog>
         <div className="flex justify-between align-middle">
-          <h1 className="head-text">Communities</h1>
           <div className="flex items-center">
             <DialogTrigger asChild>
               <button className="community-card_btn bg-slate-800">
@@ -83,10 +82,6 @@ async function Page() {
                 imgUrl={community.image}
                 bio={community.bio}
                 members={JSON.parse(JSON.stringify(community.members))}
-                requests={JSON.parse(JSON.stringify(community.requests))}
-                userId={user.id}
-                userBaseId={userInfo._id}
-                createdBy={community.createdBy}
               />
             ))}
           </>

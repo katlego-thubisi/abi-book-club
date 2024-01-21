@@ -18,6 +18,7 @@ interface Props {
     id: string;
   };
   community: {
+    _id: string;
     id: string;
     name: string;
     image: string;
@@ -159,16 +160,16 @@ const EntryCard = ({
           className="mt-5 flex items-center"
         >
           <p className="text-subtle-medium text-gray-1">
-            {formatDateString(createdAt)} - {community.name} Community
+            {formatDateString(createdAt)} - {community.name} Club
           </p>
-
-          <Image
-            src={community.image}
-            alt={community.name}
-            width={14}
-            height={14}
-            className="ml-1 rounded-full object-cover"
-          />
+          <div className="relative h-4 w-4">
+            <Image
+              src={community.image}
+              alt={community.name}
+              fill
+              className="ml-2 rounded-full"
+            />
+          </div>
         </Link>
       )}
     </article>
