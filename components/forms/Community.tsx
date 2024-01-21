@@ -94,7 +94,7 @@ const Community = ({ community, userId }: Props) => {
       userId
     );
 
-    router.push(`/communities/${response}`);
+    router.push(`/clubs/${response}`);
   };
 
   return (

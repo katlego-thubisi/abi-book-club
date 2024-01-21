@@ -83,10 +83,6 @@ async function Page() {
                 imgUrl={community.image}
                 bio={community.bio}
                 members={JSON.parse(JSON.stringify(community.members))}
-                requests={JSON.parse(JSON.stringify(community.requests))}
-                userId={user.id}
-                userBaseId={userInfo._id}
-                createdBy={community.createdBy}
               />
             ))}
           </>

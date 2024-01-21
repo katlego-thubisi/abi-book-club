@@ -16,6 +16,8 @@ async function Page({ params }: { params: { id: string } }) {
   const communityDetails = await fetchCommunityDetails(params.id);
   // check if current user is already a member of the community
 
+  console.log("Community details", communityDetails);
+
   const memberCheck = communityDetails?.members?.some(
     (m: any) => m.id === user.id
   );
@@ -78,7 +80,7 @@ async function Page({ params }: { params: { id: string } }) {
             <TabsContent value="entries" className="w-full text-light-1">
               <EntriesTab
                 currentUserId={user.id}
-                accountId={communityDetails._id}
+                accountId={communityDetails.id}
                 accountType="Community"
               />
             </TabsContent>
@@ -124,7 +126,7 @@ async function Page({ params }: { params: { id: string } }) {
         ) : (
           <EntriesTab
             currentUserId={user.id}
-            accountId={communityDetails._id}
+            accountId={communityDetails.id}
             accountType="Community"
           />
         )}

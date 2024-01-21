@@ -75,6 +75,7 @@ const ProfileHeader = ({
             <p className="text-base-medium text-gray-1">@{username}</p>
           </div>
         </div>
+
         {!isOwner && !isMember && type === "Community" && (
           <div>
             <Button
@@ -116,7 +117,7 @@ const ProfileHeader = ({
             </AlertDialog>
           </div>
         )}
-        {!isOwner && type === "Community" && (
+        {!isOwner && isMember && type === "Community" && (
           <div>
             <Button
               onClick={() => leaveCommunity()}

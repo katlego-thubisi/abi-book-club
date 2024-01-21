@@ -69,8 +69,13 @@ export async function fetchUserPosts(userId: string) {
     // Find all threads authored by the user with the given userId
     const threads = await User.findOne({ id: userId }).populate({
       path: "threads",
+      options: { sort: { createdAt: -1 } }, // Sort threads by createdAt field in descending order
       model: Entry,
       populate: [
+        {
+          path: "likes", // Populate the likes field
+          model: Like,
+        },
         {
           path: "community",
           model: Community,
@@ -90,6 +95,37 @@ export async function fetchUserPosts(userId: string) {
     return threads;
   } catch (error) {
     console.error("Error fetching user threads:", error);
+    throw error;
+  }
+}
+
+export async function fetchUserCommunities(userId: string) {
+  try {
+    connectToDB();
+
+    // Find all threads authored by the user with the given userId
+    const threads = await User.findOne({ id: userId }).populate({
+      path: "threads",
+      model: Entry,
+      populate: [
+        {
+          path: "community",
+          model: Community,
+          select: "name id image _id", // Select the "name" and "_id" fields from the "Community" model
+        },
+        {
+          path: "children",
+          model: Entry,
+          populate: {
+            path: "author",
+            model: User,
+            select: "name image id", // Select the "name" and "_id" fields from the "User" model
+          },
+        },
+      ],
+    });
+  } catch (error) {
+    console.error("Error fetching user communitties:", error);
     throw error;
   }
 }
@@ -186,14 +222,6 @@ export async function getActivity(userId: string) {
     const likes = userThreads.reduce((acc, userThread) => {
       return acc.concat(userThread.likes);
     }, []);
-
-    // const likes = await Entry.find({
-    //   likes: { $in: userId },
-    // }).populate({
-    //   path: "likes",
-    //   model: User,
-    //   select: "name image _id",
-    // });
 
     const repliesWithType = replies.map((reply) => ({
       ...reply.toObject(),

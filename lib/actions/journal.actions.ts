@@ -64,10 +64,7 @@ export async function createEntry({ text, author, communityId, path }: Params) {
   try {
     connectToDB();
 
-    const communityIdObject = await Community.findOne(
-      { id: communityId },
-      { _id: 1 }
-    );
+    const communityIdObject = await Community.findOne({ _id: communityId });
 
     const createdEntry = await Entry.create({
       text,
@@ -178,6 +175,7 @@ export async function fetchEntryById(threadId: string) {
       }) // Populate the community field with _id and name
       .populate({
         path: "children", // Populate the children field
+        options: { sort: { createdAt: -1 } }, // Sort children by createdAt field in descending order
         populate: [
           {
             path: "author", // Populate the author field within children

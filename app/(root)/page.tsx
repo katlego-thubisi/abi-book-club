@@ -14,22 +14,6 @@ import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 async function Page() {
-  const user = await currentUser();
-  if (!user) return null;
-
-  // fetch organization list created by user
-  const userInfo = await fetchUser(user.id);
-
-  if (!userInfo?.onboarded) redirect("/onboarding");
-
-  const communityInfo = {
-    id: "",
-    username: "",
-    name: "",
-    image: "",
-    bio: "",
-  };
-
   // Fetch communities
   const result = await fetchCommunities({
     searchString: "",
@@ -43,41 +27,29 @@ async function Page() {
 
   return (
     <section>
-      <Dialog>
-        <div className="flex justify-between align-middle">
-          <div className="flex-col">
-            <h1 className="head-text text-black dark:text-white leading-none">
-              Find Your Book Club
-            </h1>
-            <h1 className="head-text cursive">Community</h1>
-            <img
-              src="\assets\underline.png"
-              alt="Text Underline"
-              width="150px"
-              height="10px"
-              className="underline"
-            ></img>
-            <p className="mt-7 text-black dark:text-white">
-              Hop into a book club and access curated content by your favorite
-              creators. Heck, you could even create your own!
-            </p>
-          </div>
-          <div className="flex items-center"></div>
+      <div className="flex justify-between align-middle">
+        <div className="flex-col">
+          <h1 className="head-text text-black dark:text-white leading-none">
+            Find Your Book Club
+          </h1>
+          <h1 className="head-text cursive">Community</h1>
+          <img
+            src="\assets\underline.png"
+            alt="Text Underline"
+            width="150px"
+            height="10px"
+            className="underline"
+          ></img>
+          <p className="mt-7 text-black dark:text-white">
+            Hop into a book club and access curated content by your favorite
+            creators. Heck, you could even create your own!
+          </p>
         </div>
-        {/* Search Bar*/}
+        <div className="flex items-center"></div>
+      </div>
+      {/* Search Bar*/}
 
-        {/* Dialog for community form */}
-
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>Add book club</DialogTitle>
-            <DialogDescription>
-              Add your book club. Click save when you're done.
-            </DialogDescription>
-          </DialogHeader>
-          <Community community={communityInfo} userId={userInfo.id} />
-        </DialogContent>
-      </Dialog>
+      {/* Dialog for community form */}
 
       <div className="mt-9 flex flex-wrap gap-4">
         {activeCommunities.length === 0 ? (
@@ -93,10 +65,6 @@ async function Page() {
                 imgUrl={community.image}
                 bio={community.bio}
                 members={JSON.parse(JSON.stringify(community.members))}
-                requests={JSON.parse(JSON.stringify(community.requests))}
-                userId={user.id}
-                userBaseId={userInfo._id}
-                createdBy={community.createdBy}
               />
             ))}
           </>

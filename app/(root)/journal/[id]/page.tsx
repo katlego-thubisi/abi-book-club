@@ -35,6 +35,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
           community={
             entry.community
               ? {
+                  _id: entry.community._id,
                   id: entry.community.id,
                   name: entry.community.name,
                   image: entry.community.image,
@@ -70,6 +71,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
             community={
               comment.community
                 ? {
+                    _id: comment.community._id,
                     id: comment.community.id,
                     name: comment.community.name,
                     image: comment.community.image,

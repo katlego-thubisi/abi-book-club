@@ -23,16 +23,28 @@ import { Editor } from "@tinymce/tinymce-react";
 import MyThemeContext from "@/store/ThemeContext";
 import { isBase64Image } from "@/lib/utils";
 import { useUploadThing } from "@/lib/uploadthing";
+import Representation from "../custom-ui/Representation";
 
 interface Props {
-  userId: string;
+  user: any;
 }
 
-function PostJournal({ userId }: Props) {
+function PostJournal({ user }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const organization = useOrganization();
   const { startUpload } = useUploadThing("media");
+
+  const [representation, setRepresentation] = useState({
+    _id: null,
+    image: user.image,
+    name: user.name,
+  });
+
+  const [representationOptions, setRepresentationOptions] = useState([
+    { image: user.image, name: user.name },
+    ...user.communities,
+  ]);
 
   const [files, setFiles] = useState<File[]>([]);
 
@@ -41,18 +53,17 @@ function PostJournal({ userId }: Props) {
   const form = useForm({
     resolver: zodResolver(JournalValidation),
     defaultValues: {
-      journal: "This is the test entry",
-      accountId: userId,
+      journal: "",
+      accountId: user._id,
     },
   });
+
   const onSubmit = async (values: z.infer<typeof JournalValidation>) => {
     await createEntry({
       text: blocks,
-      author: userId,
+      author: user._id,
       communityId:
-        organization && organization.organization
-          ? organization.organization.id
-          : null,
+        representation && representation._id ? representation._id : null,
       path: pathname,
     });
 
@@ -65,16 +76,17 @@ function PostJournal({ userId }: Props) {
         className="mt-10 flex flex-col justify-start gap-10"
         onSubmit={form.handleSubmit(onSubmit)}
       >
+        <Representation
+          options={representationOptions}
+          selectedOption={representation}
+          onChange={setRepresentation}
+        />
         <FormField
           control={form.control}
           name="journal"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="text-base-semibold text-black dark:text-light-2">
-                Content
-              </FormLabel>
               <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
-                {/* <Textarea rows={15} {...field} /> */}
                 <Editor
                   apiKey="w4dg63t3nvw0nejcjlzvx5odxzjj84d8hg8oat4i7t6j3353"
                   plugins={["link", "image", "code", "lists"]}
@@ -91,9 +103,9 @@ function PostJournal({ userId }: Props) {
                           blobInfo.filename(),
                           { type: blobInfo.blob().type }
                         ); // Convert BlobInfo to File
-                        console.log("blockFile", blockFile);
+
                         const filesArray = [blockFile]; // Create a file array with the converted File object
-                        console.log("filesArray", blockFile);
+
                         startUpload(filesArray)
                           .then((data) => {
                             if (data && data[0]) {

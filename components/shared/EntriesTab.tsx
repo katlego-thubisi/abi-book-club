@@ -31,7 +31,7 @@ const EntriesTab = async ({ currentUserId, accountId, accountType }: Props) => {
           <EntryCard
             key={entry._id}
             id={entry._id}
-            currentUserId={currentUserId}
+            currentUserId={currentUserId.toString()}
             parentId={entry.parentId}
             content={entry.text}
             author={
@@ -44,8 +44,9 @@ const EntriesTab = async ({ currentUserId, accountId, accountType }: Props) => {
                   }
             }
             community={
-              entry.community
+              entry.community && entry.community.name
                 ? {
+                    _id: entry.community._id,
                     id: entry.community.id,
                     name: entry.community.name,
                     image: entry.community.image,

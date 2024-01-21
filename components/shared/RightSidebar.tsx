@@ -42,6 +42,7 @@ async function RightSidebar() {
         <h3 className="text-heading4-medium text-black dark:text-light-1 mb-2">
           Suggested Readers
         </h3>
+
         <CarouselCard>
           {userResult.users.map((user: any, index: number) => (
             <ProfileCard
