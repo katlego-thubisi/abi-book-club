@@ -18,7 +18,12 @@ function Topbar() {
   return (
     <nav className="topbar">
       <Link href="/" className="flex items-center gap-4">
-        <Image src="/assets/logo.png" alt="=logo" width={28} height={28} />
+        <Image
+          src="/assets/logo-final.png"
+          alt="=Abi logo"
+          width={48}
+          height={48}
+        />
         <p className="text-heading3-bold text-black dark:text-light-1 max-xs:hidden ">
           Abi's Book Club
         </p>

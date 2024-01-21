@@ -10,7 +10,7 @@
 
   /* Head Text */
   .head-text {
-    @apply text-heading2-bold text-light-1;
+    @apply text-heading1-bold text-light-1;
   }
 
   /* Activity */
@@ -40,7 +40,7 @@
   /* User card */
   .user-card {
     @apply flex flex-col justify-between gap-4 bg-gray-100 hover:bg-white dark:bg-dark-4 dark:hover:bg-dark-3
-    duration-150 ease-in-out max-xs:rounded-xl max-xs:bg-dark-3 max-xs:p-4 xs:flex-row xs:items-center p-2 rounded-lg;
+    duration-150 ease-in-out max-xs:rounded-xl max-xs:bg-gray-100 max-xs:dark:bg-dark-3 max-xs:p-4 xs:flex-row xs:items-center p-2 rounded-lg;
   }
 
   .user-card_avatar {
@@ -172,32 +172,56 @@
 .cl-internal-b3fm6y {
   display: none !important;
 }
-
-h1 {
+.entry-body h1 {
   font-size: xx-large;
 }
 
-h2 {
+.entry-body h2 {
   font-size: x-large;
 }
-
-h3 {
+.entry-body h3 {
   font-size: large;
 }
 
-h4 {
+.entry-body h4 {
   font-size: medium;
 }
 
-h5 {
+.entry-body h5 {
   font-size: small;
 }
-
-h6 {
+.entry-body h6 {
   font-size: x-small;
 }
 
 /* Scollbar */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+.entry-body ul {
+  list-style: inside;
+  margin-left: 1rem;
+}
+
+.entry-body ol {
+  list-style: decimal inside;
+  margin-left: 1rem;
+}
+
+.underline {
+  margin-top: -9px;
+}
+
+/* Fonts */
+
+.cursive {
+  color: #8f0000;
+  font-family: "Des Montilles", cursive;
+  font-weight: normal;
+  font-size: 35px;
+  line-height: normal;
+  letter-spacing: -2px;
+  position: relative;
+  margin-top: -14px;
 }

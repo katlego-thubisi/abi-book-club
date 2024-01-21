@@ -34,21 +34,12 @@ function LeftSidebar() {
               key={link.label}
               className={`leftsidebar_link ${isActive && "bg-red-800"}`}
             >
-              {dark ? (
-                <Image
-                  src={link.imgURL}
-                  alt={link.label}
-                  width={24}
-                  height={24}
-                />
-              ) : (
-                <Image
-                  src={link.dimgURL}
-                  alt={link.label}
-                  width={24}
-                  height={24}
-                />
-              )}
+              <Image
+                src={link.imgURL}
+                alt={link.label}
+                width={24}
+                height={24}
+              />
               <p className="text-black dark:text-light-1 max-lg:hidden">
                 {link.label}
               </p>

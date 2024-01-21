@@ -24,7 +24,19 @@ async function Page() {
 
   return (
     <section>
-      <h1 className="head-text mb-10 text-black dark:text-white">Search</h1>
+      <h1 className="head-text text-black dark:text-white leading-none mb-1">
+        Search For
+        <br />
+        Your Favorite
+      </h1>
+      <h1 className="head-text cursive">Creators</h1>
+      <img
+        src="\assets\underline.png"
+        alt="Text Underline"
+        width="150px"
+        height="10px"
+        className="underline"
+      ></img>
       {/* Search Bar*/}
 
       <div className="mt-14 flex flex-col gap-9">

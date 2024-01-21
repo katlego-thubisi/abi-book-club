@@ -21,7 +21,7 @@ const ClubCard = ({ id, name, username, imgUrl, bio, members }: Props) => {
     >
       <Link href={`/communities/${id}`}>
         <div className="flex gap-5">
-          <div className="cmgroup flex flex-col justify-center rounded-l-lg overflow-hidden relative w-14 ">
+          <div className="flex flex-col justify-center rounded-l-lg overflow-hidden relative w-14 ">
             <Image
               src={imgUrl}
               alt="community_logo"
