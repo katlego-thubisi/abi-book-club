@@ -45,14 +45,14 @@ export async function createCommunity(
     await memberRequestToCommunity(
       createdCommunity.id,
       user.id,
-      `/communities/${createdCommunity.id}`
+      `/clubs/${createdCommunity.id}`
     );
 
     // Add admin memeber to community
     await approveMemberToCommunity(
       createdCommunity.id,
       user.id,
-      `/communities/${createdCommunity.id}`
+      `/clubs/${createdCommunity.id}`
     );
 
     return createdCommunity.id;
