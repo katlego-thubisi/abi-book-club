@@ -39,7 +39,7 @@ function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
   return (
     <article className="w-40 sm:w-48">
       <div className="flex flex-wrap items-center gap-3">
-        <Link href={`/communities/${id}`} className="relative h-60 w-full ">
+        <Link href={`/clubs/${id}`} className="relative h-60 w-full ">
           <Image
             src={imgUrl}
             alt="community_logo"
@@ -50,7 +50,7 @@ function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
       </div>
 
       <div className="mt-4">
-        <Link href={`/communities/${id}`}>
+        <Link href={`/clubs/${id}`}>
           <h4 className="text-base-semibold text-light-1 h-10 overflow-hidden text-ellipsis">
             {name}
           </h4>
