@@ -43,29 +43,31 @@ async function Page() {
 
   return (
     <section>
-      <div className="flex justify-between align-middle">
-        <div className="flex-col">
-          <h1 className="head-text text-black dark:text-white leading-none">
-            Find Your Book Club
-          </h1>
-          <h1 className="head-text cursive">Community</h1>
-          <img
-            src="\assets\underline.png"
-            alt="Text Underline"
-            width="150px"
-            height="10px"
-            className="underline"
-          ></img>
-          <p className="mt-7 text-black dark:text-white">
-            Hop into a book club and access curated content by your favorite
-            creators. Heck, you could even create your own!
-          </p>
+      <Dialog>
+        <div className="flex justify-between align-middle">
+          <h1 className="head-text">Book Clubs</h1>
+          <div className="flex items-center">
+            <DialogTrigger asChild>
+              <button className="community-card_btn bg-slate-800">
+                Create
+              </button>
+            </DialogTrigger>
+          </div>
         </div>
-        <div className="flex items-center"></div>
-      </div>
-      {/* Search Bar*/}
+        {/* Search Bar*/}
 
-      {/* Dialog for community form */}
+        {/* Dialog for community form */}
+
+        <DialogContent className="content-center sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add book club</DialogTitle>
+            <DialogDescription>
+              Add your book club. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          <Community community={communityInfo} userId={userInfo.id} />
+        </DialogContent>
+      </Dialog>
 
       <div className="mt-9 flex flex-wrap gap-4">
         {activeCommunities.length === 0 ? (
@@ -81,6 +83,10 @@ async function Page() {
                 imgUrl={community.image}
                 bio={community.bio}
                 members={JSON.parse(JSON.stringify(community.members))}
+                requests={JSON.parse(JSON.stringify(community.requests))}
+                userId={user.id}
+                userBaseId={userInfo._id}
+                createdBy={community.createdBy}
               />
             ))}
           </>

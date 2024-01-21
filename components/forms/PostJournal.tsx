@@ -18,8 +18,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { JournalValidation } from "@/lib/validations/journal";
 import { createEntry } from "@/lib/actions/journal.actions";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import MyThemeContext from "@/store/ThemeContext";
 import { isBase64Image } from "@/lib/utils";
 import { useUploadThing } from "@/lib/uploadthing";
 import Representation from "../custom-ui/Representation";
@@ -93,8 +94,7 @@ function PostJournal({ user }: Props) {
                   value={blocks}
                   onEditorChange={setBlocks}
                   init={{
-                    skin: "oxide-dark",
-                    content_css: "dark",
+                    skin: "oxide",
                     height: 500,
                     images_upload_handler: async (blobInfo) => {
                       return new Promise((resolve, reject) => {

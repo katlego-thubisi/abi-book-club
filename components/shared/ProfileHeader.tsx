@@ -69,7 +69,7 @@ const ProfileHeader = ({
             />
           </div>
           <div className="flex-1">
-            <h2 className="text-left text-heading3-bold text-light-1">
+            <h2 className="text-left text-heading3-bold text-black dark:text-light-1">
               {name}
             </h2>
             <p className="text-base-medium text-gray-1">@{username}</p>
@@ -130,7 +130,11 @@ const ProfileHeader = ({
         )}
       </div>
 
-      <p className="mt-6 text-base-regular text-light-2">{bio}</p>
+      {/* TODO: Community */}
+
+      <p className="mt-6 max-w-lg text-base-regular text-black dark:text-light-2">
+        {bio}
+      </p>
 
       <div className="mt-12 h-0.5 w-full bg-dark-3" />
     </div>

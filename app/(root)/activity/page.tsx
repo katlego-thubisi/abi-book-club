@@ -19,7 +19,7 @@ async function Page() {
 
   return (
     <section>
-      <h1 className="head-text mb-10">Activity</h1>
+      <h1 className="head-text mb-10 text-black dark:text-white">Activity</h1>
 
       <section className="mt-10 flex flex-col gap-5">
         {activity.length > 0 ? (
@@ -36,14 +36,14 @@ async function Page() {
                         height={20}
                         className="rounded-full object-cover"
                       />
-                      <p className="!text-small-regular text-light-1">
-                        <span className="mr-1 text-primary-500">
+                      <p className="!text-small-regular text-black dark:text-light-1">
+                        <span className="mr-1 text-red-800">
                           {activity.author.name}
                         </span>{" "}
                         replied to your thread
                       </p>
                     </div>
-                    <p className="!text-small-regular text-light-3">
+                    <p className="!text-small-regular text:slate-600 dark:text-light-3">
                       {timeDifferenceForDate(activity.createdAt)} ago
                     </p>
                   </article>

@@ -6,6 +6,7 @@ import { timeDifferenceForDate } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import "./EntryCard.css";
 
 interface Props {
   id: string;
@@ -53,8 +54,8 @@ const EntryCard = ({
   const isLiked = likes.find((l: any) => l.user === currentUserId);
   return (
     <article
-      className={`flex w-full flex-col rounded-xl  ${
-        isComment ? "px-0 xs:px-7" : "bg-dark-2 p-7"
+      className={`flex w-full flex-col rounded-xl parent-text  ${
+        isComment ? "px-0 xs:px-7" : "bg-gray-100 dark:bg-dark-2 p-7"
       } `}
     >
       <div className="flex items-start justify-between">
@@ -73,7 +74,7 @@ const EntryCard = ({
           </div>
           <div className="flex w-full flex-col">
             <Link href={`/profile/${author.id}`} className="w-fit">
-              <h4 className="cursor-pointer text-base-semibold text-light-1">
+              <h4 className="cursor-pointer text-base-semibold text-black dark:text-light-1">
                 {author.name}
               </h4>
             </Link>
@@ -81,7 +82,7 @@ const EntryCard = ({
             <div
               className={`${
                 isComment && "mb-5"
-              } entry-body mt-2 text-small-regular text-light-2 max-w-lg text-wrap`}
+              } mt-2 text-small-regular text-black dark:text-light-2 max-w-lg text-wrap`}
             >
               <div dangerouslySetInnerHTML={{ __html: content }}></div>
             </div>

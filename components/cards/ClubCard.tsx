@@ -17,7 +17,7 @@ const ClubCard = ({ id, name, username, imgUrl, bio, members }: Props) => {
   return (
     <article
       className="group bg-transparent rounded-lg cursor-pointer 
-    transform  hover:bg-dark-4 duration-150 ease-in-out "
+    transform hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-dark-4 duration-150 ease-in-out "
     >
       <Link href={`/communities/${id}`}>
         <div className="flex gap-5">
@@ -29,8 +29,10 @@ const ClubCard = ({ id, name, username, imgUrl, bio, members }: Props) => {
               className=" object-cover -translate-x-8 group-hover:translate-x-0 duration-500 ease-in-out"
             />
           </div>
-          <div className="flex flex-col justify-center py-4 duration-500 -translate-x-8 group-hover:translate-x-0">
-            <p className="text-heading2-medium text-light-2">{name}</p>
+          <div className="flex flex-col justify-center py-4 -translate-x-8 group-hover:translate-x-0 duration-500 ease-in-out ">
+            <p className="text-heading2-medium text-black dark:text-light-2">
+              {name}
+            </p>
             <p className="text-small-regular text-light-3">
               {abbreviateMembers(members.length)} member(s)
             </p>
