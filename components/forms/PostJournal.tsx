@@ -18,8 +18,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { JournalValidation } from "@/lib/validations/journal";
 import { createEntry } from "@/lib/actions/journal.actions";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import MyThemeContext from "@/store/ThemeContext";
 import { isBase64Image } from "@/lib/utils";
 import { useUploadThing } from "@/lib/uploadthing";
 
@@ -69,7 +70,7 @@ function PostJournal({ userId }: Props) {
           name="journal"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="text-base-semibold text-light-2">
+              <FormLabel className="text-base-semibold text-black dark:text-light-2">
                 Content
               </FormLabel>
               <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
@@ -81,8 +82,7 @@ function PostJournal({ userId }: Props) {
                   value={blocks}
                   onEditorChange={setBlocks}
                   init={{
-                    skin: "oxide-dark",
-                    content_css: "dark",
+                    skin: "oxide",
                     height: 500,
                     images_upload_handler: async (blobInfo) => {
                       return new Promise((resolve, reject) => {

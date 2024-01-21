@@ -53,7 +53,9 @@ function UserCard({
         </div>
 
         <div className="flex-1 text-ellipsis">
-          <h4 className="text-base-semibold text-light-1">{name}</h4>
+          <h4 className="text-base-semibold text-black dark:text-light-1">
+            {name}
+          </h4>
           <p className="text-small-medium text-gray-1">@{username}</p>
         </div>
       </div>
