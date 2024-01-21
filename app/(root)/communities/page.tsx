@@ -45,10 +45,7 @@ async function Page() {
     <section>
       <Dialog>
         <div className="flex justify-between align-middle">
-<<<<<<< HEAD
-=======
           <h1 className="head-text">Book Clubs</h1>
->>>>>>> main
           <div className="flex items-center">
             <DialogTrigger asChild>
               <button className="community-card_btn bg-slate-800">
