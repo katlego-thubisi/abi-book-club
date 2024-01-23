@@ -112,7 +112,7 @@ const ProfileHeader = ({
             </div>
           )}
 
-          <DialogContent className="content-center sm:max-w-md lg:max-w-screen-lg overflow-y-scroll max-h-screen">
+          <DialogContent className="content-center sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Edit profile</DialogTitle>
               <DialogDescription>

@@ -13,7 +13,7 @@ function LeftSidebar() {
   const pathname = usePathname();
   const { isDarkTheme } = useContext(MyThemeContext);
   const { userId } = useAuth();
-  console.log(isDarkTheme, "isDarkTheme");
+
   return (
     <section className="no-scrollbar leftsidebar">
       <div className="flex w-full flex-1 flex-col gap-6 px-6">
