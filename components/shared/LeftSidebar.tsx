@@ -12,6 +12,7 @@ function LeftSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const { userId } = useAuth();
+<<<<<<< HEAD
   const { isDarkTheme } = useContext(MyThemeContext);
   const [dark, setdark] = useState(isDarkTheme);
 
@@ -19,6 +20,9 @@ function LeftSidebar() {
     setdark(isDarkTheme);
   }, [isDarkTheme]);
 
+=======
+  console.log(isDarkTheme, "isDarkTheme");
+>>>>>>> main
   return (
     <section className="no-scrollbar leftsidebar">
       <div className="flex w-full flex-1 flex-col gap-6 px-6">
@@ -36,11 +40,16 @@ function LeftSidebar() {
               className={`leftsidebar_link ${isActive && "bg-red-800"}`}
             >
               <Image
+<<<<<<< HEAD
                 src={dark ? link.dimgURL : link.imgURL}
+=======
+                src={isDarkTheme ? link.dimgURL : link.imgURL}
+>>>>>>> main
                 alt={link.label}
                 width={24}
                 height={24}
               />
+
               <p className="text-black dark:text-light-1 max-lg:hidden">
                 {link.label}
               </p>

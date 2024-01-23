@@ -30,10 +30,9 @@ export function MyThemeContextProvider(
       const isDarkTheme: boolean = JSON.parse(
         localStorage.getItem("isDarkTheme")!
       );
+
       isDarkTheme && document!.querySelector("body")!.classList.add("dark");
-      setIsDarkTheme(() => {
-        return isDarkTheme;
-      });
+      setIsDarkTheme(isDarkTheme);
     }
   }
 
