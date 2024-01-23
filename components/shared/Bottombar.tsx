@@ -11,11 +11,6 @@ import MyThemeContext from "@/store/ThemeContext";
 function Bottombar() {
   const pathname = usePathname();
   const { isDarkTheme } = useContext(MyThemeContext);
-  const [dark, setdark] = useState(isDarkTheme);
-
-  useEffect(() => {
-    setdark(isDarkTheme);
-  }, [isDarkTheme]);
 
   return (
     <section className="bottombar">
@@ -32,7 +27,7 @@ function Bottombar() {
               className={`bottombar_link ${isActive && "bg-red-800"}`}
             >
               <Image
-                src={dark ? link.dimgURL : link.imgURL}
+                src={isDarkTheme ? link.dimgURL : link.imgURL}
                 alt={link.label}
                 width={16}
                 height={16}

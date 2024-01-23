@@ -11,15 +11,10 @@ function Topbar() {
   const themeCtx: { isDarkMode?: boolean; toggleThemeHandler: () => void } =
     useContext(MyThemeContext);
   const { isDarkTheme } = useContext(MyThemeContext);
-  const [dark, setdark] = useState(isDarkTheme);
 
   function toggleThemeHandler(): void {
     themeCtx.toggleThemeHandler();
   }
-
-  useEffect(() => {
-    setdark(isDarkTheme);
-  }, [isDarkTheme]);
 
   return (
     <nav className="topbar">
@@ -40,7 +35,9 @@ function Topbar() {
             <SignOutButton>
               <div className="flex cursor-pointer mx-10">
                 <Image
-                  src={dark ? "/assets/logout-w.svg" : "/assets/logout.svg"}
+                  src={
+                    isDarkTheme ? "/assets/logout-w.svg" : "/assets/logout.svg"
+                  }
                   alt="logout"
                   width={24}
                   height={24}
