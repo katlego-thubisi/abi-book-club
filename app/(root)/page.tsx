@@ -1,17 +1,6 @@
 import CommunityCard from "@/components/cards/CommunityCard";
-import Community from "@/components/forms/Community";
-import {
-  Dialog,
-  DialogDescription,
-  DialogHeader,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
 import { fetchCommunities } from "@/lib/actions/community.actions";
-import { fetchUser } from "@/lib/actions/user.actions";
-import { currentUser } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
 
 async function Page() {
   // Fetch communities

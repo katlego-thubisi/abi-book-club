@@ -18,6 +18,8 @@ async function Page({ params }: { params: { id: string } }) {
 
   if (!userInfo?.onboarded) redirect("/onboarding");
 
+  const isOwner = user.id === userInfo.id;
+
   return (
     <section>
       <ProfileHeader
@@ -27,6 +29,7 @@ async function Page({ params }: { params: { id: string } }) {
         username={userInfo.username}
         imgUrl={userInfo.image}
         bio={userInfo.bio}
+        isOwner={isOwner}
       />
 
       <div className="mt-9">

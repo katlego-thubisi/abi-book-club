@@ -1,9 +1,18 @@
 .parent-text h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+.parent-text h2,
+.parent-text h3,
+.parent-text h4,
+.parent-text h5,
+.parent-text h6 {
   line-height: 34px;
-  padding-bottom: 20px;
+}
+
+.parent-text ul {
+  list-style: inside;
+  margin-left: 1rem;
+}
+
+.parent-text ol {
+  list-style: decimal inside;
+  margin-left: 1rem;
 }

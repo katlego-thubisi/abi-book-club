@@ -7,7 +7,7 @@ import {
   removeUserFromCommunity,
   updateCommunityInfo,
 } from "@/lib/actions/community.actions";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,6 +19,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import {
+  Dialog,
+  DialogDescription,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+
+import AccountProfile from "../forms/AccountProfile";
+import { useState } from "react";
 
 interface Props {
   accountId: string;
@@ -45,6 +56,8 @@ const ProfileHeader = ({
 }: Props) => {
   const pathName = usePathname();
 
+  const [open, setOpen] = useState(false);
+
   const joinCommunity = async () => {
     await memberRequestToCommunity(accountId, authUserId, pathName);
   };
@@ -56,25 +69,63 @@ const ProfileHeader = ({
   const confirmDeleteCommunity = async () => {
     await updateCommunityInfo(accountId, name, username, imgUrl, "delete");
   };
+
   return (
     <div className="flex w-full flex-col justify-start">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="relative h-20 w-20 object-cover">
-            <Image
-              src={imgUrl}
-              alt="Profile image"
-              fill
-              className="rounded-full object-cover shadow-2xl"
+        <Dialog open={open} onOpenChange={setOpen}>
+          {isOwner ? (
+            <DialogTrigger asChild>
+              <div className="flex items-center gap-3 cursor-pointer">
+                <div className="relative h-20 w-20 object-cover">
+                  <Image
+                    src={imgUrl}
+                    alt="Profile image"
+                    fill
+                    className="rounded-full object-cover shadow-2xl"
+                  />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-left text-heading3-bold text-black dark:text-light-1">
+                    {name}
+                  </h2>
+                  <p className="text-base-medium text-gray-1">@{username}</p>
+                </div>
+              </div>
+            </DialogTrigger>
+          ) : (
+            <div className="flex items-center gap-3 cursor-pointer">
+              <div className="relative h-20 w-20 object-cover">
+                <Image
+                  src={imgUrl}
+                  alt="Profile image"
+                  fill
+                  className="rounded-full object-cover shadow-2xl"
+                />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-left text-heading3-bold text-black dark:text-light-1">
+                  {name}
+                </h2>
+                <p className="text-base-medium text-gray-1">@{username}</p>
+              </div>
+            </div>
+          )}
+
+          <DialogContent className="content-center sm:max-w-md lg:max-w-screen-lg overflow-y-scroll max-h-screen">
+            <DialogHeader>
+              <DialogTitle>Edit profile</DialogTitle>
+              <DialogDescription>
+                Edit your profile. Click save when you're done.
+              </DialogDescription>
+            </DialogHeader>
+            <AccountProfile
+              user={{ id: accountId, username, name, bio, image: imgUrl }}
+              btnTitle="Save"
+              handleClose={() => setOpen(false)}
             />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-left text-heading3-bold text-black dark:text-light-1">
-              {name}
-            </h2>
-            <p className="text-base-medium text-gray-1">@{username}</p>
-          </div>
-        </div>
+          </DialogContent>
+        </Dialog>
 
         {!isOwner && !isMember && type === "Community" && (
           <div>
