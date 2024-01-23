@@ -10,7 +10,7 @@ interface Props {
 
 const LikeButton = ({ id, currentUserId }: Props) => {
   const handleLike = async () => {
-    await likeEntry(id, JSON.parse(currentUserId));
+    await likeEntry(id, JSON.parse(currentUserId), "/");
   };
   return (
     <Image

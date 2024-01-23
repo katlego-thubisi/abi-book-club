@@ -19,7 +19,7 @@ const ClubCard = ({ id, name, username, imgUrl, bio, members }: Props) => {
       className="group bg-transparent rounded-lg cursor-pointer 
     transform hover:-translate-y-1 hover:bg-gray-100 dark:hover:bg-dark-4 duration-150 ease-in-out "
     >
-      <Link href={`/communities/${id}`}>
+      <Link href={`/clubs/${id}`}>
         <div className="flex gap-5">
           <div className="flex flex-col justify-center rounded-l-lg overflow-hidden relative w-14 ">
             <Image

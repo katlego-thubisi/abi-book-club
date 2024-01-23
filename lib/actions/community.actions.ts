@@ -8,6 +8,7 @@ import User from "../models/user.model";
 
 import { connectToDB } from "../mongoose";
 import { revalidatePath } from "next/cache";
+import Like from "../models/like.model";
 
 export async function createCommunity(
   name: string,
@@ -44,14 +45,14 @@ export async function createCommunity(
     await memberRequestToCommunity(
       createdCommunity.id,
       user.id,
-      `/communities/${createdCommunity.id}`
+      `/clubs/${createdCommunity.id}`
     );
 
     // Add admin memeber to community
     await approveMemberToCommunity(
       createdCommunity.id,
       user.id,
-      `/communities/${createdCommunity.id}`
+      `/clubs/${createdCommunity.id}`
     );
 
     return createdCommunity.id;
@@ -92,10 +93,14 @@ export async function fetchCommunityPosts(id: string) {
   try {
     connectToDB();
 
-    const communityPosts = await Community.findById(id).populate({
+    const communityPosts = await Community.findOne({ id }).populate({
       path: "threads",
       model: Entry,
       populate: [
+        {
+          path: "likes", // Populate the likes field
+          model: Like,
+        },
         {
           path: "author",
           model: User,
