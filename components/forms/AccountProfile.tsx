@@ -28,16 +28,16 @@ import { updateUser } from "@/lib/actions/user.actions";
 interface Props {
   user: {
     id: string;
-    objectId: string;
     username: string;
     name: string;
     bio: string;
     image: string;
   };
   btnTitle: string;
+  handleClose?: () => void;
 }
 
-const AccountProfile = ({ user, btnTitle }: Props) => {
+const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const { startUpload } = useUploadThing("media");
@@ -75,10 +75,12 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
       image: values.profile_photo,
     });
 
-    if (pathname === "/profile/edit") {
-      router.back();
+    if (pathname.includes("profile")) {
+      router.refresh();
+      if (handleClose) handleClose();
     } else {
       router.push("/");
+      if (handleClose) handleClose();
     }
   };
 
@@ -108,7 +110,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
   return (
     <Form {...form}>
       <form
-        className="flex flex-col justify-start gap-10"
+        className="flex flex-col justify-start sm:gap-10 gap-5"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
