@@ -11,11 +11,12 @@ import MyThemeContext from "@/store/ThemeContext";
 function LeftSidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const { isDarkTheme } = useContext(MyThemeContext);
   const { userId } = useAuth();
+  const { isDarkTheme } = useContext(MyThemeContext);
   const [dark, setdark] = useState(isDarkTheme);
+
   useEffect(() => {
-    setdark(!dark);
+    setdark(isDarkTheme);
   }, [isDarkTheme]);
 
   return (
@@ -35,7 +36,7 @@ function LeftSidebar() {
               className={`leftsidebar_link ${isActive && "bg-red-800"}`}
             >
               <Image
-                src={link.imgURL}
+                src={dark ? link.dimgURL : link.imgURL}
                 alt={link.label}
                 width={24}
                 height={24}
@@ -53,7 +54,7 @@ function LeftSidebar() {
           <SignOutButton signOutCallback={() => router.push("/sign-in")}>
             <div className="flex cursor-pointer gap-4 p-4">
               <Image
-                src="/assets/logout.svg"
+                src={dark ? "/assets/logout-w.svg" : "/assets/logout.svg"}
                 alt="logout"
                 width={24}
                 height={24}
