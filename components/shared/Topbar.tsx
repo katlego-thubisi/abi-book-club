@@ -3,17 +3,23 @@ import { SignOutButton, SignedIn } from "@clerk/nextjs";
 
 import Image from "next/image";
 import Link from "next/link";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import MyThemeContext from "@/store/ThemeContext";
 import { Switch } from "@/components/ui/switch";
 
 function Topbar() {
   const themeCtx: { isDarkMode?: boolean; toggleThemeHandler: () => void } =
     useContext(MyThemeContext);
+  const { isDarkTheme } = useContext(MyThemeContext);
+  const [dark, setdark] = useState(isDarkTheme);
 
   function toggleThemeHandler(): void {
     themeCtx.toggleThemeHandler();
   }
+
+  useEffect(() => {
+    setdark(isDarkTheme);
+  }, [isDarkTheme]);
 
   return (
     <nav className="topbar">
@@ -34,7 +40,7 @@ function Topbar() {
             <SignOutButton>
               <div className="flex cursor-pointer mx-10">
                 <Image
-                  src="assets/logout.svg"
+                  src={dark ? "/assets/logout-w.svg" : "/assets/logout.svg"}
                   alt="logout"
                   width={24}
                   height={24}

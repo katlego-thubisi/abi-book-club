@@ -5,13 +5,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { sidebarLinks } from "@/constants";
+import { useContext, useEffect, useState } from "react";
+import MyThemeContext from "@/store/ThemeContext";
 
 function Bottombar() {
   const pathname = usePathname();
+  const { isDarkTheme } = useContext(MyThemeContext);
+  const [dark, setdark] = useState(isDarkTheme);
+
+  useEffect(() => {
+    setdark(isDarkTheme);
+  }, [isDarkTheme]);
 
   return (
-    <section className='bottombar'>
-      <div className='bottombar_container'>
+    <section className="bottombar">
+      <div className="bottombar_container">
         {sidebarLinks.map((link) => {
           const isActive =
             (pathname.includes(link.route) && link.route.length > 1) ||
@@ -24,14 +32,14 @@ function Bottombar() {
               className={`bottombar_link ${isActive && "bg-red-800"}`}
             >
               <Image
-                src={link.imgURL}
+                src={dark ? link.dimgURL : link.imgURL}
                 alt={link.label}
                 width={16}
                 height={16}
-                className='object-contain'
+                className="object-contain"
               />
 
-              <p className='text-subtle-medium text-light-1 max-sm:hidden'>
+              <p className="text-subtle-medium text-light-1 max-sm:hidden">
                 {link.label.split(/\s+/)[0]}
               </p>
             </Link>
