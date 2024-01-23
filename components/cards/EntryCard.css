@@ -5,5 +5,14 @@
 .parent-text h5,
 .parent-text h6 {
   line-height: 34px;
-  padding-bottom: 20px;
+}
+
+.parent-text ul {
+  list-style: inside;
+  margin-left: 1rem;
+}
+
+.parent-text ol {
+  list-style: decimal inside;
+  margin-left: 1rem;
 }
