@@ -3,26 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Button } from "../ui/button";
-import { usePathname } from "next/navigation";
-import {
-  memberRequestToCommunity,
-  removeUserFromCommunity,
-  updateCommunityInfo,
-} from "@/lib/actions/community.actions";
-import { Dialog, DialogTrigger } from "../ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
-
 interface Props {
   id: string;
   name: string;
@@ -60,7 +40,7 @@ function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
         </p>
       </div>
 
-      <p className="mt-4 text-subtle-medium text-gray-1 h-16 overflow-hidden text-ellipsis">
+      <p className="mt-2 text-subtle-medium text-gray-1 h-16 overflow-hidden text-ellipsis">
         {bio}
       </p>
 

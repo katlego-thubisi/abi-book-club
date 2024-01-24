@@ -52,6 +52,7 @@ const EntryCard = ({
   };
 
   const isLiked = likes.find((l: any) => l.user === currentUserId);
+
   return (
     <article
       className={`flex w-full flex-col rounded-xl parent-text  ${
