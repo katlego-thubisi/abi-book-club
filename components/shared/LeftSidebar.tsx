@@ -13,11 +13,6 @@ function LeftSidebar() {
   const pathname = usePathname();
   const { userId } = useAuth();
   const { isDarkTheme } = useContext(MyThemeContext);
-  const [dark, setdark] = useState(isDarkTheme);
-
-  useEffect(() => {
-    setdark(isDarkTheme);
-  }, [isDarkTheme]);
 
   return (
     <section className="no-scrollbar leftsidebar">
@@ -36,7 +31,7 @@ function LeftSidebar() {
               className={`leftsidebar_link ${isActive && "bg-red-800"}`}
             >
               <Image
-                src={dark ? link.dimgURL : link.imgURL}
+                src={isDarkTheme ? link.dimgURL : link.imgURL}
                 alt={link.label}
                 width={24}
                 height={24}
@@ -55,7 +50,9 @@ function LeftSidebar() {
           <SignOutButton signOutCallback={() => router.push("/sign-in")}>
             <div className="flex cursor-pointer gap-4 p-4">
               <Image
-                src={dark ? "/assets/logout-w.svg" : "/assets/logout.svg"}
+                src={
+                  isDarkTheme ? "/assets/logout-w.svg" : "/assets/logout.svg"
+                }
                 alt="logout"
                 width={24}
                 height={24}
