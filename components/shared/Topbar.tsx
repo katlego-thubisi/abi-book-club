@@ -20,7 +20,7 @@ function Topbar() {
     <nav className="topbar">
       <Link href="/" className="flex items-center gap-4">
         <Image
-          src="/assets/logo-final.png"
+          src={isDarkTheme ? "/assets/logo-white.png" : "/assets/logo.png"}
           alt="=Abi logo"
           width={48}
           height={48}
