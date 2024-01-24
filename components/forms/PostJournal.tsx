@@ -129,7 +129,7 @@ function PostJournal({ user }: Props) {
                   // {...field}
                 />
               </FormControl>
-              {/* <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1"></FormControl> */}
+
               <FormMessage />
             </FormItem>
           )}

@@ -8,7 +8,6 @@ import RightSidebar from "@/components/shared/RightSidebar";
 import Bottombar from "@/components/shared/Bottombar";
 import { dark } from "@clerk/themes";
 import { MyThemeContextProvider } from "@/store/ThemeContext";
-import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,11 +33,11 @@ export default function RootLayout({
             <Topbar />
             <main className="flex flex-row">
               <LeftSidebar />
-              <Suspense fallback={<div>Loading...</div>}>
-                <section className="main-container">
-                  <div className="w-full max-w-4xl">{children}</div>
-                </section>
-              </Suspense>
+
+              <section className="main-container">
+                <div className="w-full max-w-4xl">{children}</div>
+              </section>
+
               <RightSidebar />
             </main>
             <Bottombar />
