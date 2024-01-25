@@ -145,7 +145,7 @@ const ProfileHeader = ({
                 <Button
                   // onClick={() => leaveCommunity()}
                   size="sm"
-                  className="community-card_btn bg-red-800"
+                  className="community-card_btn bg-red-800 dark:bg-red-800"
                 >
                   Delete
                 </Button>
