@@ -14,7 +14,7 @@ interface ThemePropsInterface {
 export function MyThemeContextProvider(
   props: ThemePropsInterface
 ): ReactElement {
-  const [isDarkTheme, setIsDarkTheme] = useState(true);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
   useEffect(() => initialThemeHandler());
 
   function isLocalStorageEmpty(): boolean {
@@ -23,9 +23,9 @@ export function MyThemeContextProvider(
 
   function initialThemeHandler(): void {
     if (isLocalStorageEmpty()) {
-      localStorage.setItem("isDarkTheme", `true`);
-      document!.querySelector("body")!.classList.add("dark");
-      setIsDarkTheme(true);
+      localStorage.setItem("isDarkTheme", `false`);
+      // document!.querySelector("body")!.classList.add("dark");
+      setIsDarkTheme(false);
     } else {
       const isDarkTheme: boolean = JSON.parse(
         localStorage.getItem("isDarkTheme")!
