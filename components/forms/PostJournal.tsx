@@ -131,7 +131,10 @@ function PostJournal({ user }: Props) {
             </FormItem>
           )}
         />
-        <Button type="submit" className="bg-red-800">
+        <Button
+          type="submit"
+          className="bg-red-800 dark:bg-red-800 dark:text-white"
+        >
           Post Entry
         </Button>
       </form>

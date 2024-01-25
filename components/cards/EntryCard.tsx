@@ -55,7 +55,7 @@ const EntryCard = ({
   return (
     <article
       className={`flex w-full flex-col rounded-xl parent-text  ${
-        isComment ? "px-0 xs:px-7" : "bg-gray-100 dark:bg-dark-2 p-7"
+        isComment ? "px-0 xs:px-7" : "bg-gray-100 dark:bg-dark-3 p-7"
       } `}
     >
       <div className="flex items-start justify-between">

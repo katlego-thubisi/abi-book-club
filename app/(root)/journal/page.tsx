@@ -18,7 +18,7 @@ export default async function Home() {
       <div className="flex justify-end align-middle">
         <div className="flex items-center">
           <Link href={`/journal/create`}>
-            <button className="community-card_btn bg-slate-800">Create</button>
+            <button className="community-card_btn bg-red-800">Create</button>
           </Link>
         </div>
       </div>
