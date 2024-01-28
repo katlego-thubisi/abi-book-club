@@ -36,11 +36,17 @@ const EntriesTab = async ({ currentUserId, accountId, accountType }: Props) => {
             content={entry.text}
             author={
               accountType === "User"
-                ? { name: result.name, image: result.image, id: result.id }
+                ? {
+                    name: result.name,
+                    image: result.image,
+                    id: result.id,
+                    _id: result._id,
+                  }
                 : {
                     name: entry.name,
                     image: entry.author.image,
                     id: entry.author.id,
+                    _id: entry.author._id,
                   }
             }
             community={

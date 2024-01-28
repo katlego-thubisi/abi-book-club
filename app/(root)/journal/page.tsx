@@ -41,6 +41,7 @@ export default async function Home() {
                     name: post.author.name,
                     image: post.author.image,
                     id: post.author.id,
+                    _id: post.author._id,
                   }}
                   community={
                     post.community

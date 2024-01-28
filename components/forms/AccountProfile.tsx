@@ -91,7 +91,7 @@ const AccountProfile = ({ user, btnTitle, handleClose, type }: Props) => {
       });
     }
 
-    if (pathname.includes("profile")) {
+    if (pathname.includes("profile") || pathname.includes("clubs")) {
       router.refresh();
       if (handleClose) handleClose();
     } else {

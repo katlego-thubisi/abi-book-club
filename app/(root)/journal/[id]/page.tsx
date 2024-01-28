@@ -31,6 +31,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
             name: entry.author.name,
             image: entry.author.image,
             id: entry.author.id,
+            _id: entry.author._id,
           }}
           community={
             entry.community
@@ -67,6 +68,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
               name: comment.author.name,
               image: comment.author.image,
               id: comment.author.id,
+              _id: comment.author._id,
             }}
             community={
               comment.community

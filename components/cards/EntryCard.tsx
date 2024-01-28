@@ -7,6 +7,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import "./EntryCard.css";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface Props {
   id: string;
@@ -17,6 +28,7 @@ interface Props {
     name: string;
     image: string;
     id: string;
+    _id: string;
   };
   community: {
     _id: string;
@@ -51,11 +63,15 @@ const EntryCard = ({
     await likeEntry(id, currentUserId, pathname);
   };
 
+  const isOwner = author._id === currentUserId;
+
   const isLiked = likes.find((l: any) => l.user === currentUserId);
+
+  const handleDelete = () => {};
 
   return (
     <article
-      className={`flex w-full flex-col rounded-xl parent-text  ${
+      className={`group relative overflow-hidden flex w-full flex-col rounded-xl parent-text  ${
         isComment ? "px-0 xs:px-7" : "bg-gray-100 dark:bg-dark-2 p-7"
       } `}
     >
@@ -174,6 +190,35 @@ const EntryCard = ({
           </div>
         </Link>
       )}
+
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <div
+            className={`cursor-pointer translate-x-20 ${
+              isOwner && "group-hover:translate-x-0"
+            } duration-500 ease-in-out absolute right-0 bottom-0 h-10 bg-red-600`}
+          >
+            <p className="text-white text-base-semibold text-center p-2">
+              {isOwner && "Delete"}
+            </p>
+          </div>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              entry, all related comments and likes.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => handleDelete()}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </article>
   );
 };
