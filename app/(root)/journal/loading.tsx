@@ -14,13 +14,46 @@ const Loading = () => {
             <div className="flex w-full flex-1 flex-row gap-4">
               <div className="flex flex-col items-center">
                 <Skeleton className="relative h-11 w-11 rounded-full" />
-
-                <div className="thread-card_bar" />
               </div>
               <div className="flex w-full flex-col gap-2">
                 <Skeleton className="h-2 w-10" />
-                <div className="relative flex gap-3 justify-start w-full">
-                  <Skeleton className="h-10 w-full" />
+                <div className="relative flex flex-wrap gap-2  justify-start w-full">
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
+                  <Skeleton className="h-2 w-16" />
                 </div>
               </div>
             </div>
