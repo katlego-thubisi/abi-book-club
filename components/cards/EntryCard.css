@@ -1,9 +1,25 @@
-.parent-text h1,
-.parent-text h2,
-.parent-text h3,
-.parent-text h4,
-.parent-text h5,
+.parent-text h1 {
+  font-size: xx-large;
+  line-height: 34px;
+}
+.parent-text h2 {
+  font-size: x-large;
+  line-height: 34px;
+}
+.parent-text h3 {
+  font-size: larger;
+  line-height: 34px;
+}
+.parent-text h4 {
+  font-size: large;
+  line-height: 34px;
+}
+.parent-text h5 {
+  font-size: medium;
+  line-height: 34px;
+}
 .parent-text h6 {
+  font-size: small;
   line-height: 34px;
 }
 

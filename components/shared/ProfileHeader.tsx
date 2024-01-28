@@ -67,7 +67,7 @@ const ProfileHeader = ({
   };
 
   const confirmDeleteCommunity = async () => {
-    await updateCommunityInfo(accountId, name, username, imgUrl, "delete");
+    await updateCommunityInfo(accountId, name, username, imgUrl, "delete", bio);
   };
 
   return (
@@ -123,6 +123,7 @@ const ProfileHeader = ({
               user={{ id: accountId, username, name, bio, image: imgUrl }}
               btnTitle="Save"
               handleClose={() => setOpen(false)}
+              type={type}
             />
           </DialogContent>
         </Dialog>

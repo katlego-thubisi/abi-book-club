@@ -44,6 +44,7 @@ const Representation = ({ selectedOption, options, onChange }: Props) => {
         <div className="absolute mt-0 w-full z-10">
           {options.map((item: any) => (
             <article
+              key={item._id}
               onClick={(e: any) => {
                 handleChange(e, item);
               }}

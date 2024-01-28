@@ -24,6 +24,7 @@ import { isBase64Image } from "@/lib/utils";
 
 import { UserValidation } from "@/lib/validations/user";
 import { updateUser } from "@/lib/actions/user.actions";
+import { updateCommunityInfo } from "@/lib/actions/community.actions";
 
 interface Props {
   user: {
@@ -35,9 +36,10 @@ interface Props {
   };
   btnTitle: string;
   handleClose?: () => void;
+  type?: string;
 }
 
-const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
+const AccountProfile = ({ user, btnTitle, handleClose, type }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const { startUpload } = useUploadThing("media");
@@ -69,16 +71,27 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
       }
     }
 
-    await updateUser({
-      name: values.name,
-      path: pathname,
-      username: values.username,
-      userId: user.id,
-      bio: values.bio,
-      image: values.profile_photo,
-    });
+    if (type === "Community") {
+      await updateCommunityInfo(
+        user.id,
+        values.name,
+        values.username,
+        values.profile_photo,
+        "active",
+        values.bio
+      );
+    } else {
+      await updateUser({
+        name: values.name,
+        path: pathname,
+        username: values.username,
+        userId: user.id,
+        bio: values.bio,
+        image: values.profile_photo,
+      });
+    }
 
-    if (pathname.includes("profile")) {
+    if (pathname.includes("profile") || pathname.includes("clubs")) {
       router.refresh();
       if (handleClose) handleClose();
     } else {
@@ -113,7 +126,7 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
   return (
     <Form {...form}>
       <form
-        className="flex flex-col justify-start sm:gap-10 gap-5"
+        className="flex flex-col justify-start sm:gap-10 gap-5 max-h-96  sm:max-h-none overflow-y-auto"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
