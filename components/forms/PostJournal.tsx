@@ -93,7 +93,7 @@ function PostJournal({ user }: Props) {
                 <Editor
                   apiKey="jphw8hgdudfs4n8s3cotbcefnk7tfh72320ilo66hu7px7j3"
                   plugins={["link", "image", "code", "lists"]}
-                  toolbar="undo redo | styleselect  | bold italic underline | numlist | bullist"
+                  toolbar="undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat"
                   value={blocks}
                   onEditorChange={setBlocks}
                   init={{
