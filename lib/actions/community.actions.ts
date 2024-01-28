@@ -362,7 +362,8 @@ export async function updateCommunityInfo(
   name: string,
   username: string,
   image: string,
-  status: string
+  status: string,
+  bio: string
 ) {
   try {
     connectToDB();
@@ -370,7 +371,7 @@ export async function updateCommunityInfo(
     // Find the community by its _id and update the information
     const updatedCommunity = await Community.findOneAndUpdate(
       { id: communityId },
-      { name, username, image }
+      { name, username, image, status, bio }
     );
 
     if (!updatedCommunity) {
