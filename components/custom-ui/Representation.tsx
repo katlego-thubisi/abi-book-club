@@ -22,7 +22,7 @@ const Representation = ({ selectedOption, options, onChange }: Props) => {
     <div className="relative w-full">
       <article
         onClick={() => setOpen(!open)}
-        className="h-10 px-4 flex flex-row items-center gap-2 rounded-lg bg-slate-500"
+        className="h-10 px-4 flex flex-row items-center gap-2 rounded-lg bg-gray-100"
       >
         <div>
           <Image
@@ -35,7 +35,7 @@ const Representation = ({ selectedOption, options, onChange }: Props) => {
         </div>
 
         <div>
-          <p className="!text-small-regular text-light-1">
+          <p className="!text-small-regular text-black">
             {selectedOption?.name}
           </p>
         </div>
@@ -47,7 +47,7 @@ const Representation = ({ selectedOption, options, onChange }: Props) => {
               onClick={(e: any) => {
                 handleChange(e, item);
               }}
-              className="h-10 px-4 cursor-pointer flex flex-row items-center gap-2 rounded-lg bg-slate-800 hover:bg-slate-600"
+              className="h-10 px-4 cursor-pointer flex flex-row items-center gap-2 rounded-lg bg-gray-100 hover:bg-red-800"
             >
               <div>
                 <Image
@@ -60,7 +60,9 @@ const Representation = ({ selectedOption, options, onChange }: Props) => {
               </div>
 
               <div>
-                <p className="!text-small-regular text-light-1">{item.name}</p>
+                <p className="!text-small-regular text-black hover:text-white">
+                  {item.name}
+                </p>
               </div>
             </article>
           ))}
