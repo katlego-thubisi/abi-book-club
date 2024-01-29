@@ -154,7 +154,7 @@ const AccountProfile = ({ user, btnTitle, handleClose, type }: Props) => {
                   />
                 )}
               </FormLabel>
-              <FormControl className="flex-1 text-base-semibold text-gray-200">
+              <FormControl className="flex-1 text-base-semibold dark:text-gray-200">
                 <Input
                   type="file"
                   accept="image/*"

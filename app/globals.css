@@ -34,7 +34,7 @@
 
   /* thread card  */
   .thread-card_bar {
-    @apply relative mt-2 w-0.5 grow rounded-full bg-neutral-800;
+    @apply relative mt-2 w-0.5 grow rounded-full bg-neutral-200 dark:bg-neutral-800;
   }
 
   /* User card */
@@ -145,7 +145,7 @@
 }
 
 .account-form_image-input {
-  @apply cursor-pointer border-none bg-transparent outline-none file:text-blue text-white !important;
+  @apply cursor-pointer border-none bg-transparent outline-none file:text-blue text-black dark:text-white !important;
 }
 
 .accountg-form_input {
