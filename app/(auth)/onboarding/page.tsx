@@ -19,7 +19,7 @@ async function Page() {
     image: userInfo ? userInfo?.image : user?.imageUrl,
   };
   return (
-    <main className="w-full bg-white">
+    <main className="w-full bg-white dark:bg-dark-2">
       <div className="mx-auto flex max-w-3xl flex-col justify-start px-10 py-20 ">
         <h1 className="head-text text-black dark:text-light-2">Onboarding</h1>
         <p className="mt-3 text-base-regular text-black dark:text-light-2 ">

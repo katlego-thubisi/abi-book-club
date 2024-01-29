@@ -42,7 +42,7 @@ async function Page() {
 
       <div className="mt-9 flex flex-wrap gap-4">
         {activeCommunities.length === 0 ? (
-          <p className="no-result">No Communities</p>
+          <p className="no-result">No Clubs</p>
         ) : (
           <>
             {activeCommunities.map((community) => (
