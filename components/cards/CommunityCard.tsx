@@ -31,7 +31,7 @@ function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
 
       <div className="mt-4">
         <Link href={`/clubs/${id}`}>
-          <h4 className="text-base-semibold text-light-1 h-10 overflow-hidden text-ellipsis">
+          <h4 className="text-base-semibold text-black dark:text-light-1 h-10 overflow-hidden text-ellipsis">
             {name}
           </h4>
         </Link>
