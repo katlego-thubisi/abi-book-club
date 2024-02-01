@@ -20,7 +20,11 @@ async function Page({ params }: { params: { id: string } }) {
     (m: any) => m.id === user.id
   );
 
+  const requestCheck = communityDetails?.requests?.some((m: any) => m.id === user.id)
+
   const isMember = memberCheck ? true : false;
+
+  const isRequester = requestCheck ? true : false;
 
   const isOwner = user.id === communityDetails.createdBy.id;
 
@@ -33,6 +37,7 @@ async function Page({ params }: { params: { id: string } }) {
         username={communityDetails.username}
         imgUrl={communityDetails.image}
         bio={communityDetails.bio}
+        isRequester={isRequester}
         isMember={isMember}
         isOwner={isOwner ? true : false}
         type="Community"
