@@ -133,7 +133,7 @@ const ProfileHeader = ({
             <Button
               onClick={() => joinCommunity()}
               size="sm"
-              className="community-card_btn bg-slate-800"
+              className="community-card_btn dark:bg-slate-800"
             >
               Join
             </Button>
