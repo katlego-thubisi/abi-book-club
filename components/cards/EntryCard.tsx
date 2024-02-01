@@ -163,31 +163,28 @@ const EntryCard = ({
               </div>
             )}
           </div>
+          {!isComment && community && (
+            <Link
+              href={`/clubs/${community.id}`}
+              className="mt-5 flex items-center"
+            >
+              <p className="text-subtle-medium text-gray-1">
+                {formatDateString(createdAt)} - {community.name} Club
+              </p>
+              <div className="relative h-4 w-4">
+                <Image
+                  src={community.image}
+                  alt={community.name}
+                  fill
+                  className="ml-2 rounded-full"
+                />
+              </div>
+            </Link>
+          )}
         </div>
       </div>
 
       {/* TODO: Delete thread */}
-
-      {}
-
-      {!isComment && community && (
-        <Link
-          href={`/clubs/${community.id}`}
-          className="mt-5 flex items-center"
-        >
-          <p className="text-subtle-medium text-gray-1">
-            {formatDateString(createdAt)} - {community.name} Club
-          </p>
-          <div className="relative h-4 w-4">
-            <Image
-              src={community.image}
-              alt={community.name}
-              fill
-              className="ml-2 rounded-full"
-            />
-          </div>
-        </Link>
-      )}
 
       <AlertDialog>
         <AlertDialogTrigger asChild>
