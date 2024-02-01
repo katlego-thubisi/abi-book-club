@@ -1,6 +1,6 @@
 "use client";
 
-import { likeEntry } from "@/lib/actions/journal.actions";
+import { deleteEntry, likeEntry } from "@/lib/actions/journal.actions";
 import { formatDateString } from "@/lib/utils";
 import { timeDifferenceForDate } from "@/lib/utils";
 import Image from "next/image";
@@ -67,7 +67,9 @@ const EntryCard = ({
 
   const isLiked = likes.find((l: any) => l.user === currentUserId);
 
-  const handleDelete = () => {};
+  const handleDelete = async () => {
+    await deleteEntry(id, pathname);
+  };
 
   return (
     <article

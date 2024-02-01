@@ -39,6 +39,7 @@ interface Props {
   imgUrl: string;
   bio: string;
   isMember?: boolean;
+  isRequester?: boolean;
   isOwner?: boolean;
   type?: "User" | "Community";
 }
@@ -51,6 +52,7 @@ const ProfileHeader = ({
   imgUrl,
   bio,
   isMember,
+  isRequester,
   isOwner,
   type,
 }: Props) => {
@@ -133,9 +135,10 @@ const ProfileHeader = ({
             <Button
               onClick={() => joinCommunity()}
               size="sm"
-              className="community-card_btn dark:bg-slate-800"
+              className="community-card_btn"
+              disabled={isRequester}
             >
-              Join
+              {isRequester ? "Pending" : "Join"}
             </Button>
           </div>
         )}
@@ -144,7 +147,6 @@ const ProfileHeader = ({
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
-                  // onClick={() => leaveCommunity()}
                   size="sm"
                   className="community-card_btn bg-red-800 dark:bg-red-800"
                 >
@@ -184,7 +186,7 @@ const ProfileHeader = ({
 
       {/* TODO: Community */}
 
-      <p className="mt-6 max-w-lg text-base-regular text-black dark:text-light-2">
+      <p className="mt-6 text-base-regular text-black dark:text-light-2">
         {bio}
       </p>
 
@@ -194,3 +196,6 @@ const ProfileHeader = ({
 };
 
 export default ProfileHeader;
+function ref(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}
