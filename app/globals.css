@@ -23,18 +23,23 @@
     @apply text-center !text-base-regular text-gray-400;
   }
 
+  /* Meta info */
+  .meta-info {
+    @apply text-gray-400;
+  }
+
   /* Community Card */
   .community-card {
     @apply w-full rounded-lg bg-dark-3 px-4 py-5 sm:w-96;
   }
 
   .community-card_btn {
-    @apply rounded-lg  px-5 py-1.5 text-small-regular !text-light-1 !important;
+    @apply rounded-lg  px-5 py-1.5 text-small-regular !text-light-1 bg-red-800 !important;
   }
 
   /* thread card  */
   .thread-card_bar {
-    @apply relative mt-2 w-0.5 grow rounded-full bg-neutral-200 dark:bg-neutral-800;
+    @apply relative mt-2 w-0.5 grow rounded-full bg-white dark:bg-dark-2;
   }
 
   /* User card */

@@ -59,7 +59,7 @@ const ProfileHeader = ({
   const pathName = usePathname();
 
   const [open, setOpen] = useState(false);
-  
+
   const joinCommunity = async () => {
     await memberRequestToCommunity(accountId, authUserId, pathName);
   };
@@ -135,10 +135,10 @@ const ProfileHeader = ({
             <Button
               onClick={() => joinCommunity()}
               size="sm"
-              className="community-card_btn bg-slate-800"
+              className="community-card_btn"
               disabled={isRequester}
             >
-              {isRequester ? 'Pending' : 'Join'}
+              {isRequester ? "Pending" : "Join"}
             </Button>
           </div>
         )}
@@ -199,4 +199,3 @@ export default ProfileHeader;
 function ref(arg0: boolean) {
   throw new Error("Function not implemented.");
 }
-
