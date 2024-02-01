@@ -147,7 +147,6 @@ const ProfileHeader = ({
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
-                  // onClick={() => leaveCommunity()}
                   size="sm"
                   className="community-card_btn bg-red-800 dark:bg-red-800"
                 >

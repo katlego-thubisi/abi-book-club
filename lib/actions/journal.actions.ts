@@ -247,7 +247,7 @@ export async function addCommentToEntry(
 
 export async function likeEntry(
   threadId: string,
-  userId: string,
+  userId: any,
   path: string
 ) {
   connectToDB();
@@ -256,16 +256,24 @@ export async function likeEntry(
     //Create like entry
 
     // Find the thread by its ID
-    const thread = await Entry.findById(threadId);
+    const thread = await Entry.findById(threadId).populate({
+      path: "likes", // Populate the likes field
+      model: Like,
+    })
 
     if (!thread) {
       throw new Error("Thread not found");
     }
 
+    const likeCheck = thread.likes.find((l: any) => l.user == userId);
+
     // Check if the user has already liked the thread
-    if (thread.likes.includes((l: any) => l.user === userId)) {
+    if (likeCheck) {
       // Remove the user's ID from the thread's likes array
-      thread.likes.pull((l: any) => l.user === userId);
+      thread.likes.pull(likeCheck);
+      // Delete the like record from the database
+      await Like.findByIdAndDelete(likeCheck._id);
+
     } else {
       // Create like record
 
