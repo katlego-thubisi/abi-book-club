@@ -21,7 +21,7 @@ const ProfileCard = ({
   return (
     <div
       id={`slide-${id}`}
-      className="flex flex-col gap-1 px-5 py-2 bg-zinc-300 dark:bg-zinc-900"
+      className="flex flex-col gap-1 px-5 py-2 bg-zinc-100 dark:bg-zinc-900"
     >
       <div className="flex gap-2">
         <div className="flex flex-col justify-center">

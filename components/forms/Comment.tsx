@@ -66,11 +66,11 @@ const Comment = ({ entryId, currentUserImg, currentUserId }: Props) => {
                   className="rounded-full object-cover"
                 />
               </FormLabel>
-              <FormControl className="border-none bg-transparent">
+              <FormControl className="border-none bg-gray-100">
                 <Input
                   type="text"
                   placeholder="Comment..."
-                  className="no-focus text-light-1 outline-none"
+                  className="no-focus text-black dark:text-light-1 outline-none"
                   {...field}
                 />
               </FormControl>

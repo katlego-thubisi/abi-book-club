@@ -78,37 +78,36 @@ const EntryCard = ({
 
   return (
     <article
-      className={`group relative overflow-hidden flex w-full flex-col rounded-xl parent-text  ${
-        isComment ? "px-0 xs:px-7" : "bg-white dark:bg-dark-2 p-2"
+      className={`group relative overflow-hidden flex w-full flex-col rounded-xl parent-text border-t border-b border-gray-300 dark:border-gray-800 p-1 hover:bg-gray-100 dark:hover:bg-dark-4  ${
+        isComment ? "px-0 xs:px-7" : " bg-white dark:bg-dark-2 p-2"
       } `}
     >
       <div className="flex w-full flex-1 flex-row gap-4">
         <p className=" meta-info !text-small-regular absolute right-0">
           {timeDifferenceForDate(new Date(createdAt))} ago
         </p>
-        <div className="flex flex-col items-center">
-          <Link href={`/profile/${author.id}`} className="relative h-11 w-11">
-            <Image
-              src={author.image}
-              alt="Profile image"
-              fill
-              className="cursor-pointer rounded-full"
-            />
-          </Link>
-
-          <div className="thread-card_bar" />
-        </div>
+        <div className="thread-card_bar" />
         <div className="flex w-full flex-col">
-          <Link href={`/profile/${author.id}`} className="w-fit">
-            <h4 className="cursor-pointer text-base-semibold text-black dark:text-light-1">
-              {author.name}
-            </h4>
-          </Link>
+          <div className="flex flex-row gap-3 mb-3">
+            <Link href={`/profile/${author.id}`} className="relative h-11 w-11">
+              <Image
+                src={author.image}
+                alt="Profile image"
+                fill
+                className="cursor-pointer rounded-full"
+              />
+            </Link>
+            <Link href={`/profile/${author.id}`} className="w-fit">
+              <h4 className="cursor-pointer text-base-semibold text-black dark:text-light-1">
+                {author.name}
+              </h4>
+            </Link>
+          </div>
 
           <div
             className={`${
               isComment && "mb-5"
-            } mt-2 text-small-regular text-black dark:text-light-2 w-full text-justify text-wrap`}
+            } mt-2 text-small-regular text-black dark:text-light-2 w-full text-wrap`}
           >
             <div
               dangerouslySetInnerHTML={{
