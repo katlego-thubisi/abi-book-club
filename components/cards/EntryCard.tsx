@@ -18,6 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { useState } from "react";
 
 interface Props {
   id: string;
@@ -63,6 +64,10 @@ const EntryCard = ({
     await likeEntry(id, currentUserId, pathname);
   };
 
+  const path = usePathname();
+
+  const isEntryPage = path.includes("/journal/");
+
   const isOwner = author._id === currentUserId;
 
   const isLiked = likes.find((l: any) => l.user === currentUserId);
@@ -104,7 +109,21 @@ const EntryCard = ({
               isComment && "mb-5"
             } mt-2 text-small-regular text-black dark:text-light-2 w-full text-wrap`}
           >
-            <div dangerouslySetInnerHTML={{ __html: content }}></div>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: isEntryPage
+                  ? content
+                  : content.slice(0, 400) +
+                    `${content.length > 400 ? "..." : ""}`,
+              }}
+            ></div>
+            {content.length > 400 && !isEntryPage && (
+              <Link href={`/journal/${id}`}>
+                <p className="mt-1 cursor-pointer text-blue hover:underline">
+                  Read More
+                </p>
+              </Link>
+            )}
           </div>
 
           <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>

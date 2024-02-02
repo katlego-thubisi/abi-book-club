@@ -8,10 +8,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fetchCommunityDetails } from "@/lib/actions/community.actions";
 import UserCard from "@/components/cards/UserCard";
 import { fetchUser } from "@/lib/actions/user.actions";
+import { redirect } from "next/navigation";
 
 async function Page({ params }: { params: { id: string } }) {
   const user = await currentUser();
   if (!user) return null;
+
+  const userInfo = await fetchUser(user.id);
+
+  if (!userInfo?.onboarded) redirect("/onboarding");
 
   const communityDetails = await fetchCommunityDetails(params.id);
   // check if current user is already a member of the community
@@ -20,7 +25,9 @@ async function Page({ params }: { params: { id: string } }) {
     (m: any) => m.id === user.id
   );
 
-  const requestCheck = communityDetails?.requests?.some((m: any) => m.id === user.id)
+  const requestCheck = communityDetails?.requests?.some(
+    (m: any) => m.id === user.id
+  );
 
   const isMember = memberCheck ? true : false;
 
@@ -82,7 +89,7 @@ async function Page({ params }: { params: { id: string } }) {
 
             <TabsContent value="entries" className="w-full text-light-1">
               <EntriesTab
-                currentUserId={user.id}
+                currentUserId={userInfo._id}
                 accountId={communityDetails._id}
                 accountType="Community"
               />
@@ -128,7 +135,7 @@ async function Page({ params }: { params: { id: string } }) {
           </Tabs>
         ) : (
           <EntriesTab
-            currentUserId={user.id}
+            currentUserId={userInfo._id}
             accountId={communityDetails._id}
             accountType="Community"
           />
