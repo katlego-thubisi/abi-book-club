@@ -28,6 +28,15 @@
     @apply text-gray-400;
   }
 
+  /* Forms */
+  .form-label {
+    @apply text-base-semibold  text-slate-700 dark:text-gray-300;
+  }
+
+  .form-input {
+    @apply no-focus text-slate-700 dark:text-gray-300;
+  }
+
   /* Community Card */
   .community-card {
     @apply w-full rounded-lg bg-dark-3 px-4 py-5 sm:w-96;
