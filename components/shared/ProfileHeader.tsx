@@ -116,8 +116,10 @@ const ProfileHeader = ({
 
           <DialogContent className="content-center sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-base-semibold  text-slate-700 dark:text-gray-300">
+                Edit profile
+              </DialogTitle>
+              <DialogDescription className="text-base-semibold  text-slate-600 dark:text-gray-400">
                 Edit your profile. Click save when you're done.
               </DialogDescription>
             </DialogHeader>

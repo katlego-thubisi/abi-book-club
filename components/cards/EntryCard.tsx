@@ -78,15 +78,14 @@ const EntryCard = ({
 
   return (
     <article
-      className={`group relative overflow-hidden flex w-full flex-col rounded-xl parent-text border-t border-b border-gray-300 dark:border-gray-800 p-1 hover:bg-gray-100 dark:hover:bg-dark-4  ${
+      className={`group relative overflow-hidden flex w-full flex-col rounded-xl parent-text p-1 hover:bg-gray-100 dark:hover:bg-dark-4  ${
         isComment ? "px-0 xs:px-7" : " bg-white dark:bg-dark-2 p-2"
       } `}
     >
-      <div className="flex w-full flex-1 flex-row gap-4">
-        <p className=" meta-info !text-small-regular absolute right-0">
+      <div className="flex w-full flex-1 flex-row gap-4 p-4">
+        <p className=" meta-info !text-small-regular absolute right-4">
           {timeDifferenceForDate(new Date(createdAt))} ago
         </p>
-        <div className="thread-card_bar" />
         <div className="flex w-full flex-col">
           <div className="flex flex-row gap-3 mb-3">
             <Link href={`/profile/${author.id}`} className="relative h-11 w-11">
@@ -234,6 +233,7 @@ const EntryCard = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <hr className="bg-gray-100 dark:bg-dark-4" />
     </article>
   );
 };

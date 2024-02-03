@@ -24,7 +24,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <section className="mt-9 flex flex-col gap-10">
+      <section className="mt-9 flex flex-col">
         <Suspense fallback={<div>Loading journal entries...</div>}>
           {result.posts.length === 0 ? (
             <p className="no-result">No entries found</p>
