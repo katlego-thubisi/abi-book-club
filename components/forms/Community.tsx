@@ -226,9 +226,7 @@ const Community = ({ community, userId }: Props) => {
         />
 
         <Button type="submit" className="bg-red-800">
-          {form.formState.isSubmitting || isLoading
-            ? "Submitting"
-            : "Create new club"}
+          {form.formState.isSubmitting || isLoading ? "Submitting" : "Save"}
           {form.formState.isSubmitting ||
             (isLoading && (
               <svg

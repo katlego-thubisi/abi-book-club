@@ -24,13 +24,13 @@ const ProfileCard = ({
       className="flex flex-col gap-1 px-5 py-2 bg-zinc-100 dark:bg-zinc-900"
     >
       <div className="flex gap-2">
-        <div className="flex flex-col justify-center">
+        <div className="flex h-14 w-14 rounded-full justify-center relative overflow-hidden">
           <Image
             src={imgUrl}
             alt="community_logo"
-            width={48}
-            height={48}
-            className="rounded-full object-cover"
+            width={96}
+            height={96}
+            className="object-cover"
           />
         </div>
         <div className="flex flex-col text-black dark:text-white">

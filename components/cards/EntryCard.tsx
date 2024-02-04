@@ -95,16 +95,20 @@ const EntryCard = ({
         <div className="thread-card_bar" />
         <div className="flex w-full flex-col">
           <div className="flex flex-row gap-3 mb-3">
-            <Link href={`/profile/${author.id}`} className="relative h-11 w-11">
+            <Link
+              href={`/profile/${author.id}`}
+              className="flex items-center rounded-full relative h-12 w-12 overflow-hidden cursor-pointer"
+            >
               <Image
                 src={author.image}
                 alt="Profile image"
-                fill
-                className="cursor-pointer rounded-full"
+                width={96}
+                height={96}
+                className="cursor-pointer object-cover"
               />
             </Link>
             <Link href={`/profile/${author.id}`} className="w-fit">
-              <h4 className="cursor-pointer text-base-semibold text-black dark:text-light-1">
+              <h4 className=" text-base-semibold text-black dark:text-light-1">
                 {author.name}
               </h4>
             </Link>

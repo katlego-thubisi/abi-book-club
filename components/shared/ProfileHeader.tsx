@@ -125,7 +125,7 @@ const ProfileHeader = ({
                 Click save when you're done.
               </DialogDescription>
             </DialogHeader>
-            {type ? (
+            {type !== "Community" ? (
               <AccountProfile
                 user={{ id: accountId, username, name, bio, image: imgUrl }}
                 btnTitle="Save"
