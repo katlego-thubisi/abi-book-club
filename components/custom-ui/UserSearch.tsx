@@ -29,8 +29,8 @@ const UserSearch = ({ userId }: Props) => {
           pageSize: 25,
         });
 
-        setResult(response);
         setIsLoading(false);
+        setResult(response);
       } else {
         if (typingTimeout) {
           clearTimeout(typingTimeout);
@@ -43,8 +43,8 @@ const UserSearch = ({ userId }: Props) => {
             pageSize: 25,
           });
 
-          setResult(response);
           setIsLoading(false);
+          setResult(response);
         }, 2000);
       }
     };
@@ -65,9 +65,7 @@ const UserSearch = ({ userId }: Props) => {
 
       <div className="mt-14 flex flex-col gap-9">
         {isLoading ? (
-          <>
-            <p className="no-result">Fetching users...</p>
-          </>
+          <p className="no-result">Fetching users...</p>
         ) : result.users.length === 0 ? (
           <p className="no-result">No Users</p>
         ) : (
