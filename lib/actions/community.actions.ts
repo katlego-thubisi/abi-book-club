@@ -442,7 +442,10 @@ export async function findDuplicateCommunityByUsername(
       ? (query.id = { $ne: communityId })
       : null; // Exclude the current user from the results.
 
-    return await Community.findOne(query);
+    const communityDuplicate = await Community.findOne(query);
+    const userDuplicate = await User.findOne({ username: username });
+
+    return communityDuplicate || userDuplicate;
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
   }

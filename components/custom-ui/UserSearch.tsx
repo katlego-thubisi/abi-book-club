@@ -20,6 +20,7 @@ const UserSearch = ({ userId }: Props) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       if (searchString.trim() === "") {
         const response = await fetchUsers({
           userId: userId,
@@ -28,6 +29,7 @@ const UserSearch = ({ userId }: Props) => {
           pageSize: 25,
         });
 
+        setIsLoading(false);
         setResult(response);
       } else {
         if (typingTimeout) {
@@ -41,6 +43,7 @@ const UserSearch = ({ userId }: Props) => {
             pageSize: 25,
           });
 
+          setIsLoading(false);
           setResult(response);
         }, 2000);
       }
@@ -61,7 +64,9 @@ const UserSearch = ({ userId }: Props) => {
       </div>
 
       <div className="mt-14 flex flex-col gap-9">
-        {result.users.length === 0 ? (
+        {isLoading ? (
+          <p className="no-result">Fetching users...</p>
+        ) : result.users.length === 0 ? (
           <p className="no-result">No Users</p>
         ) : (
           <>
