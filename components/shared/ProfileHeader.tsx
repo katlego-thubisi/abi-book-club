@@ -30,6 +30,7 @@ import {
 
 import AccountProfile from "../forms/AccountProfile";
 import { useState } from "react";
+import Community from "../forms/Community";
 
 interface Props {
   accountId: string;
@@ -117,18 +118,31 @@ const ProfileHeader = ({
           <DialogContent className="content-center sm:max-w-md">
             <DialogHeader>
               <DialogTitle className="text-base-semibold  text-slate-700 dark:text-gray-300">
-                Edit profile
+                Edit {type === "Community" ? "community" : "profile"}
               </DialogTitle>
               <DialogDescription className="text-base-semibold  text-slate-600 dark:text-gray-400">
-                Edit your profile. Click save when you're done.
+                Edit your {type === "Community" ? "community" : "profile"}.
+                Click save when you're done.
               </DialogDescription>
             </DialogHeader>
-            <AccountProfile
-              user={{ id: accountId, username, name, bio, image: imgUrl }}
-              btnTitle="Save"
-              handleClose={() => setOpen(false)}
-              type={type}
-            />
+            {type !== "Community" ? (
+              <AccountProfile
+                user={{ id: accountId, username, name, bio, image: imgUrl }}
+                btnTitle="Save"
+                handleClose={() => setOpen(false)}
+              />
+            ) : (
+              <Community
+                community={{
+                  id: accountId,
+                  username,
+                  name,
+                  bio,
+                  image: imgUrl,
+                }}
+                userId={authUserId}
+              />
+            )}
           </DialogContent>
         </Dialog>
 
@@ -198,6 +212,3 @@ const ProfileHeader = ({
 };
 
 export default ProfileHeader;
-function ref(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}

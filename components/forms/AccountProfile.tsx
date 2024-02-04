@@ -36,10 +36,9 @@ interface Props {
   };
   btnTitle: string;
   handleClose?: () => void;
-  type?: string;
 }
 
-const AccountProfile = ({ user, btnTitle, handleClose, type }: Props) => {
+const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const { startUpload } = useUploadThing("media");
@@ -51,6 +50,7 @@ const AccountProfile = ({ user, btnTitle, handleClose, type }: Props) => {
   const form = useForm<z.infer<typeof UserValidation>>({
     resolver: zodResolver(UserValidation),
     defaultValues: {
+      userId: user?.id ? user.id : "",
       profile_photo: user?.image ? user.image : "",
       name: user?.name ? user.name : "",
       username: user?.username ? user.username : "",
@@ -60,6 +60,7 @@ const AccountProfile = ({ user, btnTitle, handleClose, type }: Props) => {
 
   const onSubmit = async (values: z.infer<typeof UserValidation>) => {
     setIsLoading(true);
+
     const blob = values.profile_photo;
 
     const hasImageChanged = isBase64Image(blob);
@@ -71,33 +72,23 @@ const AccountProfile = ({ user, btnTitle, handleClose, type }: Props) => {
       }
     }
 
-    if (type === "Community") {
-      await updateCommunityInfo(
-        user.id,
-        values.name,
-        values.username,
-        values.profile_photo,
-        "active",
-        values.bio
-      );
-    } else {
-      await updateUser({
-        name: values.name,
-        path: pathname,
-        username: values.username,
-        userId: user.id,
-        bio: values.bio,
-        image: values.profile_photo,
-      });
-    }
+    await updateUser({
+      name: values.name,
+      path: pathname,
+      username: values.username,
+      userId: user.id,
+      bio: values.bio,
+      image: values.profile_photo,
+    });
 
-    if (pathname.includes("profile") || pathname.includes("clubs")) {
+    if (pathname.includes("profile")) {
       router.refresh();
       if (handleClose) handleClose();
     } else {
       router.push("/");
       if (handleClose) handleClose();
     }
+    setIsLoading(false);
   };
 
   const handleImage = (

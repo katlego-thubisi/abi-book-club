@@ -8,6 +8,7 @@ import RightSidebar from "@/components/shared/RightSidebar";
 import Bottombar from "@/components/shared/Bottombar";
 import { dark } from "@clerk/themes";
 import { MyThemeContextProvider } from "@/store/ThemeContext";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,7 +41,9 @@ export default function RootLayout({
 
               <RightSidebar />
             </main>
+
             <Bottombar />
+            <Toaster />
           </body>
         </html>
       </ClerkProvider>

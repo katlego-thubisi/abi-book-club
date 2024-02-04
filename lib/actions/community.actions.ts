@@ -424,3 +424,26 @@ export async function hardDeleteCommunity(
     throw error;
   }
 }
+
+//Write a function to find a user by their username
+export async function findDuplicateCommunityByUsername(
+  username: string,
+  communityId: any
+) {
+  try {
+    connectToDB();
+
+    // Create an initial query object to filter users.
+    let query: FilterQuery<typeof Community> = {
+      username: username,
+    };
+
+    communityId && communityId.trim() !== ""
+      ? (query.id = { $ne: communityId })
+      : null; // Exclude the current user from the results.
+
+    return await Community.findOne(query);
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user: ${error.message}`);
+  }
+}

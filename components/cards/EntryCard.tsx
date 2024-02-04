@@ -18,7 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   id: string;
@@ -76,6 +76,12 @@ const EntryCard = ({
     await deleteEntry(id, pathname);
   };
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <article
       className={`group relative overflow-hidden flex w-full flex-col rounded-xl parent-text p-1 hover:bg-gray-100 dark:hover:bg-dark-4  ${
@@ -88,16 +94,20 @@ const EntryCard = ({
         </p>
         <div className="flex w-full flex-col">
           <div className="flex flex-row gap-3 mb-3">
-            <Link href={`/profile/${author.id}`} className="relative h-11 w-11">
+            <Link
+              href={`/profile/${author.id}`}
+              className="flex items-center rounded-full relative h-12 w-12 overflow-hidden cursor-pointer"
+            >
               <Image
                 src={author.image}
                 alt="Profile image"
-                fill
-                className="cursor-pointer rounded-full"
+                width={96}
+                height={96}
+                className="cursor-pointer object-cover"
               />
             </Link>
             <Link href={`/profile/${author.id}`} className="w-fit">
-              <h4 className="cursor-pointer text-base-semibold text-black dark:text-light-1">
+              <h4 className=" text-base-semibold text-black dark:text-light-1">
                 {author.name}
               </h4>
             </Link>
@@ -108,14 +118,16 @@ const EntryCard = ({
               isComment && "mb-5"
             } mt-2 text-small-regular text-black dark:text-light-2 w-full text-wrap`}
           >
-            <div
-              dangerouslySetInnerHTML={{
-                __html: isEntryPage
-                  ? content
-                  : content.slice(0, 400) +
-                    `${content.length > 400 ? "..." : ""}`,
-              }}
-            ></div>
+            {isClient && (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: isEntryPage
+                    ? content
+                    : content.slice(0, 400) +
+                      `${content.length > 400 ? "..." : ""}`,
+                }}
+              ></div>
+            )}
             {content.length > 400 && !isEntryPage && (
               <Link href={`/journal/${id}`}>
                 <p className="mt-1 cursor-pointer text-blue hover:underline">
