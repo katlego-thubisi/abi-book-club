@@ -16,12 +16,15 @@ import { CommunityValidation } from "@/lib/validations/community";
 import { isBase64Image } from "@/lib/utils";
 import { useUploadThing } from "@/lib/uploadthing";
 import { ChangeEvent, useState } from "react";
-import { createCommunity } from "@/lib/actions/community.actions";
+import {
+  createCommunity,
+  updateCommunityInfo,
+} from "@/lib/actions/community.actions";
 import { Input } from "../ui/input";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface Props {
   community: {
@@ -40,11 +43,14 @@ const Community = ({ community, userId }: Props) => {
 
   const [isLoading, setLoading] = useState(false);
 
+  const pathname = usePathname();
+
   const router = useRouter();
 
   const form = useForm<z.infer<typeof CommunityValidation>>({
     resolver: zodResolver(CommunityValidation),
     defaultValues: {
+      communityId: community?.id ? community.id : "",
       image: community?.image ? community.image : "",
       name: community?.name ? community.name : "",
       username: community?.username ? community.username : "",
@@ -88,15 +94,27 @@ const Community = ({ community, userId }: Props) => {
       }
     }
 
-    const response = await createCommunity(
-      values.name,
-      values.username,
-      values.image,
-      values.bio,
-      userId
-    );
+    if (pathname.includes("/clubs/") && values.communityId?.trim() !== "") {
+      await updateCommunityInfo(
+        values.communityId,
+        values.name,
+        values.username,
+        values.image,
+        "active",
+        values.bio
+      );
 
-    router.push(`/clubs/${response}`);
+      router.refresh();
+    } else {
+      const response = await createCommunity(
+        values.name,
+        values.username,
+        values.image,
+        values.bio,
+        userId
+      );
+      router.push(`/clubs/${response}`);
+    }
   };
 
   return (

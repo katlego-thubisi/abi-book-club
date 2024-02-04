@@ -248,10 +248,11 @@ export async function findDuplicateUserByUsername(
     connectToDB();
 
     // Create an initial query object to filter users.
-    const query: FilterQuery<typeof User> = {
-      id: { $ne: userId }, // Exclude the current user from the results.
+    let query: FilterQuery<typeof User> = {
       username: username,
     };
+
+    userId && userId.trim() !== "" ? (query.id = { $ne: userId }) : null;
 
     return await User.findOne(query);
   } catch (error: any) {

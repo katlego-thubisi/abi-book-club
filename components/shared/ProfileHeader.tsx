@@ -30,6 +30,7 @@ import {
 
 import AccountProfile from "../forms/AccountProfile";
 import { useState } from "react";
+import Community from "../forms/Community";
 
 interface Props {
   accountId: string;
@@ -116,17 +117,32 @@ const ProfileHeader = ({
 
           <DialogContent className="content-center sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
+              <DialogTitle>
+                Edit {type === "Community" ? "community" : "profile"}
+              </DialogTitle>
               <DialogDescription>
-                Edit your profile. Click save when you're done.
+                Edit your {type === "Community" ? "community" : "profile"}.
+                Click save when you're done.
               </DialogDescription>
             </DialogHeader>
-            <AccountProfile
-              user={{ id: accountId, username, name, bio, image: imgUrl }}
-              btnTitle="Save"
-              handleClose={() => setOpen(false)}
-              type={type}
-            />
+            {type ? (
+              <AccountProfile
+                user={{ id: accountId, username, name, bio, image: imgUrl }}
+                btnTitle="Save"
+                handleClose={() => setOpen(false)}
+              />
+            ) : (
+              <Community
+                community={{
+                  id: accountId,
+                  username,
+                  name,
+                  bio,
+                  image: imgUrl,
+                }}
+                userId={authUserId}
+              />
+            )}
           </DialogContent>
         </Dialog>
 

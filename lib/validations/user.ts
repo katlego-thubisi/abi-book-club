@@ -3,7 +3,7 @@ import { findDuplicateUserByUsername } from "../actions/user.actions";
 
 export const UserValidation = z
   .object({
-    userId: z.string().optional(),
+    userId: z.string(),
     profile_photo: z.string().url().nonempty(),
     name: z
       .string()

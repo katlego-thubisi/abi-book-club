@@ -36,10 +36,9 @@ interface Props {
   };
   btnTitle: string;
   handleClose?: () => void;
-  type?: string;
 }
 
-const AccountProfile = ({ user, btnTitle, handleClose, type }: Props) => {
+const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const { startUpload } = useUploadThing("media");
@@ -73,27 +72,16 @@ const AccountProfile = ({ user, btnTitle, handleClose, type }: Props) => {
       }
     }
 
-    if (type === "Community") {
-      await updateCommunityInfo(
-        user.id,
-        values.name,
-        values.username,
-        values.profile_photo,
-        "active",
-        values.bio
-      );
-    } else {
-      await updateUser({
-        name: values.name,
-        path: pathname,
-        username: values.username,
-        userId: user.id,
-        bio: values.bio,
-        image: values.profile_photo,
-      });
-    }
+    await updateUser({
+      name: values.name,
+      path: pathname,
+      username: values.username,
+      userId: user.id,
+      bio: values.bio,
+      image: values.profile_photo,
+    });
 
-    if (pathname.includes("profile") || pathname.includes("clubs")) {
+    if (pathname.includes("profile")) {
       router.refresh();
       if (handleClose) handleClose();
     } else {
