@@ -47,6 +47,7 @@ async function RightSidebar() {
           {userResult.users.map((user: any, index: number) => (
             <ProfileCard
               id={index + 1}
+              userId={user.id}
               imgUrl={user.image}
               name={user.name}
               username={user.username}

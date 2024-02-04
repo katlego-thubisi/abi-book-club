@@ -24,38 +24,41 @@ export default async function Home() {
         </div>
       </div>
 
-      <section className="mt-9 flex flex-col">
+      <section className="mt-9 flex flex-col gap-10">
         <Suspense fallback={<div>Loading journal entries...</div>}>
           {result.posts.length === 0 ? (
             <p className="no-result">No entries found</p>
           ) : (
             <>
               {result.posts.map((post: any, index) => (
-                <EntryCard
-                  key={post._id}
-                  id={post._id}
-                  currentUserId={userInfo?._id || ""}
-                  content={post.text}
-                  author={{
-                    name: post.author.name,
-                    image: post.author.image,
-                    id: post.author.id,
-                    _id: post.author._id,
-                  }}
-                  community={
-                    post.community
-                      ? {
-                          _id: post.community._id,
-                          id: post.community.id,
-                          name: post.community.name,
-                          image: post.community.image,
-                        }
-                      : null
-                  }
-                  createdAt={post.createdAt}
-                  comments={JSON.parse(JSON.stringify(post.children))}
-                  likes={JSON.parse(JSON.stringify(post.likes))}
-                />
+                <>
+                  <EntryCard
+                    key={post._id}
+                    id={post._id}
+                    currentUserId={userInfo?._id || ""}
+                    content={post.text}
+                    author={{
+                      name: post.author.name,
+                      image: post.author.image,
+                      id: post.author.id,
+                      _id: post.author._id,
+                    }}
+                    community={
+                      post.community
+                        ? {
+                            _id: post.community._id,
+                            id: post.community.id,
+                            name: post.community.name,
+                            image: post.community.image,
+                          }
+                        : null
+                    }
+                    createdAt={post.createdAt}
+                    comments={JSON.parse(JSON.stringify(post.children))}
+                    likes={JSON.parse(JSON.stringify(post.likes))}
+                  />
+                  <hr className="bg-gray-100 dark:bg-dark-4" />
+                </>
               ))}
             </>
           )}

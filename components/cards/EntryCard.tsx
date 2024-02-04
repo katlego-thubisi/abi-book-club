@@ -245,7 +245,6 @@ const EntryCard = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <hr className="bg-gray-100 dark:bg-dark-4" />
     </article>
   );
 };
