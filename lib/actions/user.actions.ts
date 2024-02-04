@@ -238,3 +238,23 @@ export async function getActivity(userId: string) {
     throw error;
   }
 }
+
+//Write a function to find a user by their username
+export async function findDuplicateUserByUsername(
+  username: string,
+  userId: any
+) {
+  try {
+    connectToDB();
+
+    // Create an initial query object to filter users.
+    const query: FilterQuery<typeof User> = {
+      id: { $ne: userId }, // Exclude the current user from the results.
+      username: username,
+    };
+
+    return await User.findOne(query);
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user: ${error.message}`);
+  }
+}

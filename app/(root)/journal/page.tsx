@@ -35,7 +35,6 @@ export default async function Home() {
                   key={post._id}
                   id={post._id}
                   currentUserId={userInfo?._id || ""}
-                  // parentId={post.parentId}
                   content={post.text}
                   author={{
                     name: post.author.name,
@@ -56,7 +55,6 @@ export default async function Home() {
                   createdAt={post.createdAt}
                   comments={JSON.parse(JSON.stringify(post.children))}
                   likes={JSON.parse(JSON.stringify(post.likes))}
-                  // comments={[]}
                 />
               ))}
             </>

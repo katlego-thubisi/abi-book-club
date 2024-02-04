@@ -18,7 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   id: string;
@@ -76,6 +76,12 @@ const EntryCard = ({
     await deleteEntry(id, pathname);
   };
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <article
       className={`group relative overflow-hidden flex w-full flex-col rounded-xl parent-text border-t border-b border-gray-300 dark:border-gray-800 p-1 hover:bg-gray-100 dark:hover:bg-dark-4  ${
@@ -109,14 +115,16 @@ const EntryCard = ({
               isComment && "mb-5"
             } mt-2 text-small-regular text-black dark:text-light-2 w-full text-wrap`}
           >
-            <div
-              dangerouslySetInnerHTML={{
-                __html: isEntryPage
-                  ? content
-                  : content.slice(0, 400) +
-                    `${content.length > 400 ? "..." : ""}`,
-              }}
-            ></div>
+            {isClient && (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: isEntryPage
+                    ? content
+                    : content.slice(0, 400) +
+                      `${content.length > 400 ? "..." : ""}`,
+                }}
+              ></div>
+            )}
             {content.length > 400 && !isEntryPage && (
               <Link href={`/journal/${id}`}>
                 <p className="mt-1 cursor-pointer text-blue hover:underline">

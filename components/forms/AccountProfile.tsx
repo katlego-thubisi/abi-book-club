@@ -51,6 +51,7 @@ const AccountProfile = ({ user, btnTitle, handleClose, type }: Props) => {
   const form = useForm<z.infer<typeof UserValidation>>({
     resolver: zodResolver(UserValidation),
     defaultValues: {
+      userId: user?.id ? user.id : "",
       profile_photo: user?.image ? user.image : "",
       name: user?.name ? user.name : "",
       username: user?.username ? user.username : "",
@@ -60,6 +61,7 @@ const AccountProfile = ({ user, btnTitle, handleClose, type }: Props) => {
 
   const onSubmit = async (values: z.infer<typeof UserValidation>) => {
     setIsLoading(true);
+
     const blob = values.profile_photo;
 
     const hasImageChanged = isBase64Image(blob);
@@ -98,6 +100,7 @@ const AccountProfile = ({ user, btnTitle, handleClose, type }: Props) => {
       router.push("/");
       if (handleClose) handleClose();
     }
+    setIsLoading(false);
   };
 
   const handleImage = (
