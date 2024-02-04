@@ -137,7 +137,7 @@ function PostJournal({ user }: Props) {
         <Button
           type="submit"
           disabled={form.formState.isSubmitting || isLoading}
-          className="bg-red-800 dark:bg-red-800"
+          className="bg-red-800 dark:bg-red-800 dark-text-white"
         >
           {form.formState.isSubmitting || isLoading
             ? "Submitting"

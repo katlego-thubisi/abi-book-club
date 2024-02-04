@@ -150,7 +150,7 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
                   type="file"
                   accept="image/*"
                   placeholder="Add profile photo"
-                  className="account-form_image-input"
+                  className="account-form_image-input form-label"
                   onChange={(e) => handleImage(e, field.onChange)}
                 />
               </FormControl>
@@ -164,13 +164,11 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
           name="name"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="text-base-semibold  text-slate-700 dark:text-gray-300">
-                Name
-              </FormLabel>
+              <FormLabel className="form-label">Name</FormLabel>
               <FormControl>
                 <Input
                   type="text"
-                  className="account-form_input no-focus"
+                  className="account-form_input form-input"
                   {...field}
                 />
               </FormControl>
@@ -184,13 +182,11 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
           name="username"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="text-base-semibold text-slate-700 dark:text-gray-300">
-                Username
-              </FormLabel>
+              <FormLabel className="form-label">Username</FormLabel>
               <FormControl>
                 <Input
                   type="text"
-                  className="account-form_input no-focus"
+                  className="account-form_input form-input"
                   {...field}
                 />
               </FormControl>
@@ -204,13 +200,11 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
           name="bio"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="text-base-semibold text-slate-700 dark:text-gray-300">
-                Bio
-              </FormLabel>
+              <FormLabel className="form-label">Bio</FormLabel>
               <FormControl>
                 <Textarea
                   rows={10}
-                  className="account-form_input no-focus"
+                  className="account-form_input form-input"
                   {...field}
                 />
               </FormControl>
@@ -219,7 +213,10 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
           )}
         />
 
-        <Button type="submit" className="bg-red-800">
+        <Button
+          type="submit"
+          className="bg-red-800 dark:bg-red-800 dark:text-white"
+        >
           {form.formState.isSubmitting || isLoading ? "Submitting" : btnTitle}
           {form.formState.isSubmitting ||
             (isLoading && (

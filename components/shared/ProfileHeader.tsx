@@ -117,10 +117,10 @@ const ProfileHeader = ({
 
           <DialogContent className="content-center sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className="text-base-semibold  text-slate-700 dark:text-gray-300">
                 Edit {type === "Community" ? "community" : "profile"}
               </DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="text-base-semibold  text-slate-600 dark:text-gray-400">
                 Edit your {type === "Community" ? "community" : "profile"}.
                 Click save when you're done.
               </DialogDescription>
@@ -212,6 +212,3 @@ const ProfileHeader = ({
 };
 
 export default ProfileHeader;
-function ref(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}

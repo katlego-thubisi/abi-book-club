@@ -167,13 +167,11 @@ const Community = ({ community, userId }: Props) => {
           name="name"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-1">
-              <FormLabel className="text-base-semibold text-slate-700 dark:text-gray-300">
-                Name
-              </FormLabel>
+              <FormLabel className="form-label">Name</FormLabel>
               <FormControl>
                 <Input
                   type="text"
-                  className="account-form_input no-focus text-gray-700  dark:text-gray-300"
+                  className="account-form_input form-input"
                   placeholder='e.g "Sci-Fi Scribes"'
                   {...field}
                 />
@@ -188,13 +186,11 @@ const Community = ({ community, userId }: Props) => {
           name="username"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="text-base-semibold text-slate-700 dark:text-gray-300">
-                Username
-              </FormLabel>
+              <FormLabel className="form-label">Username</FormLabel>
               <FormControl>
                 <Input
                   type="text"
-                  className="account-form_input no-focus  text-gray-700  dark:text-gray-300"
+                  className="account-form_input form-input"
                   placeholder='e.g. "scifiscribes" '
                   {...field}
                 />
@@ -209,13 +205,13 @@ const Community = ({ community, userId }: Props) => {
           name="bio"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="text-base-semibold text-slate-700 dark:text-gray-300">
+              <FormLabel className="text-base-semibold form-label">
                 Bio
               </FormLabel>
               <FormControl>
                 <Textarea
                   rows={10}
-                  className="account-form_input no-focus"
+                  className="account-form_input form-input"
                   placeholder="Describe what the book club is about"
                   {...field}
                 />
@@ -225,7 +221,10 @@ const Community = ({ community, userId }: Props) => {
           )}
         />
 
-        <Button type="submit" className="bg-red-800">
+        <Button
+          type="submit"
+          className="bg-red-800 dark:bg-red-800 dark:text-white"
+        >
           {form.formState.isSubmitting || isLoading ? "Submitting" : "Save"}
           {form.formState.isSubmitting ||
             (isLoading && (
