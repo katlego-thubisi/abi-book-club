@@ -50,16 +50,20 @@ function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
             {members.map(
               (member, index) =>
                 index < 4 && (
-                  <Image
-                    key={index}
-                    src={member.image}
-                    alt={`user_${index}`}
-                    width={28}
-                    height={28}
+                  <div
                     className={`${
                       index !== 0 && "-ml-3"
-                    } rounded-full object-cover`}
-                  />
+                    } flex items-center h-7 w-7 relative rounded-full overflow-hidden`}
+                  >
+                    <Image
+                      key={index}
+                      src={member.image}
+                      alt={`user_${index}`}
+                      width={28}
+                      height={28}
+                      className="object-cover"
+                    />
+                  </div>
                 )
             )}
 
