@@ -25,9 +25,11 @@ async function Page({ params }: { params: { id: string } }) {
         accountId={userInfo.id}
         authUserId={user.id}
         name={userInfo.name}
+        surname={userInfo.surname}
         username={userInfo.username}
         imgUrl={userInfo.image}
         bio={userInfo.bio}
+        occupation={userInfo.occupation}
         isOwner={isOwner}
       />
 

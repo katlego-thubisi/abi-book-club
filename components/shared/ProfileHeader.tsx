@@ -26,19 +26,25 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogOverlay,
 } from "../ui/dialog";
 
 import AccountProfile from "../forms/AccountProfile";
 import { useState } from "react";
 import Community from "../forms/Community";
+import EditProfileModal from "../custom-ui/EditProfileModal";
+import AddressModal from "../custom-ui/AddressModal";
 
 interface Props {
   accountId: string;
   authUserId: string;
   name: string;
+  surname?: string;
   username: string;
   imgUrl: string;
   bio: string;
+  address?: any[];
+  occupation?: string;
   isMember?: boolean;
   isRequester?: boolean;
   isOwner?: boolean;
@@ -49,17 +55,18 @@ const ProfileHeader = ({
   accountId,
   authUserId,
   name,
+  surname,
   username,
+  address,
   imgUrl,
   bio,
+  occupation,
   isMember,
   isRequester,
   isOwner,
   type,
 }: Props) => {
   const pathName = usePathname();
-
-  const [open, setOpen] = useState(false);
 
   const joinCommunity = async () => {
     await memberRequestToCommunity(accountId, authUserId, pathName);
@@ -76,75 +83,53 @@ const ProfileHeader = ({
   return (
     <div className="flex w-full flex-col justify-start">
       <div className="flex items-center justify-between">
-        <Dialog open={open} onOpenChange={setOpen}>
-          {isOwner ? (
-            <DialogTrigger asChild>
-              <div className="flex items-center gap-3 cursor-pointer">
-                <div className="relative h-20 w-20 object-cover">
-                  <Image
-                    src={imgUrl}
-                    alt="Profile image"
-                    fill
-                    className="rounded-full object-cover shadow-2xl"
-                  />
-                </div>
-                <div className="flex-1">
-                  <h2 className="text-left text-heading3-bold text-black dark:text-light-1">
-                    {name}
-                  </h2>
-                  <p className="text-base-medium text-gray-1">@{username}</p>
-                </div>
-              </div>
-            </DialogTrigger>
-          ) : (
-            <div className="flex items-center gap-3 cursor-pointer">
-              <div className="relative h-20 w-20 object-cover">
-                <Image
-                  src={imgUrl}
-                  alt="Profile image"
-                  fill
-                  className="rounded-full object-cover shadow-2xl"
-                />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-left text-heading3-bold text-black dark:text-light-1">
-                  {name}
-                </h2>
-                <p className="text-base-medium text-gray-1">@{username}</p>
-              </div>
+        {isOwner ? (
+          <div className="flex flex-col gap-1">
+            <EditProfileModal
+              accountId={accountId}
+              authUserId={authUserId}
+              name={name}
+              surname={surname}
+              occupation={occupation}
+              username={username}
+              imgUrl={imgUrl}
+              bio={bio}
+              type={type}
+            />
+            <AddressModal
+              address={
+                address
+                  ? address[0]
+                  : {
+                      streetLine1: "",
+                      streetLine2: "",
+                      city: "",
+                      province: "",
+                      postalCode: "",
+                      country: "",
+                      countryCode: "",
+                    }
+              }
+            />
+          </div>
+        ) : (
+          <div className="flex items-center gap-3 cursor-pointer">
+            <div className="relative h-20 w-20 object-cover">
+              <Image
+                src={imgUrl}
+                alt="Profile image"
+                fill
+                className="rounded-full object-cover shadow-2xl"
+              />
             </div>
-          )}
-
-          <DialogContent className="content-center sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle className="text-base-semibold  text-slate-700 dark:text-gray-300">
-                Edit {type === "Community" ? "community" : "profile"}
-              </DialogTitle>
-              <DialogDescription className="text-base-semibold  text-slate-600 dark:text-gray-400">
-                Edit your {type === "Community" ? "community" : "profile"}.
-                Click save when you're done.
-              </DialogDescription>
-            </DialogHeader>
-            {type !== "Community" ? (
-              <AccountProfile
-                user={{ id: accountId, username, name, bio, image: imgUrl }}
-                btnTitle="Save"
-                handleClose={() => setOpen(false)}
-              />
-            ) : (
-              <Community
-                community={{
-                  id: accountId,
-                  username,
-                  name,
-                  bio,
-                  image: imgUrl,
-                }}
-                userId={authUserId}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
+            <div className="flex-1">
+              <h2 className="text-left text-heading3-bold text-black dark:text-light-1">
+                {name}
+              </h2>
+              <p className="text-base-medium text-gray-1">@{username}</p>
+            </div>
+          </div>
+        )}
 
         {!isOwner && !isMember && type === "Community" && (
           <div>

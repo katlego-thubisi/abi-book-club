@@ -24,21 +24,23 @@ import { isBase64Image } from "@/lib/utils";
 
 import { UserValidation } from "@/lib/validations/user";
 import { updateUser } from "@/lib/actions/user.actions";
-import { updateCommunityInfo } from "@/lib/actions/community.actions";
 
 interface Props {
   user: {
     id: string;
     username: string;
     name: string;
+    surname: string | undefined;
     bio: string;
     image: string;
+    occupation: string | undefined;
   };
   btnTitle: string;
   handleClose?: () => void;
+  onboarderd?: boolean;
 }
 
-const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
+const AccountProfile = ({ user, btnTitle, handleClose, onboarderd }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const { startUpload } = useUploadThing("media");
@@ -53,6 +55,8 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
       userId: user?.id ? user.id : "",
       profile_photo: user?.image ? user.image : "",
       name: user?.name ? user.name : "",
+      surname: user?.surname ? user.surname : "",
+      occupation: user?.occupation ? user.occupation : "",
       username: user?.username ? user.username : "",
       bio: user?.bio ? user.bio : "",
     },
@@ -74,11 +78,13 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
 
     await updateUser({
       name: values.name,
+      surname: values.surname,
       path: pathname,
       username: values.username,
       userId: user.id,
       bio: values.bio,
       image: values.profile_photo,
+      occupation: values.occupation,
     });
 
     if (pathname.includes("profile")) {
@@ -117,7 +123,7 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
   return (
     <Form {...form}>
       <form
-        className="flex flex-col justify-start sm:gap-10 gap-5 max-h-96  sm:max-h-none overflow-y-auto"
+        className="flex flex-col justify-start sm:gap-10 gap-5 max-h-96  sm:max-h-none overflow-y-scroll scrollbar-hide"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
@@ -176,6 +182,25 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
             </FormItem>
           )}
         />
+        {onboarderd && (
+          <FormField
+            control={form.control}
+            name="surname"
+            render={({ field }) => (
+              <FormItem className="flex w-full flex-col gap-3">
+                <FormLabel className="form-label">Surname</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    className="account-form_input form-input"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
@@ -195,6 +220,26 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
           )}
         />
 
+        {onboarderd && (
+          <FormField
+            control={form.control}
+            name="occupation"
+            render={({ field }) => (
+              <FormItem className="flex w-full flex-col gap-3">
+                <FormLabel className="form-label">Occupation</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    className="account-form_input form-input"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <FormField
           control={form.control}
           name="bio"
@@ -203,8 +248,8 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
               <FormLabel className="form-label">Bio</FormLabel>
               <FormControl>
                 <Textarea
-                  rows={10}
-                  className="account-form_input form-input"
+                  rows={2}
+                  className="account-form_input form-input resize-none"
                   {...field}
                 />
               </FormControl>
@@ -216,6 +261,7 @@ const AccountProfile = ({ user, btnTitle, handleClose }: Props) => {
         <Button
           type="submit"
           className="bg-red-800 dark:bg-red-800 dark:text-white"
+          disabled={form.formState.isSubmitting || isLoading}
         >
           {form.formState.isSubmitting || isLoading ? "Submitting" : btnTitle}
           {form.formState.isSubmitting ||

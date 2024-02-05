@@ -26,9 +26,11 @@ interface Params {
   userId: string;
   username: string;
   name: string;
+  surname: string | undefined;
   bio: string;
   image: string;
   path: string;
+  occupation: string | undefined;
 }
 
 export async function updateUser({
@@ -38,6 +40,8 @@ export async function updateUser({
   path,
   username,
   image,
+  occupation,
+  surname,
 }: Params): Promise<void> {
   try {
     connectToDB();
@@ -49,6 +53,8 @@ export async function updateUser({
         name,
         bio,
         image,
+        occupation,
+        surname,
         onboarded: true,
       },
       { upsert: true }
