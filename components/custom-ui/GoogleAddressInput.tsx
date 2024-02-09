@@ -70,7 +70,6 @@ const GoogleAddressInput = ({ onPlaceSelected }: Props) => {
 
   const wrapperRef = useRef(null);
   handleClickOutside(wrapperRef, () => {
-    console.log("clicked outside");
     getPlacePredictions({ input: "" });
   });
   return (

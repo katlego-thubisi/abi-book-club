@@ -20,11 +20,10 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 
-import AccountProfile from "../forms/AccountProfile";
-import { useState } from "react";
-import Community from "../forms/Community";
 import EditProfileModal from "../custom-ui/EditProfileModal";
 import AddressModal from "../custom-ui/AddressModal";
+import { useContext, useState } from "react";
+import MyThemeContext from "@/store/ThemeContext";
 
 interface Props {
   accountId: string;
@@ -85,7 +84,14 @@ const ProfileHeader = ({
     await updateCommunityInfo(accountId, name, username, imgUrl, "delete", bio);
   };
 
-  console.log("Zee address", address);
+  const { isDarkTheme } = useContext(MyThemeContext);
+
+  const primaryAddress =
+    address && address.length > 0
+      ? address.find((address) => address.isPrimary)
+        ? address.find((address) => address.isPrimary)
+        : address[0]
+      : null;
 
   return (
     <div className="flex w-full flex-col justify-start">
@@ -106,21 +112,53 @@ const ProfileHeader = ({
             <AddressModal address={address} userId={accountId} />
           </div>
         ) : (
-          <div className="flex items-center gap-3 cursor-pointer">
-            <div className="relative h-20 w-20 object-cover">
-              <Image
-                src={imgUrl}
-                alt="Profile image"
-                fill
-                className="rounded-full object-cover shadow-2xl"
-              />
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3 cursor-pointer">
+              <div className="relative h-20 w-20 object-cover">
+                <Image
+                  src={imgUrl}
+                  alt="Profile image"
+                  fill
+                  className="rounded-full object-cover shadow-2xl"
+                />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-left text-heading3-bold text-black dark:text-light-1">
+                  {name} {surname && surname}
+                </h2>
+                <p className="text-base-medium text-gray-1">@{username}</p>
+                {occupation && (
+                  <div className="flex relative gap-1">
+                    <Image
+                      width={16}
+                      height={16}
+                      alt="job"
+                      src={`${
+                        isDarkTheme ? "/assets/job-w.svg" : "/assets/job.svg"
+                      }`}
+                    />
+                    <p className="text-base-medium text-gray-1">{occupation}</p>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="flex-1">
-              <h2 className="text-left text-heading3-bold text-black dark:text-light-1">
-                {name}
-              </h2>
-              <p className="text-base-medium text-gray-1">@{username}</p>
-            </div>
+            {primaryAddress && (
+              <div className="flex relative gap-1">
+                <Image
+                  width={16}
+                  height={16}
+                  alt="location"
+                  src={`${
+                    isDarkTheme
+                      ? "/assets/location-w.svg"
+                      : "/assets/location.svg"
+                  }`}
+                />
+                <p className="dark:text-light-1">
+                  {primaryAddress?.city} {primaryAddress?.country}
+                </p>
+              </div>
+            )}
           </div>
         )}
 

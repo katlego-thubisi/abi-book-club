@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import Image from "next/image";
 import {
   Dialog,
   DialogTrigger,
@@ -10,6 +11,7 @@ import {
 } from "../ui/dialog";
 import Address from "../forms/Address";
 import AddressListing from "./AddressListing";
+import MyThemeContext from "@/store/ThemeContext";
 
 interface Props {
   address?: [
@@ -42,6 +44,8 @@ const AddressModal = ({ address, userId }: Props) => {
       : null
   );
 
+  const { isDarkTheme } = useContext(MyThemeContext);
+
   useEffect(() => {
     if (!formState)
       setCurrentAddress(
@@ -57,13 +61,24 @@ const AddressModal = ({ address, userId }: Props) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {currentAddress ? (
-          <p className="dark:text-white">
-            {currentAddress?.streetLine1} {currentAddress?.streetLine2}{" "}
-            {currentAddress?.city} {currentAddress?.country}
-            <span className="ml-1 text-small-regular text-blue cursor-pointer  hover:underline ">
-              Edit address
-            </span>
-          </p>
+          <div className="flex relative gap-1">
+            <Image
+              width={16}
+              height={16}
+              alt="location"
+              src={`${
+                isDarkTheme ? "/assets/location-w.svg" : "/assets/location.svg"
+              }`}
+            />
+
+            <p className="dark:text-white">
+              {currentAddress?.streetLine1} {currentAddress?.streetLine2}{" "}
+              {currentAddress?.city} {currentAddress?.country}
+              <span className="ml-1 text-small-regular text-blue cursor-pointer  hover:underline ">
+                Edit address
+              </span>
+            </p>
+          </div>
         ) : (
           <p>
             <span className="text-small-regular text-blue cursor-pointer  hover:underline">

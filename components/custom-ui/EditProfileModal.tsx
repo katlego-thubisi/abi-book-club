@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Dialog,
   DialogDescription,
@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import AccountProfile from "../forms/AccountProfile";
 import Community from "../forms/Community";
+import MyThemeContext from "@/store/ThemeContext";
 
 interface Props {
   accountId: string;
@@ -38,6 +39,8 @@ const EditProfileModal = ({
 }: Props) => {
   const [open, setOpen] = useState(false);
 
+  const { isDarkTheme } = useContext(MyThemeContext);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -55,7 +58,19 @@ const EditProfileModal = ({
               {name} {surname && surname}
             </h2>
             <p className="text-base-medium text-gray-1">@{username}</p>
-            <p className="text-base-medium text-gray-1">{occupation}</p>
+            {occupation && (
+              <div className="flex relative gap-1">
+                <Image
+                  width={16}
+                  height={16}
+                  alt="job"
+                  src={`${
+                    isDarkTheme ? "/assets/job-w.svg" : "/assets/job.svg"
+                  }`}
+                />
+                <p className="text-base-medium text-gray-1">{occupation}</p>
+              </div>
+            )}
           </div>
         </div>
       </DialogTrigger>

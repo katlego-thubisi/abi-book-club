@@ -20,8 +20,6 @@ async function Page({ params }: { params: { id: string } }) {
 
   const isOwner = user.id === userInfo.id;
 
-  console.log("Page address", userInfo.address);
-
   return (
     <section>
       <ProfileHeader
