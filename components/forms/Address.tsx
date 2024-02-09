@@ -4,7 +4,7 @@ import * as z from "zod";
 
 import { useForm } from "react-hook-form";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -17,12 +17,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Autocomplete from "react-google-autocomplete";
+import Autocomplete, { usePlacesWidget } from "react-google-autocomplete";
 
 import { AddressValidation } from "@/lib/validations/address";
+import { updateUserAddress } from "@/lib/actions/user.actions";
+import GoogleAddressInput from "../custom-ui/GoogleAddressInput";
 
 interface Props {
   address: {
+    _id?: string;
+    id?: string;
     streetLine1: string;
     streetLine2: string;
     city: string;
@@ -30,20 +34,25 @@ interface Props {
     postalCode: string;
     country: string;
     countryCode: string;
+    isPrimary: boolean;
   };
+  userId: string;
   btnTitle: string;
   handleClose?: () => void;
 }
 
-const Address = ({ address, btnTitle, handleClose }: Props) => {
-  const router = useRouter();
+const Address = ({ address, btnTitle, handleClose, userId }: Props) => {
   const pathname = usePathname();
+
+  const [place, setPlace] = useState<any>(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof AddressValidation>>({
     resolver: zodResolver(AddressValidation),
     defaultValues: {
+      _id: address?._id ? address._id : undefined,
+      id: address?.id ? address.id : undefined,
       streetLine1: address?.streetLine1 ? address.streetLine1 : "",
       streetLine2: address?.streetLine2 ? address.streetLine2 : "",
       city: address?.city ? address.city : "",
@@ -54,21 +63,78 @@ const Address = ({ address, btnTitle, handleClose }: Props) => {
     },
   });
 
+  const handleSelectPlace = (place: any) => {
+    if (place) {
+      setPlace(place.formatted_address);
+
+      form.setValue(
+        "streetLine1",
+        place.address_components?.find((component: any) =>
+          component.types.includes("street_number")
+        )?.long_name
+      );
+      form.setValue(
+        "streetLine2",
+        place.address_components?.find((component: any) =>
+          component.types.includes("route")
+        )?.long_name
+      );
+      form.setValue(
+        "city",
+        place.address_components?.find((component: any) =>
+          component.types.includes("locality")
+        )?.long_name
+      );
+
+      form.setValue(
+        "province",
+        place.address_components?.find((component: any) =>
+          component.types.includes("administrative_area_level_1")
+        )?.long_name
+      );
+      form.setValue(
+        "country",
+        place.address_components?.find((component: any) =>
+          component.types.includes("country")
+        )?.long_name
+      );
+      form.setValue(
+        "postalCode",
+        place.address_components?.find((component: any) =>
+          component.types.includes("postal_code")
+        )?.long_name
+      );
+      form.setValue(
+        "countryCode",
+        place.address_components?.find((component: any) =>
+          component.types.includes("country")
+        )?.short_name
+      );
+    }
+  };
+
   const onSubmit = async (values: z.infer<typeof AddressValidation>) => {
     setIsLoading(true);
 
-    // await updateUserAddress({
-    //   streetLine1: values.streetLine1,
-    //   streetLine2: values.streetLine2,
-    //   city: values.city,
-    //   province: values.province,
-    //   postalCode: values.postalCode,
-    //   country: values.country,
-    //   countryCode: values.countryCode,
-    // });
-
+    await updateUserAddress(
+      {
+        id: values.id,
+        streetLine1: values.streetLine1,
+        streetLine2: values.streetLine2,
+        city: values.city,
+        province: values.province,
+        postalCode: values.postalCode,
+        country: values.country,
+        countryCode: values.countryCode,
+      },
+      userId,
+      pathname
+    );
+    handleClose && handleClose();
     setIsLoading(false);
   };
+
+  const ref = useRef();
 
   return (
     <Form {...form}>
@@ -76,14 +142,10 @@ const Address = ({ address, btnTitle, handleClose }: Props) => {
         className="flex flex-col justify-start sm:gap-5 gap-5 max-h-96  sm:max-h-none overflow-y-scroll scrollbar-hide"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <FormField
-          control={form.control}
-          name="streetLine1"
-          render={({ field }) => (
-            <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="form-label">Enter address</FormLabel>
-              <FormControl>
-                <Autocomplete
+        <FormItem className="flex w-full flex-col gap-3">
+          <FormLabel className="form-label">Enter address</FormLabel>
+          <FormControl>
+            {/* <Autocomplete
                   className="account-form_input form-input flex h-10 w-full rounded-md border 
                   border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white 
                   file:border-0 file:bg-transparent file:text-sm file:font-medium 
@@ -93,13 +155,21 @@ const Address = ({ address, btnTitle, handleClose }: Props) => {
                   dark:bg-slate-950 dark:ring-offset-slate-950 
                    dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300"
                   apiKey={process.env.NEXT_PUBLIC_PLACES_API_KEY}
-                  onPlaceSelected={(place) => console.log(place)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                  onChange={(e: any) => setPlace(e.target.value)}
+                  onPlaceSelected={(place) => handleSelectPlace(place)}
+                  options={{ types: ["address"] }}
+                  value={place?.formatted_address}
+                ></Autocomplete> */}
+
+            <GoogleAddressInput
+              onPlaceSelected={(place: any) => handleSelectPlace(place)}
+            />
+
+            {/* <input ref={ref} defaultValue={""} /> */}
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+
         <div className=" w-full text-center">
           <h3 className=" text-heading4-medium text-black dark:text-light-1">
             OR

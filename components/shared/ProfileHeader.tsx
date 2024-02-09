@@ -19,15 +19,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import {
-  Dialog,
-  DialogDescription,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogOverlay,
-} from "../ui/dialog";
 
 import AccountProfile from "../forms/AccountProfile";
 import { useState } from "react";
@@ -43,7 +34,21 @@ interface Props {
   username: string;
   imgUrl: string;
   bio: string;
-  address?: any[];
+  address?: [
+    {
+      _id?: string;
+      id?: string;
+      streetLine1: string;
+      streetLine2: string;
+      city: string;
+      province: string;
+      postalCode: string;
+      country: string;
+      countryCode: string;
+      isPrimary: boolean;
+      __v: number;
+    },
+  ];
   occupation?: string;
   isMember?: boolean;
   isRequester?: boolean;
@@ -80,6 +85,8 @@ const ProfileHeader = ({
     await updateCommunityInfo(accountId, name, username, imgUrl, "delete", bio);
   };
 
+  console.log("Zee address", address);
+
   return (
     <div className="flex w-full flex-col justify-start">
       <div className="flex items-center justify-between">
@@ -96,21 +103,7 @@ const ProfileHeader = ({
               bio={bio}
               type={type}
             />
-            <AddressModal
-              address={
-                address
-                  ? address[0]
-                  : {
-                      streetLine1: "",
-                      streetLine2: "",
-                      city: "",
-                      province: "",
-                      postalCode: "",
-                      country: "",
-                      countryCode: "",
-                    }
-              }
-            />
+            <AddressModal address={address} userId={accountId} />
           </div>
         ) : (
           <div className="flex items-center gap-3 cursor-pointer">

@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { profileTabs } from "@/constants";
 import Image from "next/image";
 import EntriesTab from "@/components/shared/EntriesTab";
+import { use } from "react";
 
 async function Page({ params }: { params: { id: string } }) {
   const user = await currentUser();
@@ -18,6 +19,8 @@ async function Page({ params }: { params: { id: string } }) {
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   const isOwner = user.id === userInfo.id;
+
+  console.log("Page address", userInfo.address);
 
   return (
     <section>
@@ -31,6 +34,7 @@ async function Page({ params }: { params: { id: string } }) {
         bio={userInfo.bio}
         occupation={userInfo.occupation}
         isOwner={isOwner}
+        address={JSON.parse(JSON.stringify(userInfo.address))}
       />
 
       <div className="mt-9">

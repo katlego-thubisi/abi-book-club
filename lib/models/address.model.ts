@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
 const { randomUUID } = require("crypto");
+const uuid = require("uuid");
 
 const addressSchema = new mongoose.Schema({
   id: {
-    type: mongoose.Schema.Types.UUID,
-    default: () => randomUUID(),
-    unique: true,
-    required: true,
+    type: String,
+    default: () => uuid.v4().toString(),
   },
   streetLine1: {
     type: String,
