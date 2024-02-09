@@ -71,7 +71,7 @@ const AddressModal = ({ address, userId }: Props) => {
               }`}
             />
 
-            <p className="dark:text-white">
+            <p className="dark:text-light-1">
               {currentAddress?.streetLine1} {currentAddress?.streetLine2}{" "}
               {currentAddress?.city} {currentAddress?.country}
               <span className="ml-1 text-small-regular text-blue cursor-pointer  hover:underline ">

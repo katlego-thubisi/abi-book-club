@@ -97,7 +97,7 @@ const ProfileHeader = ({
     <div className="flex w-full flex-col justify-start">
       <div className="flex items-center justify-between">
         {isOwner ? (
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-4">
             <EditProfileModal
               accountId={accountId}
               authUserId={authUserId}
