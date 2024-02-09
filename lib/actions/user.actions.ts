@@ -1,6 +1,6 @@
 "use server";
 
-import { FilterQuery, SortOrder } from "mongoose";
+import { FilterQuery, SortOrder, Schema } from "mongoose";
 import { revalidatePath } from "next/cache";
 
 import Community from "../models/community.model";
@@ -8,15 +8,22 @@ import Entry from "../models/entry.model";
 import User from "../models/user.model";
 import Like from "../models/like.model";
 import { connectToDB } from "../mongoose";
+import Address from "../models/address.model";
+const uuid = require("uuid");
 
 export async function fetchUser(userId: string) {
   try {
     connectToDB();
 
-    return await User.findOne({ id: userId }).populate({
-      path: "communities",
-      model: Community,
-    });
+    return await User.findOne({ id: userId })
+      .populate({
+        path: "communities",
+        model: Community,
+      })
+      .populate({
+        path: "address",
+        model: Address,
+      });
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
   }
@@ -26,9 +33,11 @@ interface Params {
   userId: string;
   username: string;
   name: string;
+  surname: string | undefined;
   bio: string;
   image: string;
   path: string;
+  occupation: string | undefined;
 }
 
 export async function updateUser({
@@ -38,6 +47,8 @@ export async function updateUser({
   path,
   username,
   image,
+  occupation,
+  surname,
 }: Params): Promise<void> {
   try {
     connectToDB();
@@ -49,6 +60,8 @@ export async function updateUser({
         name,
         bio,
         image,
+        occupation,
+        surname,
         onboarded: true,
       },
       { upsert: true }
@@ -59,6 +72,59 @@ export async function updateUser({
     }
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`);
+  }
+}
+
+export async function removeUserAddress(
+  addressId: string,
+  userId: string,
+  path: string
+) {
+  try {
+    connectToDB();
+
+    const user = await User.findOne({ id: userId });
+
+    user.address.pull(addressId);
+
+    await user.save();
+
+    await Address.findOneAndDelete({ id: addressId });
+
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to remove user address: ${error.message}`);
+  }
+}
+
+export async function updateUserAddress(
+  address: any,
+  userId: string,
+  path: string
+) {
+  try {
+    connectToDB();
+
+    //Check if we need to update the address of create the address
+
+    if (address.id) {
+      await Address.findOneAndUpdate({ id: address.id }, address, {
+        upsert: true,
+      });
+    } else {
+      const newAddress = new Address(address);
+      await newAddress.save();
+
+      const user = await User.findOne({ id: userId });
+
+      user.address.push(newAddress._id);
+
+      user.save();
+    }
+
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to create/update user address: ${error.message}`);
   }
 }
 

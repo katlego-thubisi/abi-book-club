@@ -14,8 +14,22 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  surname: {
+    type: String,
+    required: false,
+  },
+  occupation: {
+    type: String,
+    required: false,
+  },
   image: String,
   bio: String,
+  address: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Address",
+    },
+  ],
   threads: [
     {
       type: mongoose.Schema.Types.ObjectId,

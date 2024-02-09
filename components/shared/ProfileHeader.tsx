@@ -19,26 +19,36 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import {
-  Dialog,
-  DialogDescription,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
 
-import AccountProfile from "../forms/AccountProfile";
-import { useState } from "react";
-import Community from "../forms/Community";
+import EditProfileModal from "../custom-ui/EditProfileModal";
+import AddressModal from "../custom-ui/AddressModal";
+import { useContext, useState } from "react";
+import MyThemeContext from "@/store/ThemeContext";
 
 interface Props {
   accountId: string;
   authUserId: string;
   name: string;
+  surname?: string;
   username: string;
   imgUrl: string;
   bio: string;
+  address?: [
+    {
+      _id?: string;
+      id?: string;
+      streetLine1: string;
+      streetLine2: string;
+      city: string;
+      province: string;
+      postalCode: string;
+      country: string;
+      countryCode: string;
+      isPrimary: boolean;
+      __v: number;
+    },
+  ];
+  occupation?: string;
   isMember?: boolean;
   isRequester?: boolean;
   isOwner?: boolean;
@@ -49,17 +59,18 @@ const ProfileHeader = ({
   accountId,
   authUserId,
   name,
+  surname,
   username,
+  address,
   imgUrl,
   bio,
+  occupation,
   isMember,
   isRequester,
   isOwner,
   type,
 }: Props) => {
   const pathName = usePathname();
-
-  const [open, setOpen] = useState(false);
 
   const joinCommunity = async () => {
     await memberRequestToCommunity(accountId, authUserId, pathName);
@@ -73,30 +84,35 @@ const ProfileHeader = ({
     await updateCommunityInfo(accountId, name, username, imgUrl, "delete", bio);
   };
 
+  const { isDarkTheme } = useContext(MyThemeContext);
+
+  const primaryAddress =
+    address && address.length > 0
+      ? address.find((address) => address.isPrimary)
+        ? address.find((address) => address.isPrimary)
+        : address[0]
+      : null;
+
   return (
     <div className="flex w-full flex-col justify-start">
       <div className="flex items-center justify-between">
-        <Dialog open={open} onOpenChange={setOpen}>
-          {isOwner ? (
-            <DialogTrigger asChild>
-              <div className="flex items-center gap-3 cursor-pointer">
-                <div className="relative h-20 w-20 object-cover">
-                  <Image
-                    src={imgUrl}
-                    alt="Profile image"
-                    fill
-                    className="rounded-full object-cover shadow-2xl"
-                  />
-                </div>
-                <div className="flex-1">
-                  <h2 className="text-left text-heading3-bold text-black dark:text-light-1">
-                    {name}
-                  </h2>
-                  <p className="text-base-medium text-gray-1">@{username}</p>
-                </div>
-              </div>
-            </DialogTrigger>
-          ) : (
+        {isOwner ? (
+          <div className="flex flex-col gap-4">
+            <EditProfileModal
+              accountId={accountId}
+              authUserId={authUserId}
+              name={name}
+              surname={surname}
+              occupation={occupation}
+              username={username}
+              imgUrl={imgUrl}
+              bio={bio}
+              type={type}
+            />
+            <AddressModal address={address} userId={accountId} />
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3 cursor-pointer">
               <div className="relative h-20 w-20 object-cover">
                 <Image
@@ -108,43 +124,43 @@ const ProfileHeader = ({
               </div>
               <div className="flex-1">
                 <h2 className="text-left text-heading3-bold text-black dark:text-light-1">
-                  {name}
+                  {name} {surname && surname}
                 </h2>
                 <p className="text-base-medium text-gray-1">@{username}</p>
+                {occupation && (
+                  <div className="flex relative gap-1">
+                    <Image
+                      width={16}
+                      height={16}
+                      alt="job"
+                      src={`${
+                        isDarkTheme ? "/assets/job-w.svg" : "/assets/job.svg"
+                      }`}
+                    />
+                    <p className="text-base-medium text-gray-1">{occupation}</p>
+                  </div>
+                )}
               </div>
             </div>
-          )}
-
-          <DialogContent className="content-center sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle className="text-base-semibold  text-slate-700 dark:text-gray-300">
-                Edit {type === "Community" ? "community" : "profile"}
-              </DialogTitle>
-              <DialogDescription className="text-base-semibold  text-slate-600 dark:text-gray-400">
-                Edit your {type === "Community" ? "community" : "profile"}.
-                Click save when you're done.
-              </DialogDescription>
-            </DialogHeader>
-            {type !== "Community" ? (
-              <AccountProfile
-                user={{ id: accountId, username, name, bio, image: imgUrl }}
-                btnTitle="Save"
-                handleClose={() => setOpen(false)}
-              />
-            ) : (
-              <Community
-                community={{
-                  id: accountId,
-                  username,
-                  name,
-                  bio,
-                  image: imgUrl,
-                }}
-                userId={authUserId}
-              />
+            {primaryAddress && (
+              <div className="flex relative gap-1">
+                <Image
+                  width={16}
+                  height={16}
+                  alt="location"
+                  src={`${
+                    isDarkTheme
+                      ? "/assets/location-w.svg"
+                      : "/assets/location.svg"
+                  }`}
+                />
+                <p className="dark:text-light-1">
+                  {primaryAddress?.city} {primaryAddress?.country}
+                </p>
+              </div>
             )}
-          </DialogContent>
-        </Dialog>
+          </div>
+        )}
 
         {!isOwner && !isMember && type === "Community" && (
           <div>

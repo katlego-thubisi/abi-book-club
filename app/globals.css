@@ -239,3 +239,7 @@
   position: relative;
   margin-top: -14px;
 }
+
+.pac-container {
+  z-index: 100;
+}

@@ -210,8 +210,8 @@ const Community = ({ community, userId }: Props) => {
               </FormLabel>
               <FormControl>
                 <Textarea
-                  rows={10}
-                  className="account-form_input form-input"
+                  rows={2}
+                  className="account-form_input form-input resize-none"
                   placeholder="Describe what the book club is about"
                   {...field}
                 />

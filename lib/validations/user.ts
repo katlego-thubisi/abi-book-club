@@ -9,6 +9,8 @@ export const UserValidation = z
       .string()
       .min(3, { message: "Minimum 3 characters." })
       .max(30, { message: "Maximum 30 caracters." }),
+    surname: z.string().optional(),
+    occupation: z.string().optional(),
     username: z
       .string()
       .min(3, { message: "Minimum 3 characters." })

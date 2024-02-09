@@ -15,8 +15,10 @@ async function Page() {
     objectId: userInfo?._id,
     username: userInfo ? userInfo?.username : user?.username,
     name: userInfo ? userInfo?.name : user?.firstName || "",
+    surname: userInfo ? userInfo?.surname : undefined,
     bio: userInfo ? userInfo?.bio : "",
     image: userInfo ? userInfo?.image : user?.imageUrl,
+    occupation: userInfo ? userInfo?.occupation : undefined,
   };
   return (
     <main className="w-full bg-white dark:bg-dark-2">
