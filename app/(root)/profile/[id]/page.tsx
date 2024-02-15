@@ -9,6 +9,7 @@ import { profileTabs } from "@/constants";
 import Image from "next/image";
 import EntriesTab from "@/components/shared/EntriesTab";
 import { use } from "react";
+import Bookshelf from "@/components/shared/Bookshelf";
 
 async function Page({ params }: { params: { id: string } }) {
   const user = await currentUser();
@@ -69,6 +70,13 @@ async function Page({ params }: { params: { id: string } }) {
               accountId={userInfo.id}
               accountType="User"
             />
+          </TabsContent>
+          <TabsContent
+            key={`content-bookshelf`}
+            value="bookshelf"
+            className="w-full text-light-1"
+          >
+            <Bookshelf shelf={[]} />
           </TabsContent>
         </Tabs>
       </div>
