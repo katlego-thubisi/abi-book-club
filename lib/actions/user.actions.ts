@@ -9,7 +9,9 @@ import User from "../models/user.model";
 import Like from "../models/like.model";
 import { connectToDB } from "../mongoose";
 import Address from "../models/address.model";
-const uuid = require("uuid");
+import Bookshelf from "../models/bookshelf.model";
+import Book from "../models/book.model";
+import BookReview from "../models/bookReview.model";
 
 export async function fetchUser(userId: string) {
   try {
@@ -23,6 +25,10 @@ export async function fetchUser(userId: string) {
       .populate({
         path: "address",
         model: Address,
+      })
+      .populate({
+        path: "bookshelf",
+        model: Bookshelf,
       });
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
@@ -125,6 +131,66 @@ export async function updateUserAddress(
     revalidatePath(path);
   } catch (error: any) {
     throw new Error(`Failed to create/update user address: ${error.message}`);
+  }
+}
+
+export async function updateUserBookshelf(
+  bookshelfItem: any,
+  userId: string,
+  path: string
+) {
+  try {
+    connectToDB();
+
+    //Check if we need to update the address of create the address
+
+    if (bookshelfItem.id) {
+      //Check if the book already exists in the db
+      const response = await Book.findOne({ id: bookshelfItem.book.bookId });
+
+      if (!response) {
+        //If it doesn't exist, create it
+        const newBook = new Book(bookshelfItem.book);
+        const bookResponse = newBook.save();
+
+        //Check if the book review already exists in the db
+        const bookReviewResponse = await BookReview.findOne({
+          id: bookshelfItem?.bookReviewId,
+        });
+
+        //If it doesn't exist, create it
+        if (!bookReviewResponse) {
+          const newReview = new BookReview(bookshelfItem.bookReview);
+          const reviewResponse = newReview.save();
+
+          //Upadte the bookshelf item
+          await Bookshelf.findOneAndUpdate(
+            { id: bookshelfItem.id },
+            {
+              bookId: bookResponse,
+              bookReviewId: reviewResponse,
+              ...bookshelfItem,
+            },
+            {
+              upsert: true,
+            }
+          );
+        }
+      }
+    } else {
+      const newBookshelf = new Bookshelf(bookshelfItem);
+      await newBookshelf.save();
+
+      const user = await User.findOne({ id: userId });
+
+      user.bookshelf.push(newBookshelf._id);
+
+      user.save();
+    }
+
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to create/update user bookshelf: ${error.message}`);
   }
 }
 

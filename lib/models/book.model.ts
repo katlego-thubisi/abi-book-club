@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 const uuid = require("uuid");
 
-const addressSchema = new mongoose.Schema({
+const bookSchema = new mongoose.Schema({
   id: {
     type: String,
     default: () => uuid.v4().toString(),
   },
-  book_id: {
+  bookId: {
     type: String,
     required: true,
   },
@@ -14,21 +14,22 @@ const addressSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  blurb: {
+  subtitle: {
     type: String,
     required: true,
   },
-  author: {
-    type: String,
-    required: true,
-  },
+  authors: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   cover: {
     type: String,
     required: true,
   },
 });
 
-const Address =
-  mongoose.models.Address || mongoose.model("Address", addressSchema);
+const Book = mongoose.models.Book || mongoose.model("Book", bookSchema);
 
-export default Address;
+export default Book;

@@ -61,6 +61,7 @@ const GoogleBookSearch = ({ onBookSelected }: Props) => {
     )
       .then((res) => res.json())
       .then((data: any) => {
+        console.log("Zee selected book", data);
         onBookSelected(data);
         setInputValue("");
       });
@@ -87,6 +88,7 @@ const GoogleBookSearch = ({ onBookSelected }: Props) => {
                     alt={prediction?.volumeInfo?.title}
                     src={prediction?.volumeInfo?.imageLinks?.thumbnail}
                     fill
+                    sizes="100% 100%"
                     className="object-cover"
                   />
                 </div>

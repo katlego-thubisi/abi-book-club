@@ -59,6 +59,12 @@ const userSchema = new mongoose.Schema({
       ref: "Community",
     },
   ],
+  bookshelf: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Bookshelf",
+    },
+  ],
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

@@ -2,9 +2,9 @@ import * as z from "zod";
 
 export const BookValidation = z.object({
   id: z.any().optional(),
-  book_id: z.string(),
+  bookId: z.string(),
   title: z.string(),
-  blurb: z.string(),
-  author: z.string(),
+  subtitle: z.string(),
+  authors: z.array(z.string()),
   cover: z.string(),
 });
