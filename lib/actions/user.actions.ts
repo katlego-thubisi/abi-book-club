@@ -29,6 +29,10 @@ export async function fetchUser(userId: string) {
       .populate({
         path: "bookshelf",
         model: Bookshelf,
+        populate: {
+          path: "bookId",
+          model: Book,
+        },
       });
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
@@ -151,7 +155,7 @@ export async function updateUserBookshelf(
       if (!response) {
         //If it doesn't exist, create it
         const newBook = new Book(bookshelfItem.book);
-        const bookResponse = newBook.save();
+        const bookResponse = await newBook.save();
 
         //Check if the book review already exists in the db
         const bookReviewResponse = await BookReview.findOne({
@@ -161,7 +165,7 @@ export async function updateUserBookshelf(
         //If it doesn't exist, create it
         if (!bookReviewResponse) {
           const newReview = new BookReview(bookshelfItem.bookReview);
-          const reviewResponse = newReview.save();
+          const reviewResponse = await newReview.save();
 
           //Upadte the bookshelf item
           await Bookshelf.findOneAndUpdate(
@@ -178,14 +182,40 @@ export async function updateUserBookshelf(
         }
       }
     } else {
-      const newBookshelf = new Bookshelf(bookshelfItem);
-      await newBookshelf.save();
+      //Check if the book already exists in the db
+      const response = await Book.findOne({
+        bookId: bookshelfItem.book.bookId,
+      });
 
-      const user = await User.findOne({ id: userId });
+      if (!response) {
+        //If it doesn't exist, create it
+        const newBook = new Book(bookshelfItem.book);
+        const bookResponse = await newBook.save();
 
-      user.bookshelf.push(newBookshelf._id);
+        const newBookshelf = new Bookshelf({
+          bookId: bookResponse._id,
+          ...bookshelfItem,
+        });
 
-      user.save();
+        await newBookshelf.save();
+
+        const user = await User.findOne({ id: userId });
+
+        user.bookshelf.push(newBookshelf._id);
+        user.save();
+      } else {
+        const newBookshelf = new Bookshelf({
+          bookId: response._id,
+          ...bookshelfItem,
+        });
+
+        await newBookshelf.save();
+
+        const user = await User.findOne({ id: userId });
+
+        user.bookshelf.push(newBookshelf._id);
+        await user.save();
+      }
     }
 
     revalidatePath(path);

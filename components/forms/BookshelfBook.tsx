@@ -19,7 +19,7 @@ import { Button } from "../ui/button";
 interface Props {
   book?: {
     id: string;
-    book_id: string;
+    bookId: string;
     title: string;
     subtitle: string;
     authors: string[];
@@ -29,14 +29,14 @@ interface Props {
 }
 
 const BookshelfBook = ({ book, onSubmit }: Props) => {
-  const [currentBook, setCurrentBook] = useState<any>(null);
+  const [currentBook, setCurrentBook] = useState<any>(book);
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof BookValidation>>({
     resolver: zodResolver(BookValidation),
     defaultValues: {
       id: book?.id ? book.id : "",
-      bookId: book?.book_id ? book?.book_id : "",
+      bookId: book?.bookId ? book?.bookId : "",
       title: book?.title ? book?.title : "",
       subtitle: book?.subtitle ? book?.subtitle : "",
       authors: book?.authors ? book?.authors : [],
@@ -44,18 +44,24 @@ const BookshelfBook = ({ book, onSubmit }: Props) => {
     },
   });
 
+  console.log("currBook", currentBook);
+
   const onFormSubmit = async (values: z.infer<typeof BookValidation>) => {
     setIsLoading(true);
-
-    onSubmit({
-      bookId: currentBook.id,
-      title: currentBook.volumeInfo.title,
-      subtitle: currentBook.volumeInfo.subtitle,
-      authors: currentBook.volumeInfo.authors,
-      cover: currentBook.volumeInfo.imageLinks.thumbnail,
-    });
+    console.log("before submit", currentBook);
+    onSubmit(currentBook);
 
     setIsLoading(false);
+  };
+
+  const handleBookSelection = (googleBook: any) => {
+    setCurrentBook({
+      bookId: googleBook.id,
+      title: googleBook.volumeInfo.title,
+      subtitle: googleBook.volumeInfo.subtitle,
+      authors: googleBook.volumeInfo.authors,
+      cover: googleBook.highRes ? googleBook.highRes : "",
+    });
   };
 
   return (
@@ -67,22 +73,23 @@ const BookshelfBook = ({ book, onSubmit }: Props) => {
         <FormItem className="flex w-full flex-col gap-3">
           <FormLabel className="form-label">Enter book name</FormLabel>
           <FormControl>
-            <GoogleBookSearch onBookSelected={(book) => setCurrentBook(book)} />
+            <GoogleBookSearch
+              onBookSelected={(book) => handleBookSelection(book)}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
 
         <div className="flex flex-col gap-1 items-center justify-center w-full">
           <h3 className="text-center text-heading4-medium text-black dark:text-light-1">
-            {(currentBook && currentBook.volumeInfo?.title) ||
-              "No book selected"}
+            {(currentBook && currentBook.title) || "No book selected"}
           </h3>
           <div className="flex flex-col gap-1">
             <div className="flex justify-center items-center relative  rounded-md overflow-hidden">
-              {currentBook ? (
+              {currentBook && currentBook.cover ? (
                 <Image
-                  src={currentBook?.volumeInfo?.imageLinks?.thumbnail}
-                  alt={currentBook?.volumeInfo?.title}
+                  src={currentBook?.cover}
+                  alt={currentBook?.title}
                   height={96}
                   width={80}
                   className="object-cover"

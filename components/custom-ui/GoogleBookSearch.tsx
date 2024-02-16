@@ -55,14 +55,19 @@ const GoogleBookSearch = ({ onBookSelected }: Props) => {
     setInputValue("");
   });
 
-  const handleSetPrediction = (prediction: any) => {
+  const handleSetPrediction = async (prediction: any) => {
     fetch(
-      `https://www.googleapis.com/books/v1/volumes/${prediction.id}?key=${process.env.NEXT_PUBLIC_PLACES_API_KEY}`
+      `https://www.googleapis.com/books/v1/volumes/${prediction.id}?key=${process.env.NEXT_PUBLIC_PLACES_API_KEY}&fife=w800-h900`
     )
       .then((res) => res.json())
-      .then((data: any) => {
-        console.log("Zee selected book", data);
-        onBookSelected(data);
+      .then(async (data: any) => {
+        const response = await fetch(``);
+        console.log;
+        console.log("Selected book", data);
+        onBookSelected({
+          highRes: `https://books.google.com/books/publisher/content/images/frontcover/${data.id}?fife=w400-h600&source=gbs_api`,
+          ...data,
+        });
         setInputValue("");
       });
   };

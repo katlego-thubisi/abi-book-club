@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogHeader,
@@ -11,14 +11,22 @@ import {
 import BookshelfRating from "../forms/BookShelfRating";
 import BookshelfType from "../forms/BookshelfType";
 import BookshelfBook from "../forms/BookshelfBook";
-import { set } from "mongoose";
+import { updateUserBookshelf } from "@/lib/actions/user.actions";
+import { usePathname } from "next/navigation";
+import Image from "next/image";
 
-const AddBookCard = () => {
+interface Props {
+  userId: string;
+}
+
+const AddBookCard = ({ userId }: Props) => {
   const [open, setOpen] = useState(false);
 
   const [bookshelfItem, setBookshelfItem] = useState<any>(null);
 
   const [step, setStep] = useState(1);
+
+  const pathname = usePathname();
 
   const handClose = (value: any) => {
     setOpen(value);
@@ -26,6 +34,7 @@ const AddBookCard = () => {
   };
 
   const handleBookSelection = (book: any) => {
+    console.log("Set Book", book);
     setBookshelfItem({
       ...bookshelfItem,
       book: book,
@@ -39,14 +48,6 @@ const AddBookCard = () => {
       ...bookshelfItem,
       category: category,
     });
-
-    if (category === "toRead") {
-      handleDataSubmit();
-
-      return;
-    }
-
-    setStep(3);
   };
 
   const handleReviewCreation = (reviewObject: any) => {
@@ -58,15 +59,47 @@ const AddBookCard = () => {
     handleDataSubmit();
   };
 
-  const handleDataSubmit = () => {
+  const handleDataSubmit = async () => {
     //Save the object accordingly.
+    await updateUserBookshelf(bookshelfItem, userId, pathname);
     setOpen(false);
   };
+
+  useEffect(() => {
+    if (!open) {
+      setBookshelfItem(null);
+      setStep(1);
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (bookshelfItem?.category === "toRead") {
+      handleDataSubmit();
+    } else if (step === 2) {
+      setStep(3);
+    }
+  }, [bookshelfItem?.category]);
 
   return (
     <Dialog open={open} onOpenChange={handClose}>
       <DialogTrigger asChild>
-        <p>AddBookCard</p>
+        <div
+          className="  flex flex-col space-y-2 rounded-md p-2 cursor-pointer
+        hover:bg-slate-600 hover:border-white  ease-in-out transition-all duration-300 dark:hover:bg-gray-700 
+        dark:hover:border-gray-300 dark:hover:text-gray-300"
+        >
+          <div className="relative">
+            <Image
+              src={"/assets/add-circle.svg"}
+              alt="Add book"
+              height={96}
+              width={96}
+            />
+          </div>
+          <p className="text-center text-slate-700 dark:text-gray-300 font-semibold text-sm">
+            Add book
+          </p>
+        </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -84,11 +117,15 @@ const AddBookCard = () => {
           </DialogDescription>
         </DialogHeader>
         {step === 1 && (
-          <BookshelfBook book={bookshelfItem} onSubmit={handleBookSelection} />
+          <BookshelfBook
+            book={bookshelfItem?.book}
+            onSubmit={handleBookSelection}
+          />
         )}
         {step === 2 && (
           <BookshelfType
             back={() => setStep(1)}
+            category={bookshelfItem?.category}
             onSubmit={handleCategorySelection}
           />
         )}

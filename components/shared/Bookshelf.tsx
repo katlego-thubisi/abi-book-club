@@ -8,21 +8,28 @@ interface Props {
         {
           id: string;
           title: string;
-          blurb: string;
-          author: string;
+          subtitle: string;
+          authors: string[];
           cover: string;
         },
       ]
     | [];
+  userId: string;
 }
 
-const Bookshelf = ({ shelf }: Props) => {
+const Bookshelf = ({ shelf, userId }: Props) => {
+  console.log("Zee shelf", shelf);
   return (
     <div className="mt-9 flex flex-wrap gap-4">
       {shelf.length === 0 ? (
-        <AddBookCard />
+        <AddBookCard userId={userId} />
       ) : (
-        shelf.map((book: any) => <BookCard key={book.id} book={book} />)
+        <div className="flex flex-wrap gap-2">
+          {shelf.map((shelfItem: any) => (
+            <BookCard key={shelfItem.id} book={shelfItem.bookId} />
+          ))}
+          <AddBookCard userId={userId} />
+        </div>
       )}
     </div>
   );

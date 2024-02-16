@@ -18,11 +18,11 @@ const bookshelfSchema = new mongoose.Schema({
   bookReviewId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "BookReview",
-    required: true,
+    required: false,
   },
 });
 
 const Bookshelf =
-  mongoose.models.Boookshelf || mongoose.model("Book", bookshelfSchema);
+  mongoose.models.Bookshelf || mongoose.model("Bookshelf", bookshelfSchema);
 
 export default Bookshelf;

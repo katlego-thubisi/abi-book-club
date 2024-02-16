@@ -19,22 +19,24 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
 interface Props {
-  book?: {
-    id: string;
-    book_id: string;
-    title: string;
-    blurb: string;
-    author: string[];
-    cover: string;
+  reviewObject?: {
+    rating: number;
+    review: string;
   };
   onSubmit: (review: any) => void;
   back: () => void;
 }
 
-const BookshelfRating = ({ book, onSubmit, back }: Props) => {
-  const [rating, setRating] = useState(0);
-  const [review, setReview] = useState("");
+const BookshelfRating = ({ reviewObject, onSubmit, back }: Props) => {
+  const [rating, setRating] = useState(
+    reviewObject?.rating ? reviewObject.rating : 0
+  );
+  const [review, setReview] = useState(
+    reviewObject?.review ? reviewObject.review : ""
+  );
   const [isLoading, setIsLoading] = useState(false);
+
+  const [book, setBook] = useState<any>(null);
 
   const form = useForm<z.infer<typeof BookValidation>>({
     resolver: zodResolver(BookValidation),
@@ -61,10 +63,6 @@ const BookshelfRating = ({ book, onSubmit, back }: Props) => {
         className="flex flex-col justify-start sm:gap-10 gap-5 max-h-96  sm:max-h-none overflow-y-scroll scrollbar-hide"
         onSubmit={form.handleSubmit(onFormSubmit)}
       >
-        <h3 className="text-center text-heading4-medium text-black dark:text-light-1">
-          Rating
-        </h3>
-
         <FormItem className="flex w-full flex-col items-center gap-3">
           <FormLabel className="form-label">Rating ({rating}/5)</FormLabel>
           <FormControl>

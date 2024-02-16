@@ -16,7 +16,7 @@ const bookSchema = new mongoose.Schema({
   },
   subtitle: {
     type: String,
-    required: true,
+    required: false,
   },
   authors: [
     {
@@ -26,7 +26,7 @@ const bookSchema = new mongoose.Schema({
   ],
   cover: {
     type: String,
-    required: true,
+    required: false,
   },
 });
 

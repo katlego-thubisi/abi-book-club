@@ -21,6 +21,8 @@ async function Page({ params }: { params: { id: string } }) {
 
   const isOwner = user.id === userInfo.id;
 
+  console.log("User info", userInfo);
+
   return (
     <section>
       <ProfileHeader
@@ -76,7 +78,7 @@ async function Page({ params }: { params: { id: string } }) {
             value="bookshelf"
             className="w-full text-light-1"
           >
-            <Bookshelf shelf={[]} />
+            <Bookshelf shelf={userInfo.bookshelf} userId={userInfo.id} />
           </TabsContent>
         </Tabs>
       </div>

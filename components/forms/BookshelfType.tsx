@@ -18,20 +18,15 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 interface Props {
-  book?: {
-    id: string;
-    book_id: string;
-    title: string;
-    blurb: string;
-    author: string[];
-    cover: string;
-  };
+  category: string;
   onSubmit: (category: string) => void;
   back: () => void;
 }
 
-const BookshelfType = ({ book, onSubmit, back }: Props) => {
-  const [type, setType] = useState("");
+const BookshelfType = ({ category, onSubmit, back }: Props) => {
+  const [type, setType] = useState(category);
+
+  const [book, setBook] = useState<any>(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,6 +47,7 @@ const BookshelfType = ({ book, onSubmit, back }: Props) => {
     setIsLoading(true);
 
     onSubmit(type);
+    setIsLoading(false);
   };
 
   return (
