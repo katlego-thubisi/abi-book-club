@@ -1,6 +1,10 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import BookCard from "../cards/BookCard";
 import AddBookCard from "../cards/AddBookCard";
+import { Dialog } from "../ui/dialog";
+import BookshelfItem from "../forms/BookshelfItem";
 
 interface Props {
   shelf:
@@ -18,19 +22,22 @@ interface Props {
 }
 
 const Bookshelf = ({ shelf, userId }: Props) => {
-  console.log("Zee shelf", shelf);
+  const [currentShelfItem, setShelfItem] = useState<any>(null);
+
   return (
     <div className="mt-9 flex flex-wrap gap-4">
       {shelf.length === 0 ? (
-        <AddBookCard userId={userId} />
+        <AddBookCard />
       ) : (
         <div className="flex flex-wrap gap-2">
           {shelf.map((shelfItem: any) => (
             <BookCard key={shelfItem.id} book={shelfItem.bookId} />
           ))}
-          <AddBookCard userId={userId} />
+
+          <AddBookCard />
         </div>
       )}
+      <BookshelfItem shelfItem={currentShelfItem} userId={userId} />
     </div>
   );
 };

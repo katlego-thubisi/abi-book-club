@@ -18,7 +18,6 @@ const GoogleBookSearch = ({ onBookSelected }: Props) => {
       )
         .then((res) => res.json())
         .then((data: any) => {
-          console.log("Zee data", data);
           if (data.items) {
             setPredictions(data.items);
             setOpen(true);
@@ -61,9 +60,6 @@ const GoogleBookSearch = ({ onBookSelected }: Props) => {
     )
       .then((res) => res.json())
       .then(async (data: any) => {
-        const response = await fetch(``);
-        console.log;
-        console.log("Selected book", data);
         onBookSelected({
           highRes: `https://books.google.com/books/publisher/content/images/frontcover/${data.id}?fife=w400-h600&source=gbs_api`,
           ...data,

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 interface Props {
   book: {
@@ -12,12 +11,11 @@ interface Props {
 }
 
 const BookCard = ({ book }: Props) => {
-  console.log(book.title, book.cover);
   return (
     <article className="w-40 sm:w-48">
-      <Link href={book.cover}>
-        <div className="relative w-full h-60">
-          <img
+      <div>
+        <div className="relative w-full h-60 overflow-hidden cursor-pointer">
+          <Image
             src={book.cover}
             alt={book.title}
             width={160}
@@ -33,7 +31,7 @@ const BookCard = ({ book }: Props) => {
             {book.authors.map((a) => a)}
           </p>
         </div>
-      </Link>
+      </div>
     </article>
   );
 };

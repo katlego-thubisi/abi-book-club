@@ -44,11 +44,9 @@ const BookshelfBook = ({ book, onSubmit }: Props) => {
     },
   });
 
-  console.log("currBook", currentBook);
-
   const onFormSubmit = async (values: z.infer<typeof BookValidation>) => {
     setIsLoading(true);
-    console.log("before submit", currentBook);
+
     onSubmit(currentBook);
 
     setIsLoading(false);
