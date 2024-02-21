@@ -138,6 +138,44 @@ export async function updateUserAddress(
   }
 }
 
+async function updateOrCreateBook(book: any) {
+  try {
+    connectToDB();
+    //Check if the book already exists in the db
+    const response = await Book.findOne({
+      bookId: book.bookId,
+    });
+
+    if (!response) {
+      //If it doesn't exist, create it
+      const newBook = new Book(book);
+      return await newBook.save();
+    } else {
+      return response;
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to create/update book: ${error.message}`);
+  }
+}
+
+async function updateOrCreateBookReview(bookReview: any) {
+  try {
+    connectToDB();
+    //Check if the book review already exists in the db
+    const response = await BookReview.findOne({ id: bookReview.id });
+
+    if (!response) {
+      //If it doesn't exist, create it
+      const newReview = new BookReview(bookReview);
+      return await newReview.save();
+    } else {
+      return response;
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to create/update book review: ${error.message}`);
+  }
+}
+
 export async function updateUserBookshelf(
   bookshelfItem: any,
   userId: string,
@@ -147,75 +185,44 @@ export async function updateUserBookshelf(
     connectToDB();
 
     //Check if we need to update the address of create the address
-
-    if (bookshelfItem.id) {
-      //Check if the book already exists in the db
-      const response = await Book.findOne({ id: bookshelfItem.book.bookId });
-
-      if (!response) {
-        //If it doesn't exist, create it
-        const newBook = new Book(bookshelfItem.book);
-        const bookResponse = await newBook.save();
-
-        //Check if the book review already exists in the db
-        const bookReviewResponse = await BookReview.findOne({
-          id: bookshelfItem?.bookReviewId,
-        });
-
-        //If it doesn't exist, create it
-        if (!bookReviewResponse) {
-          const newReview = new BookReview(bookshelfItem.bookReview);
-          const reviewResponse = await newReview.save();
-
-          //Upadte the bookshelf item
-          await Bookshelf.findOneAndUpdate(
-            { id: bookshelfItem.id },
-            {
-              bookId: bookResponse,
-              bookReviewId: reviewResponse,
-              ...bookshelfItem,
-            },
-            {
-              upsert: true,
-            }
-          );
-        }
-      }
-    } else {
-      //Check if the book already exists in the db
-      const response = await Book.findOne({
-        bookId: bookshelfItem.book.bookId,
+    if (bookshelfItem?.id) {
+      const newBookshelfItem = await Bookshelf.findOne({
+        id: bookshelfItem.id,
       });
 
-      if (!response) {
-        //If it doesn't exist, create it
-        const newBook = new Book(bookshelfItem.book);
-        const bookResponse = await newBook.save();
+      //Update the bookshelf item with the changes
+      const newBook = await updateOrCreateBook(bookshelfItem.book);
 
-        const newBookshelf = new Bookshelf({
-          bookId: bookResponse._id,
-          ...bookshelfItem,
-        });
+      if (bookshelfItem.review) {
+        const newReview = await updateOrCreateBookReview(bookshelfItem.review);
 
-        await newBookshelf.save();
-
-        const user = await User.findOne({ id: userId });
-
-        user.bookshelf.push(newBookshelf._id);
-        user.save();
-      } else {
-        const newBookshelf = new Bookshelf({
-          bookId: response._id,
-          ...bookshelfItem,
-        });
-
-        await newBookshelf.save();
-
-        const user = await User.findOne({ id: userId });
-
-        user.bookshelf.push(newBookshelf._id);
-        await user.save();
+        newBookshelfItem.review = bookshelfItem.review;
       }
+
+      newBookshelfItem.bookId = newBook._id;
+      newBookshelfItem.category = bookshelfItem.category;
+    } else {
+      //Create new bookshelf item with the book
+      const newBook = await updateOrCreateBook(bookshelfItem.book);
+
+      const newBookshelfItem = new Bookshelf({
+        ...bookshelfItem,
+        bookId: newBook._id,
+      });
+
+      if (bookshelfItem.review) {
+        const newReview = await updateOrCreateBookReview(bookshelfItem.review);
+
+        newBookshelfItem.bookReviewId = newReview._id;
+      }
+
+      const response = await newBookshelfItem.save();
+
+      const user = await User.findOne({ id: userId });
+
+      user.bookshelf.push(response._id);
+
+      user.save();
     }
 
     revalidatePath(path);

@@ -1,6 +1,9 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import BookCard from "../cards/BookCard";
 import AddBookCard from "../cards/AddBookCard";
+import BookshelfItem from "../forms/BookshelfItem";
 
 interface Props {
   shelf:
@@ -18,18 +21,43 @@ interface Props {
 }
 
 const Bookshelf = ({ shelf, userId }: Props) => {
-  console.log("Zee shelf", shelf);
+  const [currentShelfItem, setShelfItem] = useState<any>(null);
+
+  const [open, setOpen] = useState(false);
+
+  const handleSelectItem = (shelfItem: any) => {
+    setShelfItem(shelfItem);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setShelfItem(null);
+  };
   return (
     <div className="mt-9 flex flex-wrap gap-4">
       {shelf.length === 0 ? (
-        <AddBookCard userId={userId} />
+        <AddBookCard handleSelectItem={() => handleSelectItem(null)} />
       ) : (
         <div className="flex flex-wrap gap-2">
           {shelf.map((shelfItem: any) => (
-            <BookCard key={shelfItem.id} book={shelfItem.bookId} />
+            <BookCard
+              handleSelectItem={() => handleSelectItem(shelfItem)}
+              key={shelfItem.id}
+              book={shelfItem.bookId}
+            />
           ))}
-          <AddBookCard userId={userId} />
+
+          <AddBookCard handleSelectItem={() => handleSelectItem(null)} />
         </div>
+      )}
+      {open && (
+        <BookshelfItem
+          open={open}
+          handleClose={() => handleClose()}
+          shelfItem={{ ...currentShelfItem, book: currentShelfItem?.bookId }}
+          userId={userId}
+        />
       )}
     </div>
   );
