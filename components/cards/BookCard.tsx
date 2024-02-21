@@ -26,7 +26,7 @@ const BookCard = ({ book }: Props) => {
           />
         </div>
         <div>
-          <h3 className="text-base-semibold text-black dark:text-light-1">
+          <h3 className="text-base-semibold text-black dark:text-light-1 pt-3">
             {book.title}
           </h3>
           <p className="text-black dark:text-light-1">

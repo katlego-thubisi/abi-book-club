@@ -61,7 +61,7 @@ const BookshelfType = ({ category, onSubmit, back }: Props) => {
             className={` ${
               type === "reading" && "bg-slate-500"
             } text-sm text-muted text-black dark:text-light-1 p-1 
-            hover:bg-slate-400 duration-500 ease-in-out cursor-pointer rounded-md`}
+            hover:bg-gray-100 dark:hover:bg-dark-4 duration-500 ease-in-out cursor-pointer rounded-md`}
             onClick={() => setType("reading")}
           >
             I am currently reading this book
@@ -71,7 +71,7 @@ const BookshelfType = ({ category, onSubmit, back }: Props) => {
             className={`${
               type === "toRead" && "bg-slate-500"
             } text-sm text-muted text-black dark:text-light-1 p-1 
-            hover:bg-slate-400 duration-500 ease-in-out cursor-pointer rounded-md`}
+            hover:bg-gray-100 dark:hover:bg-dark-4 duration-500 ease-in-out cursor-pointer rounded-md`}
             onClick={() => setType("toRead")}
           >
             I would like to read this book
@@ -80,7 +80,8 @@ const BookshelfType = ({ category, onSubmit, back }: Props) => {
           <p
             className={`${
               type === "haveRead" && "bg-slate-500"
-            } text-sm text-muted text-black dark:text-light-1 p-1 hover:bg-slate-400 duration-500 ease-in-out cursor-pointer rounded-md`}
+            } text-sm text-muted text-black dark:text-light-1 p-1 
+            hover:bg-gray-100 dark:hover:bg-dark-4 duration-500 ease-in-out cursor-pointer rounded-md`}
             onClick={() => setType("haveRead")}
           >
             I have read this book

@@ -84,8 +84,8 @@ const AddBookCard = ({ userId }: Props) => {
     <Dialog open={open} onOpenChange={handClose}>
       <DialogTrigger asChild>
         <div
-          className="  flex flex-col space-y-2 rounded-md p-2 cursor-pointer
-        hover:bg-slate-600 hover:border-white  ease-in-out transition-all duration-300 dark:hover:bg-gray-700 
+          className="flex flex-col space-y-2 rounded-md p-2 cursor-pointer
+        hover:bg-gray-100 hover:border-white  ease-in-out transition-all duration-300 dark:hover:bg-dark-4 
         dark:hover:border-gray-300 dark:hover:text-gray-300"
         >
           <div className="relative">

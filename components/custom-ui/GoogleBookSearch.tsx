@@ -75,7 +75,7 @@ const GoogleBookSearch = ({ onBookSelected }: Props) => {
   return (
     <div className="relative w-full">
       <Input
-        className="account-form_input form-input"
+        className="account-form_input form-input bg-white dark:bg-dark-3"
         placeholder="Search for book..."
         onChange={(evt) => setInputValue(evt.target.value)}
         value={inputValue}
@@ -83,10 +83,10 @@ const GoogleBookSearch = ({ onBookSelected }: Props) => {
       {open && (
         <div
           ref={wrapperRef}
-          className="absolute flex flex-col w-full gap-4 bg-slate-500 overflow-y-auto z-50 h-36 sm:h-72"
+          className="absolute flex flex-col w-full gap-4 bg-white dark:bg-dark-2 overflow-y-auto z-50 h-36 sm:h-72"
         >
           {predections.map((prediction: any, index) => (
-            <div className="hover:bg-slate-400 p-2">
+            <div className="hover:bg-gray-100 dark:hover:bg-dark-4 p-2">
               <div className="flex items-center gap-1 w-full max-h-20   cursor-pointer  ">
                 <div className="flex justify-center items-center relative p-4 w-16 h-20 rounded-md overflow-hidden">
                   <Image
@@ -99,7 +99,7 @@ const GoogleBookSearch = ({ onBookSelected }: Props) => {
                 </div>
                 <div
                   onClick={() => handleSetPrediction(prediction)}
-                  className="flex flex-col w-full text-white px-4 py-2 cursor-pointer"
+                  className="flex flex-col w-full text-black dark:text-white px-4 py-2 cursor-pointer"
                 >
                   <p className="overflow-hidden text-ellipsis h-6">
                     {prediction.volumeInfo.title}

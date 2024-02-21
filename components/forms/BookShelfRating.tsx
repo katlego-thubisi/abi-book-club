@@ -80,7 +80,7 @@ const BookshelfRating = ({ reviewObject, onSubmit, back }: Props) => {
           <FormControl>
             <Textarea
               placeholder="Tell us about the book"
-              className="resize-none"
+              className="resize-none bg-white dark:bg-dark-3"
               // {...field}
             />
           </FormControl>
@@ -90,7 +90,7 @@ const BookshelfRating = ({ reviewObject, onSubmit, back }: Props) => {
           <Button
             type="button"
             onClick={() => back()}
-            className="bg-slate-800 dark:bg-slate-800 dark:text-white"
+            className="bg-slate-800 dark:bg-slate-800 dark:hover:bg-dark-3 dark:text-white"
           >
             Back
           </Button>
@@ -99,13 +99,13 @@ const BookshelfRating = ({ reviewObject, onSubmit, back }: Props) => {
               setRating(0);
               form.handleSubmit(onFormSubmit);
             }}
-            className="bg-red-800 dark:bg-red-800 dark:text-white"
+            className="bg-red-800 dark:bg-red-800 dark:hover:bg-dark-3 dark:text-white"
           >
             Skip
           </Button>
           <Button
             type="submit"
-            className="bg-red-800 dark:bg-red-800 dark:text-white"
+            className="bg-red-800 dark:bg-red-800 dark:hover:bg-dark-3 dark:text-white"
             disabled={form.formState.isSubmitting || isLoading || !rating}
           >
             {form.formState.isSubmitting || isLoading ? "Submitting" : "Next"}
