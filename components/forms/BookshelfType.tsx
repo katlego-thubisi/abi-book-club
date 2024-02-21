@@ -34,10 +34,10 @@ const BookshelfType = ({ category, onSubmit, back }: Props) => {
     resolver: zodResolver(BookValidation),
     defaultValues: {
       id: book?.id ? book.id : "",
-      bookId: book?.book_id ? book?.book_id : "",
+      bookId: book?.bookId ? book?.bookId : "",
       title: book?.title ? book?.title : "",
-      subtitle: book?.blurb ? book?.blurb : "",
-      authors: book?.author ? book?.author : [],
+      subtitle: book?.subtitle ? book?.subtitle : "",
+      authors: book?.authors ? book?.authors : [],
       cover: book?.cover ? book.cover : "",
       //   bio: user?.bio ? user.bio : "",
     },
@@ -47,6 +47,7 @@ const BookshelfType = ({ category, onSubmit, back }: Props) => {
     setIsLoading(true);
 
     onSubmit(type);
+
     setIsLoading(false);
   };
 

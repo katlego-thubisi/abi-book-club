@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BookshelfBook from "./BookshelfBook";
 import BookshelfType from "./BookshelfType";
-import BookshelfRating from "./BookShelfRating";
 import { usePathname } from "next/navigation";
 import { updateUserBookshelf } from "@/lib/actions/user.actions";
 import {
@@ -11,29 +10,29 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+import BookshelfRating from "./BookShelfRating";
 
 interface Props {
-  shelfItem: {
-    id: string;
-    title: string;
-    subtitle: string;
-    authors: string[];
-    cover: string;
-  } | null;
+  shelfItem: any | null;
   userId: string;
+  open: boolean;
+  handleClose: () => void;
 }
 
-const BookshelfItem = ({ shelfItem, userId }: Props) => {
+const BookshelfItem = ({ shelfItem, userId, open, handleClose }: Props) => {
   const [bookshelfItem, setBookshelfItem] = useState<any>(
     shelfItem ? shelfItem : null
   );
 
+  console.log("BookshelfItem", shelfItem);
+
   const [step, setStep] = useState(1);
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(open);
+
   const pathname = usePathname();
 
   const handClose = (value: any) => {
-    setOpen(value);
+    !value && handleClose();
     !value && setStep(1);
   };
 
@@ -51,6 +50,13 @@ const BookshelfItem = ({ shelfItem, userId }: Props) => {
       ...bookshelfItem,
       category: category,
     });
+
+    //Run this because useEffect wont run if you dont change the value
+    if (category === "toRead" && category === shelfItem?.category) {
+      handleDataSubmit();
+    } else if (category === shelfItem?.category) {
+      setStep(3);
+    }
   };
 
   const handleReviewCreation = (reviewObject: any) => {
@@ -69,10 +75,18 @@ const BookshelfItem = ({ shelfItem, userId }: Props) => {
     }
   }, [open]);
 
+  useEffect(() => {
+    if (bookshelfItem?.category === "toRead" && step === 2) {
+      handleDataSubmit();
+    } else if (step === 2) {
+      setStep(3);
+    }
+  }, [bookshelfItem?.category]);
+
   const handleDataSubmit = async () => {
     //Save the object accordingly.
     await updateUserBookshelf(bookshelfItem, userId, pathname);
-    setOpen(false);
+    handleClose();
   };
 
   return (

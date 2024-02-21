@@ -8,11 +8,13 @@ interface Props {
     authors: string[];
     cover: string;
   };
+
+  handleSelectItem: () => void;
 }
 
-const BookCard = ({ book }: Props) => {
+const BookCard = ({ book, handleSelectItem }: Props) => {
   return (
-    <article className="w-40 sm:w-48">
+    <article className="w-40 sm:w-48" onClick={() => handleSelectItem()}>
       <div>
         <div className="relative w-full h-60 overflow-hidden cursor-pointer">
           <Image

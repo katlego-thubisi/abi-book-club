@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import BookCard from "../cards/BookCard";
 import AddBookCard from "../cards/AddBookCard";
-import { Dialog } from "../ui/dialog";
 import BookshelfItem from "../forms/BookshelfItem";
 
 interface Props {
@@ -24,20 +23,42 @@ interface Props {
 const Bookshelf = ({ shelf, userId }: Props) => {
   const [currentShelfItem, setShelfItem] = useState<any>(null);
 
+  const [open, setOpen] = useState(false);
+
+  const handleSelectItem = (shelfItem: any) => {
+    setShelfItem(shelfItem);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setShelfItem(null);
+  };
   return (
     <div className="mt-9 flex flex-wrap gap-4">
       {shelf.length === 0 ? (
-        <AddBookCard />
+        <AddBookCard handleSelectItem={() => handleSelectItem(null)} />
       ) : (
         <div className="flex flex-wrap gap-2">
           {shelf.map((shelfItem: any) => (
-            <BookCard key={shelfItem.id} book={shelfItem.bookId} />
+            <BookCard
+              handleSelectItem={() => handleSelectItem(shelfItem)}
+              key={shelfItem.id}
+              book={shelfItem.bookId}
+            />
           ))}
 
-          <AddBookCard />
+          <AddBookCard handleSelectItem={() => handleSelectItem(null)} />
         </div>
       )}
-      <BookshelfItem shelfItem={currentShelfItem} userId={userId} />
+      {open && (
+        <BookshelfItem
+          open={open}
+          handleClose={() => handleClose()}
+          shelfItem={{ ...currentShelfItem, book: currentShelfItem?.bookId }}
+          userId={userId}
+        />
+      )}
     </div>
   );
 };

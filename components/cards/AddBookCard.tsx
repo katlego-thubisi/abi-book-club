@@ -1,24 +1,16 @@
 "use client";
-import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogHeader,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "../ui/dialog";
-import BookshelfRating from "../forms/BookShelfRating";
-import BookshelfType from "../forms/BookshelfType";
-import BookshelfBook from "../forms/BookshelfBook";
-import { updateUserBookshelf } from "@/lib/actions/user.actions";
-import { usePathname } from "next/navigation";
+
 import Image from "next/image";
 
-const AddBookCard = () => {
+interface Props {
+  handleSelectItem: () => void;
+}
+
+const AddBookCard = ({ handleSelectItem }: Props) => {
   return (
     <div
-      className="  flex flex-col space-y-2 rounded-md p-2 cursor-pointer
+      onClick={() => handleSelectItem()}
+      className="flex flex-col space-y-2 rounded-md p-2 cursor-pointer
         hover:bg-slate-600 hover:border-white  ease-in-out transition-all duration-300 dark:hover:bg-gray-700 
         dark:hover:border-gray-300 dark:hover:text-gray-300"
     >

@@ -32,6 +32,8 @@ const BookshelfBook = ({ book, onSubmit }: Props) => {
   const [currentBook, setCurrentBook] = useState<any>(book);
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log("CurrentBook", book);
+
   const form = useForm<z.infer<typeof BookValidation>>({
     resolver: zodResolver(BookValidation),
     defaultValues: {
