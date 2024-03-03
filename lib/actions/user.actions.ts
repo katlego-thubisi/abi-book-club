@@ -196,11 +196,13 @@ export async function updateUserBookshelf(
       if (bookshelfItem.review) {
         const newReview = await updateOrCreateBookReview(bookshelfItem.review);
 
-        newBookshelfItem.review = bookshelfItem.review;
+        newBookshelfItem.reviewId = newReview._id;
       }
 
       newBookshelfItem.bookId = newBook._id;
       newBookshelfItem.category = bookshelfItem.category;
+
+      await newBookshelfItem.save();
     } else {
       //Create new bookshelf item with the book
       const newBook = await updateOrCreateBook(bookshelfItem.book);

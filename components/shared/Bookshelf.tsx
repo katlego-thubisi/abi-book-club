@@ -35,11 +35,11 @@ const Bookshelf = ({ shelf, userId }: Props) => {
     setShelfItem(null);
   };
   return (
-    <div className="mt-9 flex flex-wrap gap-4">
+    <div className="mt-9">
       {shelf.length === 0 ? (
         <AddBookCard handleSelectItem={() => handleSelectItem(null)} />
       ) : (
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-7">
           {shelf.map((shelfItem: any) => (
             <BookCard
               handleSelectItem={() => handleSelectItem(shelfItem)}
