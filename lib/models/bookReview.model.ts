@@ -22,7 +22,6 @@ const bookReviewSchema = new mongoose.Schema({
   },
   review: {
     type: String,
-    required: true,
   },
 });
 

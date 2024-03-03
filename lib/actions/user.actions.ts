@@ -29,10 +29,16 @@ export async function fetchUser(userId: string) {
       .populate({
         path: "bookshelf",
         model: Bookshelf,
-        populate: {
-          path: "bookId",
-          model: Book,
-        },
+        populate: [
+          {
+            path: "bookId",
+            model: Book,
+          },
+          {
+            path: "bookReviewId",
+            model: BookReview,
+          },
+        ],
       });
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
@@ -144,6 +150,8 @@ async function updateOrCreateBook(book: any) {
     //Check if the book already exists in the db
     const response = await Book.findOne({
       bookId: book.bookId,
+      title: book.title,
+      subtitle: book.subtitle,
     });
 
     if (!response) {
@@ -158,21 +166,69 @@ async function updateOrCreateBook(book: any) {
   }
 }
 
-async function updateOrCreateBookReview(bookReview: any) {
+async function updateOrCreateBookReview(
+  bookId: any,
+  bookReview: any,
+  userId: any
+) {
   try {
     connectToDB();
     //Check if the book review already exists in the db
-    const response = await BookReview.findOne({ id: bookReview.id });
-
-    if (!response) {
-      //If it doesn't exist, create it
-      const newReview = new BookReview(bookReview);
-      return await newReview.save();
-    } else {
+    if (bookReview?.id) {
+      const response = await BookReview.findOneAndUpdate(
+        { id: bookReview?.id },
+        { ...bookReview },
+        { upsert: true }
+      );
       return response;
+    } else {
+      //If it doesn't exist, create it
+
+      const user = await User.findOne({ id: userId });
+
+      const newReview = new BookReview({
+        ...bookReview,
+        bookId: bookId,
+        createdBy: user._id,
+      });
+      return await newReview.save();
     }
   } catch (error: any) {
     throw new Error(`Failed to create/update book review: ${error.message}`);
+  }
+}
+
+export async function removeUserBookshelf(
+  path: string,
+  bookshelfId: string,
+  userId: string
+) {
+  try {
+    connectToDB();
+
+    //Find the user
+    const user = await User.findOne({ id: userId });
+
+    //Find the bookshelf item
+    const bookshelfItem = await Bookshelf.findOne({ id: bookshelfId });
+
+    //Delete the review
+    await BookReview.findOneAndDelete({
+      id: bookshelfItem.bookReviewId,
+    });
+
+    //Delete remove the bookshelf item from the user
+    user.bookshelf.pull(bookshelfItem._id);
+
+    //Remove the bookshelf item from the db
+    await Bookshelf.findOneAndDelete({ id: bookshelfId });
+
+    //Save the user without the bookshelf item
+    await user.save();
+
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to remove user bookshelf: ${error.message}`);
   }
 }
 
@@ -191,12 +247,16 @@ export async function updateUserBookshelf(
       });
 
       //Update the bookshelf item with the changes
-      const newBook = await updateOrCreateBook(bookshelfItem.book);
+      const newBook: any = await updateOrCreateBook(bookshelfItem.book);
 
       if (bookshelfItem.review) {
-        const newReview = await updateOrCreateBookReview(bookshelfItem.review);
+        const newReview = await updateOrCreateBookReview(
+          newBook._id,
+          bookshelfItem.review,
+          userId
+        );
 
-        newBookshelfItem.reviewId = newReview._id;
+        newBookshelfItem.bookReviewId = newReview._id;
       }
 
       newBookshelfItem.bookId = newBook._id;
@@ -205,7 +265,7 @@ export async function updateUserBookshelf(
       await newBookshelfItem.save();
     } else {
       //Create new bookshelf item with the book
-      const newBook = await updateOrCreateBook(bookshelfItem.book);
+      const newBook: any = await updateOrCreateBook(bookshelfItem.book);
 
       const newBookshelfItem = new Bookshelf({
         ...bookshelfItem,
@@ -213,7 +273,11 @@ export async function updateUserBookshelf(
       });
 
       if (bookshelfItem.review) {
-        const newReview = await updateOrCreateBookReview(bookshelfItem.review);
+        const newReview = await updateOrCreateBookReview(
+          newBook._id,
+          bookshelfItem.review,
+          userId
+        );
 
         newBookshelfItem.bookReviewId = newReview._id;
       }
@@ -224,7 +288,7 @@ export async function updateUserBookshelf(
 
       user.bookshelf.push(response._id);
 
-      user.save();
+      await user.save();
     }
 
     revalidatePath(path);
@@ -238,7 +302,7 @@ export async function fetchUserPosts(userId: string) {
     connectToDB();
 
     // Find all threads authored by the user with the given userId
-    const threads = await User.findOne({ id: userId }).populate({
+    const threads: any = await User.findOne({ id: userId }).populate({
       path: "threads",
       options: { sort: { createdAt: -1 } }, // Sort threads by createdAt field in descending order
       model: Entry,

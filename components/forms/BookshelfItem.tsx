@@ -62,10 +62,12 @@ const BookshelfItem = ({ shelfItem, userId, open, handleClose }: Props) => {
   const handleReviewCreation = (reviewObject: any) => {
     setBookshelfItem({
       ...bookshelfItem,
-      review: reviewObject,
+      review: {
+        ...bookshelfItem.review,
+        review: reviewObject.review,
+        rating: reviewObject.rating,
+      },
     });
-
-    handleDataSubmit();
   };
 
   useEffect(() => {
@@ -82,6 +84,12 @@ const BookshelfItem = ({ shelfItem, userId, open, handleClose }: Props) => {
       setStep(3);
     }
   }, [bookshelfItem?.category]);
+
+  useEffect(() => {
+    if (bookshelfItem?.review && step === 3) {
+      handleDataSubmit();
+    }
+  }, [bookshelfItem.review]);
 
   const handleDataSubmit = async () => {
     //Save the object accordingly.
@@ -122,6 +130,7 @@ const BookshelfItem = ({ shelfItem, userId, open, handleClose }: Props) => {
         {step === 3 && (
           <BookshelfRating
             back={() => setStep(2)}
+            reviewObject={bookshelfItem?.review}
             onSubmit={handleReviewCreation}
           />
         )}
