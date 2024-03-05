@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 interface Props {
-  selectedRate: (rating: number) => void;
+  selectedRate?: (rating: number) => void;
   defaultRating: number;
 }
 
@@ -10,9 +10,11 @@ const Rating = ({ selectedRate, defaultRating }: Props) => {
   const [rating, setRating] = useState(defaultRating);
 
   const handleClick = (newRating: number) => {
-    setRating(newRating);
+    if (selectedRate) {
+      setRating(newRating);
 
-    selectedRate(newRating);
+      selectedRate(newRating);
+    }
   };
 
   return (
@@ -20,12 +22,22 @@ const Rating = ({ selectedRate, defaultRating }: Props) => {
       {[...Array(5)].map((_, index) => (
         <span
           key={index}
-          onClick={() => handleClick(index + 1)}
-          style={{ cursor: "pointer", color: index < rating ? "gold" : "gray" }}
+          onClick={() =>
+            rating % 1 === 0 ? handleClick(index + 0.5) : handleClick(index + 1)
+          }
+          style={{ cursor: "pointer" }}
         >
-          {index < rating ? (
+          {index + 1 <= rating ? (
             <Image
               src="/assets/rating-filled.svg"
+              alt="shroom"
+              width={30}
+              height={30}
+              className="cursor-pointer"
+            />
+          ) : index + 0.5 === rating ? (
+            <Image
+              src="/assets/rating-half-filled.svg"
               alt="shroom"
               width={30}
               height={30}

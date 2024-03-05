@@ -59,6 +59,8 @@ const BookshelfBook = ({ book, onSubmit }: Props) => {
       bookId: googleBook.id,
       title: googleBook.volumeInfo.title,
       subtitle: googleBook.volumeInfo.subtitle,
+      description: googleBook.volumeInfo.description,
+      categories: googleBook.volumeInfo.categories,
       authors: googleBook.volumeInfo.authors,
       cover: googleBook.highRes ? googleBook.highRes : "",
     });

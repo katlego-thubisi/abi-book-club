@@ -37,6 +37,11 @@ export async function fetchUser(userId: string) {
           {
             path: "bookReviewId",
             model: BookReview,
+            populate: {
+              path: "createdBy",
+              model: User,
+              select: "name image id",
+            },
           },
         ],
       });

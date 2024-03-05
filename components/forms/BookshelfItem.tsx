@@ -24,8 +24,6 @@ const BookshelfItem = ({ shelfItem, userId, open, handleClose }: Props) => {
     shelfItem ? shelfItem : null
   );
 
-  console.log("BookshelfItem", shelfItem);
-
   const [step, setStep] = useState(1);
   // const [open, setOpen] = useState(open);
 

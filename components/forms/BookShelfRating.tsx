@@ -1,7 +1,6 @@
 import {
   Form,
   FormControl,
-  FormField,
   FormItem,
   FormLabel,
   FormMessage,
@@ -11,7 +10,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import { Input } from "../ui/input";
 import Rating from "../custom-ui/RatingInput";
 import { useState } from "react";
 
@@ -64,7 +62,7 @@ const BookshelfRating = ({ reviewObject, onSubmit, back }: Props) => {
         onSubmit={form.handleSubmit(onFormSubmit)}
       >
         <FormItem className="flex w-full flex-col items-center gap-3">
-          <FormLabel className="form-label">Rating ({rating}/5)</FormLabel>
+          <FormLabel className="form-label">{rating}</FormLabel>
           <FormControl>
             <Rating
               selectedRate={(rate) => {
@@ -81,7 +79,7 @@ const BookshelfRating = ({ reviewObject, onSubmit, back }: Props) => {
             <Textarea
               value={review}
               placeholder="Tell us about the book"
-              className="resize-none bg-white dark:bg-dark-3"
+              className="resize-none bg-white dark:bg-dark-3 dark:text-white"
               onChange={(event) => setReview(event.target.value)}
             />
           </FormControl>

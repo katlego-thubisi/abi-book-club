@@ -1,4 +1,3 @@
-import PostJournal from "@/components/forms/PostJournal";
 import ProfileHeader from "@/components/shared/ProfileHeader";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
@@ -8,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { profileTabs } from "@/constants";
 import Image from "next/image";
 import EntriesTab from "@/components/shared/EntriesTab";
-import { use } from "react";
+
 import Bookshelf from "@/components/shared/Bookshelf";
 
 async function Page({ params }: { params: { id: string } }) {
@@ -85,6 +84,7 @@ async function Page({ params }: { params: { id: string } }) {
             <Bookshelf
               shelf={JSON.parse(JSON.stringify(userInfo.bookshelf))}
               userId={userInfo.id}
+              isOwner={isOwner}
             />
           </TabsContent>
         </Tabs>
