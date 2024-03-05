@@ -1,4 +1,3 @@
-import PostJournal from "@/components/forms/PostJournal";
 import ProfileHeader from "@/components/shared/ProfileHeader";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
@@ -8,7 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { profileTabs } from "@/constants";
 import Image from "next/image";
 import EntriesTab from "@/components/shared/EntriesTab";
-import { use } from "react";
+
+import Bookshelf from "@/components/shared/Bookshelf";
 
 async function Page({ params }: { params: { id: string } }) {
   const user = await currentUser();
@@ -36,7 +36,7 @@ async function Page({ params }: { params: { id: string } }) {
       />
 
       <div className="mt-9">
-        <Tabs defaultValue="entries" className="w-full">
+        <Tabs defaultValue="bookshelf" className="w-full">
           <TabsList className="tab">
             {profileTabs.map((tab: any) => (
               <TabsTrigger key={tab.label} value={tab.value} className="tab">
@@ -51,8 +51,14 @@ async function Page({ params }: { params: { id: string } }) {
                 <p className="max-sm:hidden">{tab.label}</p>
 
                 {tab.label === "Entries" && (
-                  <p className="ml-1 rounded-sm bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">
+                  <p className="ml-1 rounded-md bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">
                     {userInfo?.threads?.length}
+                  </p>
+                )}
+
+                {tab.label === "Bookshelf" && (
+                  <p className="ml-1 rounded-md bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">
+                    {userInfo?.bookshelf?.length}
                   </p>
                 )}
               </TabsTrigger>
@@ -68,6 +74,17 @@ async function Page({ params }: { params: { id: string } }) {
               currentUserId={userInfo._id}
               accountId={userInfo.id}
               accountType="User"
+            />
+          </TabsContent>
+          <TabsContent
+            key={`content-bookshelf`}
+            value="bookshelf"
+            className="w-full text-light-1"
+          >
+            <Bookshelf
+              shelf={JSON.parse(JSON.stringify(userInfo.bookshelf))}
+              userId={userInfo.id}
+              isOwner={isOwner}
             />
           </TabsContent>
         </Tabs>

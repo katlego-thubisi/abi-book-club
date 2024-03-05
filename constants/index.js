@@ -38,7 +38,9 @@ export const sidebarLinks = [
 ];
 
 export const profileTabs = [
+  { value: "bookshelf", label: "Bookshelf", icon: "/assets/bookshelf.svg" },
   { value: "entries", label: "Entries", icon: "/assets/reply.svg" },
+
   // { value: "replies", label: "Replies", icon: "/assets/members.svg" },
   // { value: "tagged", label: "Tagged", icon: "/assets/tag.svg" },
 ];

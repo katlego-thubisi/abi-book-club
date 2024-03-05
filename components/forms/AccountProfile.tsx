@@ -42,7 +42,9 @@ interface Props {
 
 const AccountProfile = ({ user, btnTitle, handleClose, onboarderd }: Props) => {
   const router = useRouter();
+
   const pathname = usePathname();
+
   const { startUpload } = useUploadThing("media");
 
   const [files, setFiles] = useState<File[]>([]);

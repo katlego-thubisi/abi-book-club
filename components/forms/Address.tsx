@@ -145,36 +145,12 @@ const Address = ({ address, btnTitle, handleClose, userId }: Props) => {
         <FormItem className="flex w-full flex-col gap-3">
           <FormLabel className="form-label">Enter address</FormLabel>
           <FormControl>
-            {/* <Autocomplete
-                  className="account-form_input form-input flex h-10 w-full rounded-md border 
-                  border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white 
-                  file:border-0 file:bg-transparent file:text-sm file:font-medium 
-                  placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 
-                  focus-visible:ring-slate-950 focus-visible:ring-offset-2 
-                  disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 
-                  dark:bg-slate-950 dark:ring-offset-slate-950 
-                   dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300"
-                  apiKey={process.env.NEXT_PUBLIC_PLACES_API_KEY}
-                  onChange={(e: any) => setPlace(e.target.value)}
-                  onPlaceSelected={(place) => handleSelectPlace(place)}
-                  options={{ types: ["address"] }}
-                  value={place?.formatted_address}
-                ></Autocomplete> */}
-
             <GoogleAddressInput
               onPlaceSelected={(place: any) => handleSelectPlace(place)}
             />
-
-            {/* <input ref={ref} defaultValue={""} /> */}
           </FormControl>
           <FormMessage />
         </FormItem>
-
-        <div className=" w-full text-center">
-          <h3 className=" text-heading4-medium text-black dark:text-light-1">
-            OR
-          </h3>
-        </div>
 
         <FormField
           control={form.control}

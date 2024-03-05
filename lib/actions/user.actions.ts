@@ -9,7 +9,9 @@ import User from "../models/user.model";
 import Like from "../models/like.model";
 import { connectToDB } from "../mongoose";
 import Address from "../models/address.model";
-const uuid = require("uuid");
+import Bookshelf from "../models/bookshelf.model";
+import Book from "../models/book.model";
+import BookReview from "../models/bookReview.model";
 
 export async function fetchUser(userId: string) {
   try {
@@ -23,6 +25,25 @@ export async function fetchUser(userId: string) {
       .populate({
         path: "address",
         model: Address,
+      })
+      .populate({
+        path: "bookshelf",
+        model: Bookshelf,
+        populate: [
+          {
+            path: "bookId",
+            model: Book,
+          },
+          {
+            path: "bookReviewId",
+            model: BookReview,
+            populate: {
+              path: "createdBy",
+              model: User,
+              select: "name image id",
+            },
+          },
+        ],
       });
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
@@ -128,12 +149,165 @@ export async function updateUserAddress(
   }
 }
 
+async function updateOrCreateBook(book: any) {
+  try {
+    connectToDB();
+    //Check if the book already exists in the db
+    const response = await Book.findOne({
+      bookId: book.bookId,
+      title: book.title,
+      subtitle: book.subtitle,
+    });
+
+    if (!response) {
+      //If it doesn't exist, create it
+      const newBook = new Book(book);
+      return await newBook.save();
+    } else {
+      return response;
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to create/update book: ${error.message}`);
+  }
+}
+
+async function updateOrCreateBookReview(
+  bookId: any,
+  bookReview: any,
+  userId: any
+) {
+  try {
+    connectToDB();
+    //Check if the book review already exists in the db
+    if (bookReview?.id) {
+      const response = await BookReview.findOneAndUpdate(
+        { id: bookReview?.id },
+        { ...bookReview },
+        { upsert: true }
+      );
+      return response;
+    } else {
+      //If it doesn't exist, create it
+
+      const user = await User.findOne({ id: userId });
+
+      const newReview = new BookReview({
+        ...bookReview,
+        bookId: bookId,
+        createdBy: user._id,
+      });
+      return await newReview.save();
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to create/update book review: ${error.message}`);
+  }
+}
+
+export async function removeUserBookshelf(
+  path: string,
+  bookshelfId: string,
+  userId: string
+) {
+  try {
+    connectToDB();
+
+    //Find the user
+    const user = await User.findOne({ id: userId });
+
+    //Find the bookshelf item
+    const bookshelfItem = await Bookshelf.findOne({ id: bookshelfId });
+
+    //Delete the review
+    await BookReview.findOneAndDelete({
+      id: bookshelfItem.bookReviewId,
+    });
+
+    //Delete remove the bookshelf item from the user
+    user.bookshelf.pull(bookshelfItem._id);
+
+    //Remove the bookshelf item from the db
+    await Bookshelf.findOneAndDelete({ id: bookshelfId });
+
+    //Save the user without the bookshelf item
+    await user.save();
+
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to remove user bookshelf: ${error.message}`);
+  }
+}
+
+export async function updateUserBookshelf(
+  bookshelfItem: any,
+  userId: string,
+  path: string
+) {
+  try {
+    connectToDB();
+
+    //Check if we need to update the address of create the address
+    if (bookshelfItem?.id) {
+      const newBookshelfItem = await Bookshelf.findOne({
+        id: bookshelfItem.id,
+      });
+
+      //Update the bookshelf item with the changes
+      const newBook: any = await updateOrCreateBook(bookshelfItem.book);
+
+      if (bookshelfItem.review) {
+        const newReview = await updateOrCreateBookReview(
+          newBook._id,
+          bookshelfItem.review,
+          userId
+        );
+
+        newBookshelfItem.bookReviewId = newReview._id;
+      }
+
+      newBookshelfItem.bookId = newBook._id;
+      newBookshelfItem.category = bookshelfItem.category;
+
+      await newBookshelfItem.save();
+    } else {
+      //Create new bookshelf item with the book
+      const newBook: any = await updateOrCreateBook(bookshelfItem.book);
+
+      const newBookshelfItem = new Bookshelf({
+        ...bookshelfItem,
+        bookId: newBook._id,
+      });
+
+      if (bookshelfItem.review) {
+        const newReview = await updateOrCreateBookReview(
+          newBook._id,
+          bookshelfItem.review,
+          userId
+        );
+
+        newBookshelfItem.bookReviewId = newReview._id;
+      }
+
+      const response = await newBookshelfItem.save();
+
+      const user = await User.findOne({ id: userId });
+
+      user.bookshelf.push(response._id);
+
+      await user.save();
+    }
+
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to create/update user bookshelf: ${error.message}`);
+  }
+}
+
 export async function fetchUserPosts(userId: string) {
   try {
     connectToDB();
 
     // Find all threads authored by the user with the given userId
-    const threads = await User.findOne({ id: userId }).populate({
+    const threads: any = await User.findOne({ id: userId }).populate({
       path: "threads",
       options: { sort: { createdAt: -1 } }, // Sort threads by createdAt field in descending order
       model: Entry,

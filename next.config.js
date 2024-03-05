@@ -34,6 +34,14 @@ const nextConfig = {
         protocol: "https",
         hostname: "utfs.io",
       },
+      {
+        protocol: "http",
+        hostname: "books.google.com",
+      },
+      {
+        protocol: "https",
+        hostname: "books.google.com",
+      },
     ],
   },
 };
