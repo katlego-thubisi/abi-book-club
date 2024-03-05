@@ -36,7 +36,7 @@ async function Page({ params }: { params: { id: string } }) {
       />
 
       <div className="mt-9">
-        <Tabs defaultValue="entries" className="w-full">
+        <Tabs defaultValue="bookshelf" className="w-full">
           <TabsList className="tab">
             {profileTabs.map((tab: any) => (
               <TabsTrigger key={tab.label} value={tab.value} className="tab">
