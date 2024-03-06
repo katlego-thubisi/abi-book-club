@@ -37,7 +37,8 @@ const BookshelfItemView = ({ open, shelfItem, handleClose }: Props) => {
           </div>
           {shelfItem?.book?.description && (
             <div
-              className="text-subtle-semibold lg:text-small-regular text-black dark:text-light-1"
+              className="text-subtle-semibold lg:text-small-regular 
+              text-black dark:text-light-1"
               dangerouslySetInnerHTML={{
                 __html: shelfItem?.book.description.slice(0, 400) + `${"..."}`,
               }}

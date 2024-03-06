@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Rating from "@/components/custom-ui/RatingInput";
+import { Separator } from "@/components/ui/separator";
 
 async function Page({ params }: { params: { id: string } }) {
   if (!params.id) return null;
@@ -30,25 +31,33 @@ async function Page({ params }: { params: { id: string } }) {
     </p>
   ));
 
-  const reviews = await bookDetails?.reviews.map((review: any) => (
-    <div className="flex gap-1">
-      <div className="relative h-10 w-10 object-cover">
-        <Image
-          src={review?.createdBy?.image}
-          alt="Profile image"
-          fill
-          className="rounded-full object-cover shadow-2xl"
-        />
+  const reviews = await bookDetails?.reviews.map(
+    (review: any, index: number) => (
+      <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-[1fr,18fr] gap-2">
+          <div className="relative h-10 w-10 object-cover">
+            <Image
+              src={review?.createdBy?.image}
+              alt="Profile image"
+              fill
+              className="rounded-full object-cover shadow-2xl"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <p>{review?.createdBy?.name}</p>
+            <Rating defaultRating={review?.rating} />
+            <p
+              className="text-subtle-semibold lg:text-small-regular h-16 
+          text-black dark:text-light-1 overflow-y-auto "
+            >
+              {review?.review}
+            </p>
+          </div>
+        </div>
+        {bookDetails?.reviews.length - 1 !== index && <Separator />}
       </div>
-      <div className="flex flex-col gap-1">
-        <p>{review?.createdBy?.name}</p>
-        <Rating defaultRating={review?.rating} />
-        <p className="text-subtle-semibold lg:text-small-regular h-16  dark:text-light-1 overflow-y-auto ">
-          {review?.review}
-        </p>
-      </div>
-    </div>
-  ));
+    )
+  );
 
   return (
     <section className="relative">
@@ -56,6 +65,18 @@ async function Page({ params }: { params: { id: string } }) {
         <p className="text-heading2-semibold text-black dark:text-light-1">
           {bookDetails.title}
         </p>
+        <p className="text-black dark:text-light-1">
+          {bookDetails?.reviews?.reduce((totalRating: number, review: any) => {
+            return totalRating + review.rating;
+          }, 0)}
+        </p>
+        <Rating
+          defaultRating={
+            bookDetails?.reviews?.reduce((totalRating: number, review: any) => {
+              return totalRating + review.rating;
+            }, 0) / bookDetails?.reviews?.length
+          }
+        />
 
         <div className="relative w-40 h-60">
           <Image
