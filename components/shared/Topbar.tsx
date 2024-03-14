@@ -43,11 +43,13 @@ function Topbar() {
           Abi's Book Club
         </p>
       </Link>
-      <div className="flex items-center">
-        <Switch onClick={toggleThemeHandler} />
-        <p className="font-bold text-black dark:text-light-1 max-xl:hidden">
-          Toggle Theme
-        </p>
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1">
+          <Switch onClick={toggleThemeHandler} />
+          <p className="font-bold text-black dark:text-light-1 max-xl:hidden">
+            Toggle Theme
+          </p>
+        </div>
         <SignedIn>
           <UserButton
             appearance={{ baseTheme: dark }}
