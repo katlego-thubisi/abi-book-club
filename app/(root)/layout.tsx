@@ -1,7 +1,8 @@
 import "../globals.css";
 import type { Metadata } from "next";
+import useSWR from "swr";
 import { Inter } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import Topbar from "@/components/shared/Topbar";
 import LeftSidebar from "@/components/shared/LeftSidebar";
 import RightSidebar from "@/components/shared/RightSidebar";
@@ -9,6 +10,7 @@ import Bottombar from "@/components/shared/Bottombar";
 import { dark } from "@clerk/themes";
 import { MyThemeContextProvider } from "@/store/ThemeContext";
 import { Toaster } from "@/components/ui/toaster";
+import { fetchUser } from "@/lib/actions/user.actions";
 
 const inter = Inter({ subsets: ["latin"] });
 

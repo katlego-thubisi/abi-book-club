@@ -97,7 +97,7 @@ const BookshelfItem = ({ shelfItem, userId, open, handleClose }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={handClose}>
-      <DialogContent>
+      <DialogContent className="focus-within:-translate-y-0 sm:focus-within:-translate-y-80 duration-300 ease-in-out">
         <DialogHeader>
           <DialogTitle className="text-base-semibold  text-slate-700 dark:text-gray-300">
             {step === 1 && "Add book"}

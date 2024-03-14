@@ -78,8 +78,8 @@ const BookCard = ({
         </div>
       ) : (
         <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-          <DropdownMenuTrigger asChild>
-            <div className="flex flex-col">
+          <div className="flex flex-col">
+            <DropdownMenuTrigger asChild>
               <div
                 // onClick={() => handleSelectItem()}
                 className="relative w-full h-40  lg:h-60 overflow-hidden cursor-pointer"
@@ -91,25 +91,24 @@ const BookCard = ({
                   className="object-contain"
                 />
               </div>
-
-              <div className="flex justify-between items-center gap-2 cursor-pointer">
-                <div className="flex flex-col">
-                  <h3 className="text-small-semibold lg:text-base-semibold h-11 w-10/12 text-black dark:text-light-1 mt-2 overflow-hidden text-ellipsis">
-                    {book.title.substring(0, 30)}
-                    {book.title.length > 20 && "..."}
-                  </h3>
-                  <p className="text-subtle-semibold lg:text-small-regular text-black dark:text-light-1 h-4 w-10/12 overflow-hidden text-ellipsis">
-                    {book.authors.map((a) => a)}
-                  </p>
-                  {review?.rating && (
-                    <div className="mt-2 w-3/4 ">
-                      <Rating defaultRating={review?.rating} />
-                    </div>
-                  )}
-                </div>
+            </DropdownMenuTrigger>
+            <div className="flex justify-between items-center gap-2 cursor-pointer">
+              <div className="flex flex-col">
+                <h3 className="text-small-semibold lg:text-base-semibold h-11 w-10/12 text-black dark:text-light-1 mt-2 overflow-hidden text-ellipsis">
+                  {book.title.substring(0, 30)}
+                  {book.title.length > 20 && "..."}
+                </h3>
+                <p className="text-subtle-semibold lg:text-small-regular text-black dark:text-light-1 h-4 w-10/12 overflow-hidden text-ellipsis">
+                  {book.authors.map((a) => a)}
+                </p>
+                {review?.rating && (
+                  <div className="mt-2 w-3/4 ">
+                    <Rating defaultRating={review?.rating} />
+                  </div>
+                )}
               </div>
             </div>
-          </DropdownMenuTrigger>
+          </div>
           <DropdownMenuContent>
             <DropdownMenuLabel
               className="cursor-pointer"

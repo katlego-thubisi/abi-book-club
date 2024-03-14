@@ -113,12 +113,13 @@ const ProfileHeader = ({
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3 cursor-pointer">
-              <div className="relative h-20 w-20 object-cover">
+            <div className="flex items-center gap-4 cursor-pointer">
+              <div className="flex h-14 w-14 rounded-full justify-center relative overflow-hidden">
                 <Image
                   src={imgUrl}
                   alt="Profile image"
-                  fill
+                  width={96}
+                  height={96}
                   className="rounded-full object-cover shadow-2xl"
                 />
               </div>
