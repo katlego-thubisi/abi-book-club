@@ -69,9 +69,9 @@ const GoogleBookSearch = ({ onBookSelected }: Props) => {
   };
 
   return (
-    <div className="relative w-full">
+    <div className=" relative w-full">
       <Input
-        className="account-form_input form-input bg-white dark:bg-dark-3"
+        className="account-form_input form-input bg-white dark:bg-dark-3 "
         placeholder="Search for book..."
         onChange={(evt) => setInputValue(evt.target.value)}
         value={inputValue}

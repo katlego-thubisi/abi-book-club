@@ -44,20 +44,16 @@ function Topbar() {
         </p>
       </Link>
       <div className="flex items-center">
+        <Switch onClick={toggleThemeHandler} />
+        <p className="font-bold text-black dark:text-light-1 max-xl:hidden">
+          Toggle Theme
+        </p>
         <SignedIn>
-          {/* {fetchUserInfo().then((res) => {
-            return res;
-          })} */}
-          {/* <UserButton /> */}
-          <Switch onClick={toggleThemeHandler} />
-          <p className="font-bold text-black dark:text-light-1 max-xl:hidden">
-            Toggle Theme
-          </p>
           <UserButton
             appearance={{ baseTheme: dark }}
             userProfileUrl={`/profile/${userId}`}
             userProfileMode={"navigation"}
-            showName={true}
+            showName={false}
             afterSignOutUrl="/"
           />
         </SignedIn>
