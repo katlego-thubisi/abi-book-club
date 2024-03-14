@@ -35,12 +35,6 @@ export const sidebarLinks = [
     route: "/books",
     label: "Books",
   },
-  {
-    imgURL: "/assets/user.svg",
-    dimgURL: "/assets/user-w.svg",
-    route: "/profile",
-    label: "Profile",
-  },
 ];
 
 export const profileTabs = [

@@ -1,16 +1,30 @@
 "use client";
-import { SignOutButton, SignedIn } from "@clerk/nextjs";
+
+import {
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  useAuth,
+  UserButton,
+} from "@clerk/nextjs";
 
 import Image from "next/image";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import MyThemeContext from "@/store/ThemeContext";
-import { Switch } from "@/components/ui/switch";
+// import UserButton from "../custom-ui/UserButton";
+import { Switch } from "../ui/switch";
+import { dark } from "@clerk/themes";
+interface Props {
+  userInformation: any;
+}
 
 function Topbar() {
   const themeCtx: { isDarkMode?: boolean; toggleThemeHandler: () => void } =
     useContext(MyThemeContext);
   const { isDarkTheme } = useContext(MyThemeContext);
+
+  const { userId } = useAuth();
 
   function toggleThemeHandler(): void {
     themeCtx.toggleThemeHandler();
@@ -29,7 +43,29 @@ function Topbar() {
           Abi's Book Club
         </p>
       </Link>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center">
+        <SignedIn>
+          {/* {fetchUserInfo().then((res) => {
+            return res;
+          })} */}
+          {/* <UserButton /> */}
+          <Switch onClick={toggleThemeHandler} />
+          <p className="font-bold text-black dark:text-light-1 max-xl:hidden">
+            Toggle Theme
+          </p>
+          <UserButton
+            appearance={{ baseTheme: dark }}
+            userProfileUrl={`/profile/${userId}`}
+            userProfileMode={"navigation"}
+            showName={true}
+            afterSignOutUrl="/"
+          />
+        </SignedIn>
+        <SignedOut>
+          <SignInButton />
+        </SignedOut>
+      </div>
+      {/* <div className="flex items-center gap-1">
         <div className="block md:hidden">
           <SignedIn>
             <SignOutButton>
@@ -46,11 +82,8 @@ function Topbar() {
             </SignOutButton>
           </SignedIn>
         </div>
-        <Switch onClick={toggleThemeHandler} />
-        <p className="font-bold text-black dark:text-light-1 max-xl:hidden">
-          Toggle Theme
-        </p>
-      </div>
+        
+      </div> */}
     </nav>
   );
 }
