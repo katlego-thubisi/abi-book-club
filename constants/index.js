@@ -30,8 +30,8 @@ export const sidebarLinks = [
     label: "Book Clubs",
   },
   {
-    imgURL: "/assets/community.svg",
-    dimgURL: "/assets/community-w.svg",
+    imgURL: "/assets/bookshelf.svg",
+    dimgURL: "/assets/bookshelf-w.svg",
     route: "/books",
     label: "Books",
   },
@@ -40,7 +40,7 @@ export const sidebarLinks = [
 export const topbarLinks = [
   {
     imgURL: "/assets/profile.svg",
-    dimgURL: "/assets/profile.svg",
+    dimgURL: "/assets/profile-w.svg",
     route: "/profile",
     label: "Profile",
   },

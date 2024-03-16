@@ -50,20 +50,32 @@ async function Page({ params }: { params: { id: string } }) {
 
                 <p className="max-sm:hidden">{tab.label}</p>
 
-                {tab.label === "Entries" && (
-                  <p className="ml-1 rounded-md bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">
-                    {userInfo?.threads?.length}
-                  </p>
-                )}
-
                 {tab.label === "Bookshelf" && (
                   <p className="ml-1 rounded-md bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">
                     {userInfo?.bookshelf?.length}
                   </p>
                 )}
+
+                {tab.label === "Entries" && (
+                  <p className="ml-1 rounded-md bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">
+                    {userInfo?.threads?.length}
+                  </p>
+                )}
               </TabsTrigger>
             ))}
           </TabsList>
+
+          <TabsContent
+            key={`content-bookshelf`}
+            value="bookshelf"
+            className="w-full text-light-1"
+          >
+            <Bookshelf
+              shelf={JSON.parse(JSON.stringify(userInfo.bookshelf))}
+              userId={userInfo.id}
+              isOwner={isOwner}
+            />
+          </TabsContent>
 
           <TabsContent
             key={`content-enties`}
@@ -74,17 +86,6 @@ async function Page({ params }: { params: { id: string } }) {
               currentUserId={userInfo._id}
               accountId={userInfo.id}
               accountType="User"
-            />
-          </TabsContent>
-          <TabsContent
-            key={`content-bookshelf`}
-            value="bookshelf"
-            className="w-full text-light-1"
-          >
-            <Bookshelf
-              shelf={JSON.parse(JSON.stringify(userInfo.bookshelf))}
-              userId={userInfo.id}
-              isOwner={isOwner}
             />
           </TabsContent>
         </Tabs>
