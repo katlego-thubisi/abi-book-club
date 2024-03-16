@@ -1,23 +1,12 @@
 "use client";
 
-import {
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  useAuth,
-  UserButton,
-} from "@clerk/nextjs";
-
+import { SignInButton, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import MyThemeContext from "@/store/ThemeContext";
-// import UserButton from "../custom-ui/UserButton";
+import UserButton from "../custom-ui/UserButton";
 import { Switch } from "../ui/switch";
-import { dark } from "@clerk/themes";
-interface Props {
-  userInformation: any;
-}
 
 function Topbar() {
   const themeCtx: { isDarkMode?: boolean; toggleThemeHandler: () => void } =
@@ -51,13 +40,14 @@ function Topbar() {
           </p>
         </div>
         <SignedIn>
-          <UserButton
+          <UserButton userId={userId} />
+          {/* <UserButton
             appearance={{ baseTheme: dark }}
             userProfileUrl={`/profile/${userId}`}
             userProfileMode={"navigation"}
             showName={false}
             afterSignOutUrl="/"
-          />
+          /> */}
         </SignedIn>
         <SignedOut>
           <SignInButton />

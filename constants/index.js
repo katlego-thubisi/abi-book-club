@@ -37,6 +37,15 @@ export const sidebarLinks = [
   },
 ];
 
+export const topbarLinks = [
+  {
+    imgURL: "/assets/profile.svg",
+    dimgURL: "/assets/profile.svg",
+    route: "/profile",
+    label: "Profile",
+  },
+];
+
 export const profileTabs = [
   { value: "bookshelf", label: "Bookshelf", icon: "/assets/bookshelf.svg" },
   { value: "entries", label: "Entries", icon: "/assets/reply.svg" },
