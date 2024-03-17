@@ -117,18 +117,16 @@ const UserButton = ({ userId }: Props) => {
               alt="community_logo"
               width={96}
               height={96}
-              className="object-cover"
+              className="object-cover rounded-full"
             />
           </div>
           <div
             ref={wrapperRef}
             className={`${
               open
-                ? `opacity-100 -translate-x-[12.5rem]`
-                : `opacity-0 translate-x-10`
-            } absolute bg-slate-50 border-solid border-slate-200 border-2 
-            rounded-lg w-[15rem] top-10 flex flex-col py-2
-            duration-300 ease-in-out`}
+                ? `opacity-100 -translate-x-[12.5rem] translate-y-[20px]`
+                : `opacity-0 translate-x-10 translate-y-[0px]`
+            } user-btn text-small-medium`}
           >
             {topbarLinks.map((link) => {
               const isActive =
@@ -142,14 +140,13 @@ const UserButton = ({ userId }: Props) => {
                 <div
                   onClick={() => handleRoute(link.route)}
                   key={link.label}
-                  className="flex gap-2 h-10 items-center cursor-pointer 
-                  px-2 hover:bg-slate-400"
+                  className="user-btn-links"
                 >
                   <Image
                     src={isDarkTheme ? link.dimgURL : link.imgURL}
                     alt={link.label}
-                    width={24}
-                    height={24}
+                    width={20}
+                    height={20}
                   />
 
                   <p>{link.label}</p>
@@ -158,17 +155,14 @@ const UserButton = ({ userId }: Props) => {
             })}
 
             <SignOutButton>
-              <div
-                className="flex gap-2 h-10 items-center cursor-pointer 
-                  px-2 hover:bg-slate-400"
-              >
+              <div className="user-btn-links">
                 <Image
                   src={
                     isDarkTheme ? "/assets/logout-w.svg" : "/assets/logout.svg"
                   }
                   alt="logout"
-                  width={24}
-                  height={24}
+                  width={20}
+                  height={20}
                 />
                 Logout
               </div>
