@@ -9,11 +9,14 @@ import { dark } from "@clerk/themes";
 import { MyThemeContextProvider } from "@/store/ThemeContext";
 import { Toaster } from "@/components/ui/toaster";
 
+import Head from "next/head";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Abi's Book Club",
-  description: "A Next.js 13 Blog Application",
+  description: "A cutting edge literature networking platform",
+  image: "/assets/home-page.jpeg",
 };
 
 export default function RootLayout({
@@ -29,6 +32,15 @@ export default function RootLayout({
         }}
       >
         <html lang="en">
+          <Head>
+            <title>{metadata.title}</title>
+            <meta name="description" content={metadata.description} />
+            {/* Open Graph Meta Tags */}
+            <meta property="og:title" content={metadata.title} />
+            <meta property="og:description" content={metadata.description} />
+            <meta property="og:image" content={metadata.image} />
+            {/* You can add more OG tags as needed */}
+          </Head>
           <body className={inter.className}>
             <Topbar />
             <main className="flex flex-row">
