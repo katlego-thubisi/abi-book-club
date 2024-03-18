@@ -43,7 +43,7 @@ async function Page({ params }: { params: { id: string } }) {
               className="rounded-full object-cover shadow-2xl"
             />
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 accordion-titles">
             <p>{review?.createdBy?.name}</p>
             <Rating defaultRating={review?.rating} />
             <p
@@ -89,7 +89,9 @@ async function Page({ params }: { params: { id: string } }) {
 
         <Accordion defaultValue={["item-1"]} type="multiple" className="w-full">
           <AccordionItem value="item-1">
-            <AccordionTrigger>Reviews</AccordionTrigger>
+            <AccordionTrigger className="accordion-titles">
+              Reviews
+            </AccordionTrigger>
             <AccordionContent>
               <div className="flex flex-col justify-start items-start w-full">
                 {reviews}
@@ -97,7 +99,9 @@ async function Page({ params }: { params: { id: string } }) {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger>Categories</AccordionTrigger>
+            <AccordionTrigger className="accordion-titles">
+              Categories
+            </AccordionTrigger>
             <AccordionContent>
               <div className="flex flex-col justify-start items-start">
                 {cateogries}
@@ -106,7 +110,9 @@ async function Page({ params }: { params: { id: string } }) {
           </AccordionItem>
 
           <AccordionItem value="item-3">
-            <AccordionTrigger>Description</AccordionTrigger>
+            <AccordionTrigger className="accordion-titles">
+              Description
+            </AccordionTrigger>
             <AccordionContent>
               {bookDetails.description && (
                 <div
