@@ -80,11 +80,11 @@ const ProfileHeader = ({
   };
 
   const follow = async () => {
-    await followUser(authUserId, accountId);
+    await followUser(authUserId, accountId, pathName);
   };
 
   const unfollow = async () => {
-    await unfollowUser(authUserId, accountId);
+    await unfollowUser(authUserId, accountId, pathName);
   };
 
   const leaveCommunity = async () => {

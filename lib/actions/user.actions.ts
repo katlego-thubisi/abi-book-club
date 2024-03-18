@@ -514,7 +514,11 @@ export async function findDuplicateUserByUsername(
 }
 
 //Write a function to add a user to the list of users a user is following as well as add the user to the list of followers of the user being followed
-export async function followUser(userId: string, userToFollowId: string) {
+export async function followUser(
+  userId: string,
+  userToFollowId: string,
+  path: string
+) {
   try {
     connectToDB();
 
@@ -526,13 +530,19 @@ export async function followUser(userId: string, userToFollowId: string) {
 
     await user.save();
     await userToFollow.save();
+
+    revalidatePath(path);
   } catch (error: any) {
     throw new Error(`Failed to follow user: ${error.message}`);
   }
 }
 
 //Write a function to remove a user from the list of users a user is following as well as remove the user from the list of followers of the user being followed
-export async function unfollowUser(userId: string, userToUnfollowId: string) {
+export async function unfollowUser(
+  userId: string,
+  userToUnfollowId: string,
+  path: string
+) {
   try {
     connectToDB();
 
@@ -544,6 +554,8 @@ export async function unfollowUser(userId: string, userToUnfollowId: string) {
 
     await user.save();
     await userToUnfollow.save();
+
+    revalidatePath(path);
   } catch (error: any) {
     throw new Error(`Failed to unfollow user: ${error.message}`);
   }
