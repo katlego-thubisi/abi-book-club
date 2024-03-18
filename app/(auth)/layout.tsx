@@ -5,7 +5,7 @@ import "../globals.css";
 
 export const metadata = {
   title: "Abi's Book Club",
-  description: "A Next.js 13 Blog Application",
+  description: "A cutting edge literature networking platform",
 };
 
 const inter = Inter({ subsets: ["latin"] });
