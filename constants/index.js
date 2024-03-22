@@ -55,4 +55,5 @@ export const communityTabs = [
   { value: "entries", label: "Entries", icon: "/assets/reply.svg" },
   { value: "members", label: "Members", icon: "/assets/members.svg" },
   { value: "requests", label: "Requests", icon: "/assets/request.svg" },
+  { value: "bom", label: "BoM", icon: "/assets/request.svg" },
 ];

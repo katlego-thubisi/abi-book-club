@@ -9,6 +9,7 @@ import { fetchCommunityDetails } from "@/lib/actions/community.actions";
 import UserCard from "@/components/cards/UserCard";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
+import BoMTab from "@/components/shared/BoMTab";
 
 async function Page({ params }: { params: { id: string } }) {
   const user = await currentUser();
@@ -87,6 +88,9 @@ async function Page({ params }: { params: { id: string } }) {
               ))}
             </TabsList>
 
+            <TabsContent value="bom" className="w-full text-light-1">
+              <BoMTab />
+            </TabsContent>
             <TabsContent value="entries" className="w-full text-light-1">
               <EntriesTab
                 currentUserId={userInfo._id}
