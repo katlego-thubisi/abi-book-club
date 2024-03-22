@@ -38,6 +38,13 @@ const bookSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  createdDate: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedDate: {
+    type: Date,
+  },
 });
 
 const Book = mongoose.models.Book || mongoose.model("Book", bookSchema);

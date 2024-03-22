@@ -65,6 +65,13 @@ const userSchema = new mongoose.Schema({
       ref: "Bookshelf",
     },
   ],
+  createdDate: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedDate: {
+    type: Date,
+  },
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

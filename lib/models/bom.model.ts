@@ -1,24 +1,20 @@
 import mongoose from "mongoose";
 const uuid = require("uuid");
 
-const bookshelfSchema = new mongoose.Schema({
+const bomSchema = new mongoose.Schema({
   id: {
     type: String,
     default: () => uuid.v4().toString(),
   },
-  bookId: {
+  bookSessionId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Book",
+    ref: "BookSession",
     required: true,
   },
-  category: {
-    type: String,
-    required: true,
-  },
-  bookReviewId: {
+  communityId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "BookReview",
-    required: false,
+    ref: "Community",
+    required: true,
   },
   createdDate: {
     type: Date,
@@ -29,7 +25,6 @@ const bookshelfSchema = new mongoose.Schema({
   },
 });
 
-const Bookshelf =
-  mongoose.models.Bookshelf || mongoose.model("Bookshelf", bookshelfSchema);
+const Bom = mongoose.models.Bom || mongoose.model("Bom", bomSchema);
 
-export default Bookshelf;
+export default Bom;

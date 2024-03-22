@@ -42,6 +42,13 @@ const communitySchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+  createdDate: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedDate: {
+    type: Date,
+  },
 });
 
 const Community =

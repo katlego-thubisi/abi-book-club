@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const uuid = require("uuid");
 
-const bookshelfSchema = new mongoose.Schema({
+const bookSessionSchema = new mongoose.Schema({
   id: {
     type: String,
     default: () => uuid.v4().toString(),
@@ -9,17 +9,21 @@ const bookshelfSchema = new mongoose.Schema({
   bookId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Book",
+  },
+  startDate: {
+    type: Date,
     required: true,
   },
-  category: {
-    type: String,
+  endDate: {
+    type: Date,
     required: true,
   },
-  bookReviewId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "BookReview",
-    required: false,
-  },
+  votes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   createdDate: {
     type: Date,
     default: Date.now,
@@ -29,7 +33,8 @@ const bookshelfSchema = new mongoose.Schema({
   },
 });
 
-const Bookshelf =
-  mongoose.models.Bookshelf || mongoose.model("Bookshelf", bookshelfSchema);
+const BookSession =
+  mongoose.models.BookSession ||
+  mongoose.model("BookSession", bookSessionSchema);
 
-export default Bookshelf;
+export default BookSession;
