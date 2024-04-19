@@ -56,3 +56,25 @@ export async function fetchBookDetails(id: string) {
     throw new Error(`Failed to fetch book details: ${error}`);
   }
 }
+
+export async function updateOrCreateBook(book: any) {
+  try {
+    connectToDB();
+    //Check if the book already exists in the db
+    const response = await Book.findOne({
+      bookId: book.bookId,
+      title: book.title,
+      subtitle: book.subtitle,
+    });
+
+    if (!response) {
+      //If it doesn't exist, create it
+      const newBook = new Book(book);
+      return await newBook.save();
+    } else {
+      return response;
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to create/update book: ${error.message}`);
+  }
+}

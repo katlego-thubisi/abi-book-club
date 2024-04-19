@@ -24,6 +24,11 @@ const bookSessionSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+  status: {
+    type: String,
+    enum: ["Active", "Cancelled", "Completed", "Pending"],
+    default: "Pending",
+  },
   createdDate: {
     type: Date,
     default: Date.now,

@@ -26,6 +26,11 @@ const bomQueueSchema = new mongoose.Schema({
       required: true,
     },
   ],
+  status: {
+    type: String,
+    enum: ["Pending", "Active", "Completed", "Cancelled"],
+    default: "Pending",
+  },
   createdDate: {
     type: Date,
     default: Date.now,

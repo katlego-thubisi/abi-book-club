@@ -42,6 +42,12 @@ const communitySchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+  queues: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "BookQueue",
+    },
+  ],
   createdDate: {
     type: Date,
     default: Date.now,

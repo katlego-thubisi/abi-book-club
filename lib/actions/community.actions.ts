@@ -9,6 +9,12 @@ import User from "../models/user.model";
 import { connectToDB } from "../mongoose";
 import { revalidatePath } from "next/cache";
 import Like from "../models/like.model";
+import BomQueue from "../models/bomQueue.model";
+import { start } from "repl";
+import BookSession from "../models/bookSession.model";
+import { updateOrCreateBook } from "./book.actions";
+import Book from "../models/book.model";
+import BookReview from "../models/bookReview.model";
 
 export async function createCommunity(
   name: string,
@@ -75,7 +81,36 @@ export async function fetchCommunityDetails(id: string) {
         model: User,
         select: "name username image _id id",
       },
+      {
+        path: "queues",
+        model: BomQueue,
+        populate: [
+          {
+            path: "bookSessions",
+            model: BookSession,
+            populate: [
+              {
+                path: "bookId",
+                model: Book,
+              },
+              {
+                path: "votes",
+                model: User,
+              },
+            ],
+          },
+        ],
+      },
     ]);
+
+    for (const book of communityDetails.queues) {
+      for (const session of book.bookSessions) {
+        const reviews: any[] = await BookReview.find({
+          bookId: session.bookId._id,
+        });
+        session.bookId.reviews = reviews;
+      }
+    }
 
     return communityDetails;
   } catch (error) {
@@ -448,5 +483,65 @@ export async function findDuplicateCommunityByUsername(
     return communityDuplicate || userDuplicate;
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
+  }
+}
+
+//Write a function to a book queue to a community
+export async function addBookQueueToCommunity(
+  communityId: string,
+  bookQueue: any,
+  startDate: Date,
+  endDate: Date,
+  path: string
+) {
+  try {
+    connectToDB();
+
+    // Find the community by its unique id
+    const community = await Community.findOne({ _id: communityId });
+
+    if (!community) {
+      throw new Error("Community not found");
+    }
+
+    const newBookQueue = new BomQueue({
+      communityId: community._id,
+      startDate: startDate,
+      endDate: endDate,
+      bookSessions: [],
+    });
+
+    //Save the book sessions
+    for (var item of bookQueue) {
+      //Handle fetch or create book
+      const book = await updateOrCreateBook(item);
+
+      const newBookSession = new BookSession({
+        bookId: book._id,
+        communityId: community._id,
+        startDate: startDate,
+        endDate: endDate,
+        votes: [],
+      });
+
+      const sessionResponse = await newBookSession.save();
+
+      newBookQueue.bookSessions.push(sessionResponse);
+    }
+
+    // Add the book queue to the community
+    await newBookQueue.save();
+
+    community.queues.push(newBookQueue._id);
+
+    await community.save();
+
+    revalidatePath(path);
+
+    return newBookQueue;
+  } catch (error) {
+    // Handle any errors
+    console.error("Error adding book queue to community:", error);
+    throw error;
   }
 }
