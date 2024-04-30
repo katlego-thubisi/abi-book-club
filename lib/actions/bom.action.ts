@@ -51,3 +51,48 @@ export async function createBomQueue({
     throw new Error(`Failed to create queue: ${error.message}`);
   }
 }
+
+export async function handleSessionVote(
+  queueId: string,
+  bookSessionId: string,
+  userId: string
+) {
+  try {
+    connectToDB();
+
+    //Get queue
+    const queue = await BomQueue.findOne({ id: queueId });
+
+    const bookSession = queue.bookSessions.find(
+      (x: any) => x.bookId.id === bookSessionId
+    );
+
+    if (!bookSession) {
+      throw new Error("Book session not found");
+    }
+
+    //Check if the user is already part of that book session
+    if (bookSession.votes.includes(userId)) {
+      //Remove the vote if the user is already part of the book session
+      bookSession.votes = bookSession.votes.filter(
+        (vote: any) => vote !== userId
+      );
+    } else {
+      bookSession.votes.push(userId);
+    }
+
+    //Check if the user has already voted for a different book session in the same queue
+    queue.bookSessions.map((x: any) => {
+      if (x.bookId.id !== bookSessionId) {
+        x.votes = x.votes.filter((vote: any) => vote !== userId);
+
+        //Save the book session
+        x.save();
+      }
+    });
+
+    await bookSession.save();
+  } catch (error: any) {
+    throw new Error(`Failed to vote: ${error.message}`);
+  }
+}

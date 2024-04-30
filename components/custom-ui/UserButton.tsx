@@ -18,6 +18,7 @@ const UserButton = ({ userId }: Props) => {
   const { isDarkTheme } = useContext(MyThemeContext);
 
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentCommunities, setCurrentCommunities] = useState<any>([]);
   const [loadingUser, setLoadingUser] = useState(true);
 
   const [open, setOpen] = useState(false);
@@ -58,6 +59,16 @@ const UserButton = ({ userId }: Props) => {
           ? await fetch(`/api/user/${userId}`).then((res) => res.json())
           : null;
 
+        setCurrentCommunities(
+          user.communities
+            ? user.communities.filter((x: any) => x.createdBy == user._id)
+            : []
+        );
+
+        console.log(
+          "Communities owned",
+          user.communities.filter((x: any) => x.createdBy == user._id)
+        );
         setCurrentUser(user);
         setLoadingUser(false);
       } catch (error) {
@@ -150,6 +161,25 @@ const UserButton = ({ userId }: Props) => {
                   />
 
                   <p>{link.label}</p>
+                </div>
+              );
+            })}
+
+            {currentCommunities.map((community: any) => {
+              return (
+                <div
+                  onClick={() => handleRoute(`/clubs/${community.id}`)}
+                  key={community.name}
+                  className="user-btn-links"
+                >
+                  <Image
+                    src={community.image}
+                    alt={community.name}
+                    width={20}
+                    height={20}
+                  />
+
+                  <p>{community.name}</p>
                 </div>
               );
             })}
