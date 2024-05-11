@@ -1,15 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-
 import { connectToDB } from "../mongoose";
 
-import BomQu from "../models/bomQueue.model";
-import Entry from "../models/entry.model";
-import Community from "../models/community.model";
-import Like from "../models/like.model";
 import BomQueue from "../models/bomQueue.model";
 import BookSession from "../models/bookSession.model";
+import Book from "../models/book.model";
 
 interface BomQueue {
   startDate: Date;
@@ -55,16 +51,26 @@ export async function createBomQueue({
 export async function handleSessionVote(
   queueId: string,
   bookSessionId: string,
-  userId: string
+  userId: string,
+  path: string
 ) {
   try {
     connectToDB();
 
     //Get queue
-    const queue = await BomQueue.findOne({ id: queueId });
+    const queue = await BomQueue.findOne({ id: queueId }).populate({
+      path: "bookSessions",
+      model: BookSession,
+      populate: [
+        {
+          path: "bookId",
+          model: Book,
+        },
+      ],
+    });
 
     const bookSession = queue.bookSessions.find(
-      (x: any) => x.bookId.id === bookSessionId
+      (x: any) => x.id === bookSessionId
     );
 
     if (!bookSession) {
@@ -74,17 +80,19 @@ export async function handleSessionVote(
     //Check if the user is already part of that book session
     if (bookSession.votes.includes(userId)) {
       //Remove the vote if the user is already part of the book session
-      bookSession.votes = bookSession.votes.filter(
-        (vote: any) => vote !== userId
-      );
+      var tmpVotes = bookSession.votes.filter((vote: any) => vote != userId);
+
+      bookSession.votes = tmpVotes;
     } else {
       bookSession.votes.push(userId);
     }
 
     //Check if the user has already voted for a different book session in the same queue
     queue.bookSessions.map((x: any) => {
-      if (x.bookId.id !== bookSessionId) {
-        x.votes = x.votes.filter((vote: any) => vote !== userId);
+      if (x.id !== bookSessionId) {
+        var tmpVotes = x.votes.filter((vote: any) => vote != userId);
+
+        x.votes = tmpVotes;
 
         //Save the book session
         x.save();
@@ -92,6 +100,7 @@ export async function handleSessionVote(
     });
 
     await bookSession.save();
+    revalidatePath(path);
   } catch (error: any) {
     throw new Error(`Failed to vote: ${error.message}`);
   }

@@ -103,12 +103,14 @@ export async function fetchCommunityDetails(id: string) {
       },
     ]);
 
-    for (const book of communityDetails.queues) {
-      for (const session of book.bookSessions) {
-        const reviews: any[] = await BookReview.find({
-          bookId: session.bookId._id,
-        });
-        session.bookId.reviews = reviews;
+    if (communityDetails && communityDetails.queues) {
+      for (const book of communityDetails.queues) {
+        for (const session of book.bookSessions) {
+          const reviews: any[] = await BookReview.find({
+            bookId: session.bookId._id,
+          });
+          session.bookId.reviews = reviews;
+        }
       }
     }
 

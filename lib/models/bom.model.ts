@@ -6,12 +6,12 @@ const bomSchema = new mongoose.Schema({
     type: String,
     default: () => uuid.v4().toString(),
   },
-  bookSessionId: {
+  bookSession: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "BookSession",
     required: true,
   },
-  communityId: {
+  community: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Community",
     required: true,

@@ -34,9 +34,7 @@ async function Page({ params }: { params: { id: string } }) {
 
   const isRequester = requestCheck ? true : false;
 
-  const isOwner = user.id === communityDetails.createdBy.id;
-
-  console.log("communityDetails", communityDetails.queues);
+  const isOwner = user.id === communityDetails?.createdBy?.id;
 
   return (
     <section>
