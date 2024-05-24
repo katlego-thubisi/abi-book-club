@@ -10,9 +10,9 @@ async function Page() {
     pageSize: 25,
   });
 
-  const activeCommunities = result.communities.filter(
-    (c) => c.status === "active"
-  );
+  const activeCommunities = result.communities
+    ? result.communities.filter((c) => c?.status === "active")
+    : [];
 
   return (
     <section>
@@ -47,13 +47,7 @@ async function Page() {
           <>
             {activeCommunities.map((community) => (
               <CommunityCard
-                key={community.id}
-                id={community.id}
-                name={community.name}
-                username={community.username}
-                imgUrl={community.image}
-                bio={community.bio}
-                members={JSON.parse(JSON.stringify(community.members))}
+                community={JSON.parse(JSON.stringify(community))}
               />
             ))}
           </>

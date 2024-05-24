@@ -12,12 +12,13 @@ import Address from "../models/address.model";
 import Bookshelf from "../models/bookshelf.model";
 import Book from "../models/book.model";
 import BookReview from "../models/bookReview.model";
+import { IUser } from "../types/user";
 
 export async function fetchUser(userId: string) {
   try {
     connectToDB();
 
-    return await User.findOne({ id: userId })
+    const response = await User.findOne({ id: userId })
       .populate({
         path: "communities",
         model: Community,
@@ -55,6 +56,8 @@ export async function fetchUser(userId: string) {
         model: User,
         select: "name surname username image id",
       });
+
+    return <IUser>response;
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
   }

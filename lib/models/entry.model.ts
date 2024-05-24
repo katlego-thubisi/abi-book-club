@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
+const uuid = require("uuid");
 
 const entrySchema = new mongoose.Schema({
+  id: {
+    type: String,
+    default: () => uuid.v4().toString(),
+  },
   text: {
     type: String,
     required: true,

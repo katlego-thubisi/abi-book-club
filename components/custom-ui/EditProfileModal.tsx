@@ -108,8 +108,8 @@ const EditProfileModal = ({
               name,
               bio,
               image: imgUrl,
+              ownerUserId: authUserId,
             }}
-            userId={authUserId}
           />
         )}
       </DialogContent>

@@ -36,10 +36,14 @@ async function Page() {
               className="w-32 sm:w-36 cursor-pointer"
             >
               <div className="flex flex-wrap items-center gap-3">
-                <div className="relative w-full h-60 lg:h-60 ">
-                  <Image src={book.cover} alt={book.title} fill />
+                <div className="relative w-full h-52 lg:h-52">
+                  <img
+                    src={book.cover}
+                    alt={book.title}
+                    className="object-cover w-full h-full"
+                  />
                 </div>
-                <div className="mt-2">
+                <div className="mt-2 h-11 overflow-hidden text-ellipsis">
                   <h2 className="text-base-semibold text-black dark:text-light-1">
                     {book.title}
                   </h2>

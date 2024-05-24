@@ -4,6 +4,7 @@ import { connectToDB } from "../mongoose";
 import Book from "../models/book.model";
 import BookReview from "../models/bookReview.model";
 import User from "../models/user.model";
+import { IBook } from "../types/book";
 
 export async function createBook(book: any) {
   try {
@@ -29,7 +30,7 @@ export async function fetchBooks() {
       book.reviews = reviews;
     }
 
-    return books;
+    return <IBook[]>books;
   } catch (error) {
     console.error(`Failed to fetch books: ${error}`);
     throw new Error(`Failed to fetch books: ${error}`);

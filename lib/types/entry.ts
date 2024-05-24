@@ -1,11 +1,11 @@
-import { Community } from "./community";
+import { ICommunity } from "./community";
 import { Like } from "./like";
-import { User } from "./user";
+import { IUser } from "./user";
 
 export interface Entry {
   text: string;
-  author: User;
-  community: Community;
+  author: IUser;
+  community: ICommunity;
   createdAt: Date;
   parentId: string;
   likes: Like[];

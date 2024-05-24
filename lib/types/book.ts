@@ -1,4 +1,6 @@
-export interface Book {
+import { BookReview } from "./bookReview";
+
+export type IBook = {
   id: string;
   bookId: string;
   title: string;
@@ -7,6 +9,7 @@ export interface Book {
   categories: string[];
   authors: string[];
   cover?: string;
+  reviews?: BookReview[];
   createdDate: Date;
   updatedDate: Date;
-}
+} | null;

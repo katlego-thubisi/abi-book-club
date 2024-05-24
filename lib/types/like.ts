@@ -1,4 +1,7 @@
+import { IUser } from "./user";
+
 export interface Like {
-  user: string;
+  id: string;
+  user: IUser;
   createdAt: Date;
 }

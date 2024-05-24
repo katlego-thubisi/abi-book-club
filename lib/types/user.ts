@@ -1,6 +1,6 @@
 import { Address } from "./address";
 
-export interface User {
+export type IUser = {
   id: string;
   firstName: string;
   lastName: string;
@@ -9,9 +9,9 @@ export interface User {
   address: Address[];
   phoneNumber: string;
   role: string;
-  isVerified: boolean;
-  isSuspended: boolean;
-  isDeleted: boolean;
+  image: string;
+  bio: string;
+  onboarded: boolean;
   createdAt: Date;
   updatedAt: Date;
-}
+} | null;

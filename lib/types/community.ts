@@ -1,19 +1,28 @@
 import { BookQueue } from "./bookQueue";
 import { Entry } from "./entry";
-import { User } from "./user";
+import { IUser } from "./user";
 
-export interface Community {
-  id: string;
+export type ICommunity = {
+  id?: string | undefined;
   username: string;
   name: string;
   image: string;
   bio: string;
   status: string;
-  createdBy: User;
+  createdBy: IUser;
   threads: Entry[];
-  members: User[];
-  requests: User[];
+  members: IUser[];
+  requests: IUser[];
   queues: BookQueue[];
   createdDate: Date;
   updatedDate: Date;
-}
+} | null;
+
+export type ICommunityForm = {
+  id?: string;
+  username: string;
+  name: string;
+  bio: string;
+  image: string;
+  ownerUserId: string;
+};

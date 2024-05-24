@@ -10,11 +10,11 @@ import { connectToDB } from "../mongoose";
 import { revalidatePath } from "next/cache";
 import Like from "../models/like.model";
 import BomQueue from "../models/bomQueue.model";
-import { start } from "repl";
 import BookSession from "../models/bookSession.model";
 import { updateOrCreateBook } from "./book.actions";
 import Book from "../models/book.model";
 import BookReview from "../models/bookReview.model";
+import { ICommunity } from "../types/community";
 
 export async function createCommunity(
   name: string,
@@ -205,8 +205,9 @@ export async function fetchCommunities({
     // Count the total number of communities that match the search criteria (without pagination).
     const totalCommunitiesCount = await Community.countDocuments(query);
 
-    const communities = await communitiesQuery.exec();
+    const response = await communitiesQuery.exec();
 
+    const communities: ICommunity[] = <ICommunity[]>response;
     // Check if there are more communities beyond the current page.
     const isNext = totalCommunitiesCount > skipAmount + communities.length;
 

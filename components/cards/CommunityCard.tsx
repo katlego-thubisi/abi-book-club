@@ -1,27 +1,25 @@
 "use client";
 
+import { ICommunity } from "@/lib/types/community";
 import Image from "next/image";
 import Link from "next/link";
-
 interface Props {
-  id: string;
-  name: string;
-  username: string;
-  imgUrl: string;
-  bio: string;
-  members: {
-    id: string;
-    image: string;
-  }[];
+  community: ICommunity;
 }
-
-function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
+function CommunityCard({ community }: Props) {
   return (
     <article className="w-40 sm:w-48">
       <div className="flex flex-wrap items-center gap-3">
-        <Link href={`/clubs/${id}`} className="relative h-60 w-full ">
+        <Link
+          href={`/clubs/${community?.id}`}
+          className="relative h-60 w-full "
+        >
           <Image
-            src={imgUrl}
+            src={
+              community?.image
+                ? community?.image
+                : "/assets/club_placeholder.png"
+            }
             alt="community_logo"
             fill
             className="object-cover rounded-lg"
@@ -30,34 +28,35 @@ function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
       </div>
 
       <div className="mt-2">
-        <Link href={`/clubs/${id}`}>
+        <Link href={`/clubs/${community?.id}`}>
           <h4 className="text-base-semibold text-black dark:text-light-1 h-11 overflow-hidden text-ellipsis">
-            {name}
+            {community?.name}
           </h4>
         </Link>
         <p className="text-small-medium text-gray-1 overflow-hidden  text-ellipsis">
-          @{username}
+          @{community?.username}
         </p>
       </div>
 
       <p className="mt-2 text-subtle-medium text-gray-1 h-16 overflow-hidden text-ellipsis">
-        {bio}
+        {community?.bio}
       </p>
 
       <div className="mt-5 flex flex-wrap items-center justify-end gap-3">
-        {members.length > 0 && (
+        {community?.members && community.members.length > 0 && (
           <div className="flex items-center">
-            {members.map(
+            {community.members.map(
               (member, index) =>
                 index < 4 && (
                   <div
+                    key={`c-${index}`}
                     className={`${
                       index !== 0 && "-ml-3"
                     } flex items-center h-7 w-7 relative rounded-full overflow-hidden`}
                   >
                     <Image
                       key={index}
-                      src={member.image}
+                      src={member?.image ? member.image : "/assets/user.png"}
                       alt={`user_${index}`}
                       width={28}
                       height={28}
@@ -68,7 +67,7 @@ function CommunityCard({ id, name, username, imgUrl, bio, members }: Props) {
             )}
 
             <p className="ml-1 text-subtle-medium text-gray-1">
-              {members.length}
+              {community.members.length}
             </p>
           </div>
         )}
