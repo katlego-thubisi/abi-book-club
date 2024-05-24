@@ -1,5 +1,5 @@
 //create a typed interface for address
-export interface Address {
+export type IAddress = {
   id: string;
   streetLine1: string;
   streetLine2: string;
@@ -9,4 +9,4 @@ export interface Address {
   country: string;
   countryCode: string;
   isPrimary: Boolean;
-}
+};

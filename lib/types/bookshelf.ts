@@ -1,11 +1,13 @@
-import { Book } from "./book";
-import { BookReview } from "./bookReview";
+import { IBook } from "./book";
+import { IBookReview } from "./bookReview";
 
-export interface BookshelfItem {
+export type IBookshelf = {
   id: string;
-  book: Book;
+
+  book: IBook;
   category: string;
-  bookReview: BookReview;
+  bookReview: IBookReview;
+
   createdDate: Date;
   updatedDate: Date;
-}
+};

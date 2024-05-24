@@ -1,4 +1,5 @@
-import { Address } from "./address";
+import { IAddress } from "./address";
+import { IBookshelf } from "./bookshelf";
 
 export type IUser = {
   id: string;
@@ -6,7 +7,8 @@ export type IUser = {
   lastName: string;
   email: string;
   password: string;
-  address: Address[];
+  address: IAddress[];
+  bookshelf: IBookshelf[];
   phoneNumber: string;
   role: string;
   image: string;

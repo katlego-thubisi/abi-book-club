@@ -1,12 +1,12 @@
-import { Book } from "./book";
-import { User } from "./user";
+import { IBook } from "./book";
+import { IUser } from "./user";
 
-export interface BookReview {
+export type IBookReview = {
   id: string;
-  createdBy: User;
-  book: Book;
+  createdBy: IUser;
+  book: IBook;
   rating: number;
   review: string;
   createdDate: Date;
   updatedDate: Date;
-}
+};

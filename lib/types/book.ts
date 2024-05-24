@@ -1,4 +1,4 @@
-import { BookReview } from "./bookReview";
+import { IBookReview } from "./bookReview";
 
 export type IBook = {
   id: string;
@@ -9,7 +9,7 @@ export type IBook = {
   categories: string[];
   authors: string[];
   cover?: string;
-  reviews?: BookReview[];
+  // reviews?: BookReview[];
   createdDate: Date;
   updatedDate: Date;
 } | null;
