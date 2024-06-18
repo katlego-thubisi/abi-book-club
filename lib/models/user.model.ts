@@ -35,6 +35,7 @@ const userSchema = new mongoose.Schema({
     required: false,
   },
   image: String,
+  backgroundImage: String,
   bio: String,
   address: [
     {
@@ -48,7 +49,6 @@ const userSchema = new mongoose.Schema({
       ref: "Entry",
     },
   ],
-
   onboarded: {
     type: Boolean,
     default: false,
@@ -83,6 +83,20 @@ const userSchema = new mongoose.Schema({
   },
   updatedDate: {
     type: Date,
+  },
+  role: {
+    type: String,
+    required: true,
+  },
+  visibility: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  status: {
+    type: String,
+    required: true,
+    default: "active",
   },
 });
 

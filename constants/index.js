@@ -61,26 +61,26 @@ export const profileSidebarLinks = [
   {
     imgURL: "/assets/members.svg",
     dimgURL: "/assets/general-w.svg",
-    route: "/general",
+    route: "/profile",
+    label: "Profile",
+  },
+  {
+    imgURL: "/assets/members.svg",
+    dimgURL: "/assets/general-w.svg",
+    route: "/bookshelf",
     label: "Bookshelf",
+  },
+  {
+    imgURL: "/assets/members.svg",
+    dimgURL: "/assets/general-w.svg",
+    route: "/bom",
+    label: "BoM",
   },
   {
     imgURL: "/assets/members.svg",
     dimgURL: "/assets/general-w.svg",
     route: "/general",
     label: "Clubs",
-  },
-  {
-    imgURL: "/assets/members.svg",
-    dimgURL: "/assets/general-w.svg",
-    route: "/general",
-    label: "Queues",
-  },
-  {
-    imgURL: "/assets/members.svg",
-    dimgURL: "/assets/general-w.svg",
-    route: "/general",
-    label: "BoM",
   },
 ];
 
