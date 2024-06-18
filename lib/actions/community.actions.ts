@@ -128,6 +128,7 @@ export async function fetchCommunityPosts(id: string) {
 
     const communityPosts = await Community.findById({ _id: id }).populate({
       path: "threads",
+      options: { sort: { createdAt: "desc" } },
       model: Entry,
       populate: [
         {

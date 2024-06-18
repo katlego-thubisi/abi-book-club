@@ -43,7 +43,7 @@ export default function RootLayout({
           </Head>
           <body className={inter.className}>
             <Topbar />
-            <main className="flex flex-row">
+            <main className="flex flex-row overflow-hidden">
               <LeftSidebar />
 
               <section className="main-container">

@@ -51,6 +51,39 @@ export const profileTabs = [
   { value: "entries", label: "Entries", icon: "/assets/reply.svg" },
 ];
 
+export const profileSidebarLinks = [
+  {
+    imgURL: "/assets/members.svg",
+    dimgURL: "/assets/general-w.svg",
+    route: "/general",
+    label: "General",
+  },
+  {
+    imgURL: "/assets/members.svg",
+    dimgURL: "/assets/general-w.svg",
+    route: "/general",
+    label: "Bookshelf",
+  },
+  {
+    imgURL: "/assets/members.svg",
+    dimgURL: "/assets/general-w.svg",
+    route: "/general",
+    label: "Clubs",
+  },
+  {
+    imgURL: "/assets/members.svg",
+    dimgURL: "/assets/general-w.svg",
+    route: "/general",
+    label: "Queues",
+  },
+  {
+    imgURL: "/assets/members.svg",
+    dimgURL: "/assets/general-w.svg",
+    route: "/general",
+    label: "BoM",
+  },
+];
+
 export const communityTabs = [
   { value: "entries", label: "Entries", icon: "/assets/reply.svg" },
   { value: "members", label: "Members", icon: "/assets/members.svg" },

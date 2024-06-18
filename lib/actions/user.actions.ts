@@ -322,7 +322,7 @@ export async function fetchUserPosts(userId: string) {
     // Find all threads authored by the user with the given userId
     const threads: any = await User.findOne({ id: userId }).populate({
       path: "threads",
-      options: { sort: { createdAt: -1 } }, // Sort threads by createdAt field in descending order
+      options: { sort: { createdAt: "desc" } }, // Sort threads by createdAt field in descending order
       model: Entry,
       populate: [
         {

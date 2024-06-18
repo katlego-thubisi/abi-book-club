@@ -89,11 +89,11 @@ async function Page({ params }: { params: { id: string } }) {
             </TabsList>
 
             <TabsContent value="bom" className="w-full text-light-1">
-              <BoMTab
+              {/* <BoMTab
                 currentUserId={userInfo._id}
                 communityId={communityDetails._id}
                 queues={JSON.parse(JSON.stringify(communityDetails.queues))}
-              />
+              /> */}
             </TabsContent>
             <TabsContent value="entries" className="w-full text-light-1">
               <EntriesTab

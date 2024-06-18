@@ -9,7 +9,7 @@ export type IBook = {
   categories: string[];
   authors: string[];
   cover?: string;
-  // reviews?: BookReview[];
+  reviews?: IBookReview[];
   createdDate: Date;
   updatedDate: Date;
 } | null;

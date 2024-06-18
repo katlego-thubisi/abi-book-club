@@ -216,7 +216,7 @@ export async function addCommentToEntry(
 
   try {
     // Find the original thread by its ID
-    const originalThread = await Entry.findById(threadId);
+    const originalThread = await Entry.findOne({ id: threadId });
 
     if (!originalThread) {
       throw new Error("Thread not found");
@@ -245,11 +245,7 @@ export async function addCommentToEntry(
   }
 }
 
-export async function likeEntry(
-  threadId: string,
-  userId: any,
-  path: string
-) {
+export async function likeEntry(threadId: string, userId: any, path: string) {
   connectToDB();
 
   try {
@@ -259,7 +255,7 @@ export async function likeEntry(
     const thread = await Entry.findById(threadId).populate({
       path: "likes", // Populate the likes field
       model: Like,
-    })
+    });
 
     if (!thread) {
       throw new Error("Thread not found");
@@ -273,7 +269,6 @@ export async function likeEntry(
       thread.likes.pull(likeCheck);
       // Delete the like record from the database
       await Like.findByIdAndDelete(likeCheck._id);
-
     } else {
       // Create like record
 
