@@ -101,9 +101,12 @@ const BookCard = ({
               <div className="flex flex-col">
                 <h3 className="text-small-semibold lg:text-base-semibold h-11 w-10/12 text-black dark:text-light-1 mt-2 overflow-hidden text-ellipsis">
                   {book.title.substring(0, 30)}
-                  {book.title.length > 20 && "..."}
+                  {book.title.length > 30 && "..."}
                 </h3>
-                <p className="text-subtle-semibold lg:text-small-regular text-black dark:text-light-1 h-4 w-10/12 overflow-hidden text-ellipsis">
+                <p
+                  className="text-subtle-semibold lg:text-small-regular text-black 
+                            dark:text-light-1 h-4 w-10/12 overflow-hidden text-ellipsis"
+                >
                   {book.authors.map((a) => a)}
                 </p>
                 {review?.rating && (
