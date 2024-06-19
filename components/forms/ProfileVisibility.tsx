@@ -4,11 +4,23 @@ import React, { ChangeEvent, useState } from "react";
 
 import { Switch } from "../ui/switch";
 
-const ProfileVisisbility = () => {
-  const [isLoading, setIsLoading] = useState(false);
+interface Props {
+  user: {
+    id: string;
+    visibility: boolean;
+  };
+}
 
-  const toggleProfileVisibility = async () => {
+const ProfileVisisbility = ({ user }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [profileVisibility, setProfileVisibility] = useState(user.visibility);
+
+  const toggleProfileVisibility = async (value: boolean) => {
     setIsLoading(true);
+    setProfileVisibility(value);
+    // Call API to update visibility
+
+    setIsLoading(false);
   };
 
   return (
@@ -26,7 +38,10 @@ const ProfileVisisbility = () => {
             apply to content shared in public groups)
           </label>
         </div>
-        <Switch onClick={toggleProfileVisibility} />
+        <Switch
+          checked={profileVisibility}
+          onCheckedChange={(e) => toggleProfileVisibility(e)}
+        />
       </div>
     </section>
   );

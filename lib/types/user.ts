@@ -13,10 +13,11 @@ export type IUser = {
   phoneNumber: string;
   occupation: string;
   image: string;
+  backgroundImage: string;
   bio: string;
+  address: IAddress[];
   threads: IEntry[];
   onboarded: boolean;
-  address: IAddress[];
   followers: IUser[];
   following: IUser[];
   communities: ICommunity[];

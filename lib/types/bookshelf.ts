@@ -4,9 +4,9 @@ import { IBookReview } from "./bookReview";
 export type IBookshelf = {
   id: string;
 
-  book: IBook;
+  bookId: IBook;
   category: string;
-  bookReview: IBookReview;
+  bookReviewId: IBookReview;
 
   createdDate: Date;
   updatedDate: Date;

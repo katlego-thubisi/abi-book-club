@@ -4,17 +4,35 @@ import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
+import { IBookshelf } from "@/lib/types/bookshelf";
+import BookCard from "../cards/BookCard";
 
-const BookshelfSetting = () => {
+interface Props {
+  bookshelf: IBookshelf[];
+  bookshelfNavigation: {
+    bookShelfPageSize: number;
+    bookShelfHasNext: boolean;
+    bookShelfTotalPages: number;
+    bookShelfCurrentPage: number;
+  };
+}
+
+const BookshelfSetting = ({ bookshelf, bookshelfNavigation }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const toggleProfileVisibility = async () => {
     setIsLoading(true);
   };
+
+  const pages = Array.from(
+    { length: bookshelfNavigation.bookShelfTotalPages },
+    (_, i) => i + 1
+  );
+
   return (
     <section
       className="flex max-sm:flex-col gap-10 border border-solid
-   border-gray-300-400 rounded-xl p-5 shadow-sm"
+                 border-gray-300-400 rounded-xl p-5 shadow-sm"
     >
       <div className="flex flex-col gap-5">
         <h1 className="text-heading3-bold">Bookshelf</h1>
@@ -65,41 +83,73 @@ const BookshelfSetting = () => {
         <Button className="bg-red-800" onClick={toggleProfileVisibility}>
           Add book
         </Button>
-        <div className="grid grid-cols-3 max-sm:grid-cols-1 gap-12">
+        <div className="grid grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1 gap-12">
           {/* Loop through books here */}
-          <div className="flex flex-col items-center cursor-pointer relative">
-            <div className="relative h-40 w-28">
-              <img src="/assets/no-cover.jpg" alt="book cover" />
-            </div>
-            <div className="mt-2 w-40">
-              <p
-                className="text-center text-small-semibold lg:text-base-semibold
-               h-11 text-black dark:text-light-1 mt-2 
-                overflow-hidden text-ellipsis"
-              >
-                {" "}
-                Book name
-              </p>
-              <p
-                className="text-xs text-center 
-    text-black dark:text-light-1"
-              >
-                Juicy Jefferson
-              </p>
-            </div>
-          </div>
+          {bookshelf && bookshelf.length > 0 ? (
+            bookshelf.map((bookshelfItem) => (
+              <BookCard
+                book={bookshelfItem.bookId}
+                review={bookshelfItem.bookReviewId}
+                handleDeleteItem={() => {}}
+                handleSelectItem={() => {}}
+                handleViewItem={() => {}}
+                isOwner={true}
+              />
+            ))
+          ) : (
+            <p>No books found</p>
+          )}
         </div>
-        <div className="flex justify-between">
-          <div></div>
-          <div>
-            <p>1 of 5</p>
+        <div className="flex items-center justify-between">
+          <div className="max-sm:hidden"></div>
+          <div className="flex items-center gap-7">
+            <Button
+              className="cursor-pointer"
+              disabled={bookshelfNavigation.bookShelfCurrentPage - 1 <= 0}
+            >
+              {"<"}
+            </Button>
+            <p>
+              {bookshelfNavigation.bookShelfCurrentPage} of{" "}
+              {bookshelfNavigation.bookShelfTotalPages} page(s)
+            </p>
+            <Button
+              className="cursor-pointer"
+              disabled={
+                bookshelfNavigation.bookShelfCurrentPage ==
+                bookshelfNavigation.bookShelfTotalPages
+              }
+            >
+              {">"}
+            </Button>
           </div>
           <div className="flex gap-3">
-            <p>1</p>
-            <p>2</p>
-            <p>3</p>
-            <p>4</p>
-            <p>5</p>
+            {/* //Create a loop to loop over the number of pages */}
+            {pages.map(
+              (page, i) =>
+                i < 3 && (
+                  <Button
+                    key={page}
+                    className={`${
+                      bookshelfNavigation.bookShelfCurrentPage === page
+                        ? "bg-red-800 text-white"
+                        : "bg-gray-200 text-black"
+                    }`}
+                    onClick={() => {}}
+                  >
+                    {page}
+                  </Button>
+                )
+            )}
+
+            {bookshelfNavigation.bookShelfTotalPages > 3 && (
+              <div className="flex gap-2">
+                <span>...</span>
+                <Button className="bg-gray-200 text-black">
+                  {bookshelfNavigation.bookShelfTotalPages}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

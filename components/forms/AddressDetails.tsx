@@ -3,13 +3,16 @@
 import React, { ChangeEvent, useState } from "react";
 
 import { Switch } from "../ui/switch";
+import { IAddress } from "@/lib/types/address";
+import AddressListing from "../custom-ui/AddressListing";
 
-const AddressDetails = () => {
+interface Props {
+  id: string;
+  address: IAddress[];
+}
+
+const AddressDetails = ({ id, address }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
-
-  const toggleProfileVisibility = async () => {
-    setIsLoading(true);
-  };
 
   return (
     <section
@@ -20,13 +23,17 @@ const AddressDetails = () => {
 
       <div className="flex flex-1 gap-6 justify-between items-center">
         <div className="flex flex-col">
-          <label className="text-body1-bold">Make profile private</label>
-          <label className="text-small-regular">
-            Only allow followers to access content you share. (This does not
-            apply to content shared in public groups)
-          </label>
+          {address.length > 0 ? (
+            <AddressListing
+              userId={id}
+              editAddress={() => {}}
+              addAddress={() => {}}
+              address={address}
+            />
+          ) : (
+            <p>No address found</p>
+          )}
         </div>
-        <Switch onClick={toggleProfileVisibility} />
       </div>
     </section>
   );

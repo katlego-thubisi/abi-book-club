@@ -24,8 +24,8 @@ async function Profile({ id, userInfo, isOwner, isFollowing }: Props) {
       <ProfileHeader
         accountId={userInfo.id}
         authUserId={id}
-        name={userInfo.firstName}
-        surname={userInfo.lastName}
+        name={userInfo.name}
+        surname={userInfo.surname}
         username={userInfo.username}
         imgUrl={userInfo.image}
         bio={userInfo.bio}

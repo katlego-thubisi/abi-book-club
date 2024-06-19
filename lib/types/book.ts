@@ -4,12 +4,12 @@ export type IBook = {
   id: string;
   bookId: string;
   title: string;
-  subtitle?: string;
-  description?: string;
+  subtitle: string;
+  description: string;
   categories: string[];
   authors: string[];
-  cover?: string;
-  reviews?: IBookReview[];
+  cover: string;
+  reviews: IBookReview[];
   createdDate: Date;
   updatedDate: Date;
-} | null;
+};

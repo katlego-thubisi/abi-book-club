@@ -18,13 +18,13 @@ async function Page({ params }: { params: { id: string } }) {
   const user = await currentUser();
   if (!user) return null;
 
-  const userInfo = await fetchUser(params.id);
+  const fetchUserResponse = await fetchUser(params.id);
 
-  if (!userInfo?.onboarded) redirect("/onboarding");
+  if (!fetchUserResponse?.user.onboarded) redirect("/onboarding");
 
-  const isOwner = user.id === userInfo.id;
+  const isOwner = user.id === fetchUserResponse.user.id;
 
-  const followerCheck = userInfo.followers?.find(
+  const followerCheck = fetchUserResponse.user.followers?.find(
     (follower: any) => follower.id === user.id
   );
 
@@ -36,14 +36,20 @@ async function Page({ params }: { params: { id: string } }) {
         <OwnedProfile
           id={params.id}
           isFollowing={isFollowing}
-          userInfo={JSON.parse(JSON.stringify(userInfo))}
+          userInfo={JSON.parse(JSON.stringify(fetchUserResponse.user))}
           isOwner={isOwner}
+          bookshelfNavigation={{
+            bookShelfCurrentPage: fetchUserResponse.bookShelfCurrentPage,
+            bookShelfHasNext: fetchUserResponse.bookShelfHasNext,
+            bookShelfPageSize: fetchUserResponse.bookShelfPageSize,
+            bookShelfTotalPages: fetchUserResponse.bookShelfTotalPages,
+          }}
         />
       ) : (
         <Profile
           id={params.id}
           isFollowing={isFollowing}
-          userInfo={JSON.parse(JSON.stringify(userInfo))}
+          userInfo={JSON.parse(JSON.stringify(fetchUserResponse.user))}
           isOwner={isOwner}
         />
       )}

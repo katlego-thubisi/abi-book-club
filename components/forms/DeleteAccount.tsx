@@ -4,11 +4,19 @@ import React, { useState } from "react";
 
 import { Button } from "../ui/button";
 
-const DeleteAccount = () => {
+interface Props {
+  user: {
+    id: string;
+  };
+}
+
+const DeleteAccount = ({ user }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const toggleProfileVisibility = async () => {
+  const handleAccountDeletion = async () => {
     setIsLoading(true);
+
+    //Handle account deletion and log the user out
   };
 
   return (
@@ -25,7 +33,7 @@ const DeleteAccount = () => {
             is irreversible.
           </label>
         </div>
-        <Button className="bg-red-800" onClick={toggleProfileVisibility}>
+        <Button className="bg-red-800" onClick={handleAccountDeletion}>
           Delete account
         </Button>
       </div>

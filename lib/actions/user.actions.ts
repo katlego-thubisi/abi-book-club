@@ -14,9 +14,59 @@ import Book from "../models/book.model";
 import BookReview from "../models/bookReview.model";
 import { IUser } from "../types/user";
 
+export async function fetchAllUserDetails(userId: string) {
+  try {
+    connectToDB();
+
+    const response = await User.findOne({ id: userId })
+      .populate({
+        path: "communities",
+        model: Community,
+      })
+      .populate({
+        path: "address",
+        model: Address,
+      })
+      .populate({
+        path: "bookshelf",
+        model: Bookshelf,
+        populate: [
+          {
+            path: "bookId",
+            model: Book,
+          },
+          {
+            path: "bookReviewId",
+            model: BookReview,
+            populate: {
+              path: "createdBy",
+              model: User,
+            },
+          },
+        ],
+      })
+      .populate({
+        path: "following",
+        model: User,
+        select: "name surname username image id",
+      })
+      .populate({
+        path: "followers",
+        model: User,
+        select: "name surname username image id",
+      });
+
+    return <IUser>response;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user: ${error.message}`);
+  }
+}
+
 export async function fetchUser(userId: string) {
   try {
     connectToDB();
+
+    const bookShelfPageSize = 6;
 
     const response = await User.findOne({ id: userId })
       .populate({
@@ -45,6 +95,10 @@ export async function fetchUser(userId: string) {
             },
           },
         ],
+        options: {
+          skip: 0,
+          limit: bookShelfPageSize,
+        },
       })
       .populate({
         path: "following",
@@ -56,8 +110,28 @@ export async function fetchUser(userId: string) {
         model: User,
         select: "name surname username image id",
       });
+    var returnResponse = <IUser>response;
 
-    return <IUser>response;
+    const query: FilterQuery<typeof Bookshelf> = {
+      id: { $in: returnResponse.bookshelf.map((item) => item.id) },
+    };
+
+    // Define the sort options for the fetched users based on createdAt field and provided sort order.
+    const sortOptions = { createdDate: "desc" };
+
+    const totalShelfItemsCount = await Bookshelf.countDocuments(query);
+
+    const totalPages = Math.ceil(totalShelfItemsCount / bookShelfPageSize);
+    const currentPage = 1;
+    const isNext = currentPage < totalPages;
+
+    return {
+      user: returnResponse,
+      bookShelfPageSize,
+      bookShelfHasNext: isNext,
+      bookShelfTotalPages: totalPages,
+      bookShelfCurrentPage: currentPage,
+    };
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
   }

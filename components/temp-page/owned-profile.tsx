@@ -16,9 +16,21 @@ interface Props {
   userInfo: IUser;
   isOwner: boolean;
   isFollowing: boolean;
+  bookshelfNavigation: {
+    bookShelfPageSize: number;
+    bookShelfHasNext: boolean;
+    bookShelfTotalPages: number;
+    bookShelfCurrentPage: number;
+  };
 }
 
-const OwnedProfile = ({ id, userInfo, isOwner, isFollowing }: Props) => {
+const OwnedProfile = ({
+  id,
+  userInfo,
+  isOwner,
+  isFollowing,
+  bookshelfNavigation,
+}: Props) => {
   const [currentTab, setCurrentTab] = useState("General");
 
   return (
@@ -29,9 +41,14 @@ const OwnedProfile = ({ id, userInfo, isOwner, isFollowing }: Props) => {
           setCurrentTab(currentTab);
         }}
       />
-      {currentTab === "General" && <GeneralTab />}
-      {currentTab === "Profile" && <ProfileTab />}
-      {currentTab === "Bookshelf" && <BookshelfTab />}
+      {currentTab === "General" && <GeneralTab user={userInfo} />}
+      {currentTab === "Profile" && <ProfileTab user={userInfo} />}
+      {currentTab === "Bookshelf" && (
+        <BookshelfTab
+          user={userInfo}
+          bookshelfNavigation={bookshelfNavigation}
+        />
+      )}
       {currentTab === "Clubs" && <ClubsTab />}
       {currentTab === "BoM" && <BomTab />}
     </div>

@@ -2,7 +2,10 @@
 
 import { useUploadThing } from "@/lib/uploadthing";
 import { isBase64Image } from "@/lib/utils";
-import { UserValidation } from "@/lib/validations/user";
+import {
+  ProfileDetailsValidation,
+  UserValidation,
+} from "@/lib/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -18,37 +21,47 @@ import {
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
-const ProfileDetails = () => {
+interface Props {
+  user: {
+    id: string;
+    backgroundImage: string;
+    bio: string;
+    occupation: string;
+    phoneNumber: string;
+  };
+}
+
+const ProfileDetails = ({ user }: Props) => {
   const { startUpload } = useUploadThing("media");
 
   const [files, setFiles] = useState<File[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm<z.infer<typeof UserValidation>>({
-    resolver: zodResolver(UserValidation),
+  const form = useForm<z.infer<typeof ProfileDetailsValidation>>({
+    resolver: zodResolver(ProfileDetailsValidation),
     defaultValues: {
-      userId: "",
-      profile_photo: "",
-      name: "",
-      surname: "",
-      occupation: "",
-      username: "",
-      bio: "",
+      id: user.id,
+      backgroundImage: user.backgroundImage ? user.backgroundImage : "",
+      bio: user.bio ? user.bio : "",
+      occupation: user.occupation ? user.occupation : "",
+      phoneNumber: user.phoneNumber ? user.phoneNumber : "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof UserValidation>) => {
+  const onSubmit = async (values: z.infer<typeof ProfileDetailsValidation>) => {
     setIsLoading(true);
 
-    const blob = values.profile_photo;
+    if (values.backgroundImage) {
+      const blob = values.backgroundImage;
 
-    const hasImageChanged = isBase64Image(blob);
-    if (hasImageChanged) {
-      const imgRes = await startUpload(files);
+      const hasImageChanged = isBase64Image(blob);
+      if (hasImageChanged) {
+        const imgRes = await startUpload(files);
 
-      if (imgRes && imgRes[0].fileUrl) {
-        values.profile_photo = imgRes[0].fileUrl;
+        if (imgRes && imgRes[0].fileUrl) {
+          values.backgroundImage = imgRes[0].fileUrl;
+        }
       }
     }
   };
@@ -86,7 +99,7 @@ const ProfileDetails = () => {
         <form className="flex flex-1 flex-col gap-2">
           <FormField
             control={form.control}
-            name="profile_photo"
+            name="backgroundImage"
             render={({ field }) => (
               <FormItem className="flex items-center gap-4">
                 <FormLabel className="account-form_image-label overflow-hidden">
@@ -120,7 +133,7 @@ const ProfileDetails = () => {
 
           <FormField
             control={form.control}
-            name="name"
+            name="bio"
             render={({ field }) => (
               <FormItem className="flex w-full flex-col gap-3">
                 <FormLabel className="form-label">Bio</FormLabel>
@@ -137,7 +150,7 @@ const ProfileDetails = () => {
 
           <FormField
             control={form.control}
-            name="surname"
+            name="occupation"
             render={({ field }) => (
               <FormItem className="flex w-full flex-col gap-3">
                 <FormLabel className="form-label">
@@ -157,7 +170,7 @@ const ProfileDetails = () => {
 
           <FormField
             control={form.control}
-            name="username"
+            name="phoneNumber"
             render={({ field }) => (
               <FormItem className="flex w-full flex-col gap-3">
                 <FormLabel className="form-label">
