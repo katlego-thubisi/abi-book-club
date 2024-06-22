@@ -17,6 +17,8 @@ const BookshelfTab = ({ user, bookshelfNavigation }: Props) => {
   return (
     <section className="flex flex-col gap-8">
       <BookshelfSetting
+        _userId={user._id}
+        userId={user.id}
         bookshelf={user.bookshelf}
         bookshelfNavigation={bookshelfNavigation}
       />

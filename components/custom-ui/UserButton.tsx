@@ -55,9 +55,11 @@ const UserButton = ({ userId }: Props) => {
     async function loadUser() {
       setLoadingUser(true);
       try {
-        const user: any = userId
+        const userFetchResponse = userId
           ? await fetch(`/api/user/${userId}`).then((res) => res.json())
           : null;
+
+        const user = userFetchResponse?.user;
 
         setCurrentCommunities(
           user.communities
@@ -65,10 +67,6 @@ const UserButton = ({ userId }: Props) => {
             : []
         );
 
-        console.log(
-          "Communities owned",
-          user.communities.filter((x: any) => x.createdBy == user._id)
-        );
         setCurrentUser(user);
         setLoadingUser(false);
       } catch (error) {

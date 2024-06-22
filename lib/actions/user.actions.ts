@@ -13,6 +13,7 @@ import Bookshelf from "../models/bookshelf.model";
 import Book from "../models/book.model";
 import BookReview from "../models/bookReview.model";
 import { IUser } from "../types/user";
+import { IBookshelf } from "../types/bookshelf";
 
 export async function fetchAllUserDetails(userId: string) {
   try {
@@ -97,6 +98,7 @@ export async function fetchUser(userId: string) {
         ],
         options: {
           skip: 0,
+          sort: { createdDate: "desc" },
           limit: bookShelfPageSize,
         },
       })
@@ -111,16 +113,39 @@ export async function fetchUser(userId: string) {
         select: "name surname username image id",
       });
     var returnResponse = <IUser>response;
+    let totalShelfItemsCount = 0;
+    if (
+      returnResponse &&
+      returnResponse.bookshelf &&
+      returnResponse.bookshelf.length > 0
+    ) {
+      // Define the sort options for the fetched users based on createdAt field and provided sort order.
 
-    const query: FilterQuery<typeof Bookshelf> = {
-      id: { $in: returnResponse.bookshelf.map((item) => item.id) },
-    };
+      var aggregateCount = await Bookshelf.aggregate([
+        {
+          $lookup: {
+            from: "users", // The collection name of the referenced model
+            localField: "userId", // Field in Post that references User
+            foreignField: "_id", // Field in User that is referenced
+            as: "userDetails",
+          },
+        },
+        {
+          $unwind: "$userDetails", // Unwind the resulting array to access userDetails fields
+        },
+        {
+          $match: {
+            "userDetails.id": userId, // Filter by the referenced property
+          },
+        },
+        {
+          $count: "totalPosts", // Count the number of documents that match the criteria
+        },
+      ]);
 
-    // Define the sort options for the fetched users based on createdAt field and provided sort order.
-    const sortOptions = { createdDate: "desc" };
-
-    const totalShelfItemsCount = await Bookshelf.countDocuments(query);
-
+      totalShelfItemsCount =
+        aggregateCount.length > 0 ? aggregateCount[0]?.totalPosts : 0;
+    }
     const totalPages = Math.ceil(totalShelfItemsCount / bookShelfPageSize);
     const currentPage = 1;
     const isNext = currentPage < totalPages;
@@ -354,14 +379,19 @@ export async function updateUserBookshelf(
       newBookshelfItem.bookId = newBook._id;
       newBookshelfItem.category = bookshelfItem.category;
 
+      const user = await User.findOne({ id: userId });
+      newBookshelfItem.userId = user._id;
+
       await newBookshelfItem.save();
     } else {
       //Create new bookshelf item with the book
       const newBook: any = await updateOrCreateBook(bookshelfItem.book);
 
+      const user = await User.findOne({ id: userId });
       const newBookshelfItem = new Bookshelf({
         ...bookshelfItem,
         bookId: newBook._id,
+        userId: user._id,
       });
 
       if (bookshelfItem.review) {
@@ -375,8 +405,6 @@ export async function updateUserBookshelf(
       }
 
       const response = await newBookshelfItem.save();
-
-      const user = await User.findOne({ id: userId });
 
       user.bookshelf.push(response._id);
 
@@ -453,6 +481,74 @@ export async function fetchUserCommunities(userId: string) {
     });
   } catch (error) {
     console.error("Error fetching user communitties:", error);
+    throw error;
+  }
+}
+
+export async function fetchUserBookshelf({
+  userId,
+  searchString = "",
+  pageNumber = 1,
+  pageSize = 6,
+  sortBy = "desc",
+}: {
+  userId: string;
+  searchString?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: SortOrder;
+}) {
+  try {
+    connectToDB();
+
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    // Create a case-insensitive regular expression for the provided search string.
+    const regex = new RegExp(searchString, "i");
+
+    const sortOptions = { createdAt: sortBy };
+
+    // Create an initial query object to filter users.
+    const query: FilterQuery<typeof Bookshelf> = {
+      userId: { $eq: userId }, // Exclude the current user from the results.
+    };
+    //Do aggrate search on book and authors
+    if (searchString.trim() !== "") {
+      query.$or = [
+        { username: { $regex: regex } },
+        { name: { $regex: regex } },
+      ];
+    }
+
+    // Find all threads authored by the user with the given userId
+    const shelfQueryResponse = await Bookshelf.find(query)
+      .populate({
+        path: "bookId",
+        model: Book,
+      })
+      .populate({
+        path: "bookReviewId",
+        model: BookReview,
+      })
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize);
+
+    const totalShelfItemsCount = await Bookshelf.countDocuments(query);
+    const totalPages = Math.ceil(totalShelfItemsCount / pageSize);
+    const isNext = pageNumber < totalPages;
+
+    const returnResponse = <IBookshelf[]>shelfQueryResponse;
+
+    return {
+      bookshelf: JSON.parse(JSON.stringify(returnResponse)),
+      bookShelfPageSize: pageSize,
+      bookShelfHasNext: isNext,
+      bookShelfTotalPages: totalPages,
+      bookShelfCurrentPage: pageNumber,
+    };
+  } catch (error) {
+    console.error("Error fetching user bookshelf:", error);
     throw error;
   }
 }

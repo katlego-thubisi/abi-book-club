@@ -20,15 +20,15 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: false,
   },
   phoneCode: {
     type: String,
-    required: true,
+    required: false,
   },
   phoneNumber: {
     type: String,
-    required: true,
+    required: false,
   },
   occupation: {
     type: String,
@@ -86,7 +86,8 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    required: true,
+    required: false,
+    default: "reader",
   },
   visibility: {
     type: Boolean,
@@ -95,7 +96,7 @@ const userSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    required: true,
+    required: false,
     default: "active",
   },
 });

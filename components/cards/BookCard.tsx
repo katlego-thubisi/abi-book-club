@@ -87,7 +87,8 @@ const BookCard = ({
             <DropdownMenuTrigger asChild>
               <div
                 // onClick={() => handleSelectItem()}
-                className="relative w-full h-40  lg:h-60 overflow-hidden cursor-pointer"
+                className="relative w-full h-40 lg:h-60 
+                           overflow-hidden cursor-pointer"
               >
                 <Image
                   src={book.cover}
@@ -107,7 +108,7 @@ const BookCard = ({
                   className="text-subtle-semibold lg:text-small-regular text-black 
                             dark:text-light-1 h-4 w-10/12 overflow-hidden text-ellipsis"
                 >
-                  {book.authors.map((a) => a)}
+                  {book.authors.join(", ")}
                 </p>
                 {review?.rating && (
                   <div className="mt-2 w-3/4 ">
