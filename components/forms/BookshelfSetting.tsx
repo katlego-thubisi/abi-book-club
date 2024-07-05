@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
@@ -34,16 +34,47 @@ const BookshelfSetting = ({
   bookshelf,
   bookshelfNavigation,
 }: Props) => {
+  //Loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  const [currentShelfItem, setShelfItem] = useState<IBookshelf | null>();
+  //List state
+  const [userBookshelf, setUserBookshelf] = useState<IBookshelf[]>(bookshelf);
 
+  const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
+
+  //Shelf state
+  const [currentShelfItem, setShelfItem] = useState<IBookshelf | null>();
   const [editOpen, setEditOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
 
+  //Filtering state
   const [searchString, setSearchString] = useState("");
+  const [currentPage, setPage] = useState(
+    bookshelfNavigation.bookShelfCurrentPage
+  );
+  const [totalPages, setTotalPages] = useState(
+    bookshelfNavigation.bookShelfTotalPages
+  );
 
   const pathname = usePathname();
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchUserBookshelf({
+      userId: _userId,
+      pageNumber: currentPage,
+      categories: categoryFilters,
+    })
+      .then((pageResponse) => {
+        setUserBookshelf(pageResponse.bookshelf);
+        setTotalPages(pageResponse.bookShelfTotalPages);
+
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error paging up", error);
+      });
+  }, [currentPage, categoryFilters]);
 
   const handleEditItem = (shelfItem: IBookshelf | null) => {
     setShelfItem(shelfItem);
@@ -65,79 +96,18 @@ const BookshelfSetting = ({
     setShelfItem(null);
   };
 
-  const pageUp = async () => {
-    setIsLoading(true);
-    console.log("We paging up now");
-
-    fetchUserBookshelf({
-      userId: _userId,
-      searchString: searchString,
-      pageNumber: bookshelfNavigation.bookShelfCurrentPage + 1,
-    })
-      .then((pageResponse) => {
-        console.log("Zee page response", pageResponse.bookshelf);
-
-        bookshelf = pageResponse.bookshelf;
-
-        bookshelfNavigation.bookShelfCurrentPage =
-          pageResponse.bookShelfCurrentPage;
-        bookshelfNavigation.bookShelfTotalPages =
-          pageResponse.bookShelfTotalPages;
-        bookshelfNavigation.bookShelfHasNext = pageResponse.bookShelfHasNext;
-        bookshelfNavigation.bookShelfPageSize = pageResponse.bookShelfPageSize;
-
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error paging up", error);
-      });
+  const selectCategory = (category: string) => {
+    console.log("category", category);
+    if (categoryFilters.includes(category)) {
+      setCategoryFilters(categoryFilters.filter((cat) => cat !== category));
+    } else {
+      setCategoryFilters([...categoryFilters, category]);
+    }
   };
 
-  const pageDown = async () => {
-    setIsLoading(true);
+  const selectPage = async (pageNumber: number) => {};
 
-    const pageResponse = await fetchUserBookshelf({
-      userId: _userId,
-      searchString: searchString,
-      pageNumber: bookshelfNavigation.bookShelfCurrentPage - 1,
-    });
-
-    bookshelf = pageResponse.bookshelf;
-
-    bookshelfNavigation.bookShelfCurrentPage =
-      pageResponse.bookShelfCurrentPage;
-    bookshelfNavigation.bookShelfTotalPages = pageResponse.bookShelfTotalPages;
-    bookshelfNavigation.bookShelfHasNext = pageResponse.bookShelfHasNext;
-    bookshelfNavigation.bookShelfPageSize = pageResponse.bookShelfPageSize;
-
-    setIsLoading(false);
-  };
-
-  const selectPage = async (pageNumber: number) => {
-    setIsLoading(true);
-
-    const pageResponse = await fetchUserBookshelf({
-      userId: _userId,
-      searchString: searchString,
-      pageNumber: pageNumber,
-    });
-
-    bookshelf = pageResponse.bookshelf;
-    bookshelfNavigation.bookShelfCurrentPage =
-      pageResponse.bookShelfCurrentPage;
-    bookshelfNavigation.bookShelfTotalPages = pageResponse.bookShelfTotalPages;
-    bookshelfNavigation.bookShelfHasNext = pageResponse.bookShelfHasNext;
-    bookshelfNavigation.bookShelfPageSize = pageResponse.bookShelfPageSize;
-
-    setIsLoading(false);
-
-    console.log("Current bookshelf", bookshelf);
-  };
-
-  const pages = Array.from(
-    { length: bookshelfNavigation.bookShelfTotalPages },
-    (_, i) => i + 1
-  );
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
     <section
@@ -152,34 +122,40 @@ const BookshelfSetting = ({
         <div className="flex flex-col gap-4">
           <p className="text-black dark:text-light-1 text-sm">Filters</p>
           <div className="flex flex-col gap-4">
-            <Input
-              type="text"
-              placeholder="Search for books"
-              onChange={(event) => console.log(event.target.value)}
-              className="account-form_input"
-            />
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
+              <Checkbox
+                id="haveRead"
+                checked={categoryFilters.includes("haveRead")}
+                onCheckedChange={() => selectCategory("haveRead")}
+              />
               <label
-                htmlFor="terms"
+                htmlFor="haveRead"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Have reads
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
+              <Checkbox
+                id="reading"
+                checked={categoryFilters.includes("reading")}
+                onCheckedChange={() => selectCategory("reading")}
+              />
               <label
-                htmlFor="terms"
+                htmlFor="reading"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Currently reading
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
+              <Checkbox
+                id="toRead"
+                checked={categoryFilters.includes("toRead")}
+                onCheckedChange={() => selectCategory("toRead")}
+              />
               <label
-                htmlFor="terms"
+                htmlFor="toRead"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Want to read
@@ -198,9 +174,10 @@ const BookshelfSetting = ({
         ) : (
           <div className="grid grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-2 gap-12">
             {/* Loop through books here */}
-            {bookshelf && bookshelf.length > 0 ? (
-              bookshelf.map((bookshelfItem) => (
+            {userBookshelf && userBookshelf.length > 0 ? (
+              userBookshelf.map((bookshelfItem) => (
                 <BookCard
+                  key={bookshelfItem.id}
                   book={bookshelfItem.bookId}
                   review={bookshelfItem.bookReviewId}
                   handleDeleteItem={() => handleDeleteItem(bookshelfItem)}
@@ -219,22 +196,18 @@ const BookshelfSetting = ({
           <div className="flex items-center gap-7">
             <Button
               className="cursor-pointer"
-              disabled={bookshelfNavigation.bookShelfCurrentPage - 1 <= 0}
-              onClick={() => pageDown()}
+              disabled={currentPage - 1 <= 0}
+              onClick={() => setPage(currentPage - 1)}
             >
               {"<"}
             </Button>
             <p>
-              {bookshelfNavigation.bookShelfCurrentPage} of{" "}
-              {bookshelfNavigation.bookShelfTotalPages} page(s)
+              {currentPage} of {totalPages} page(s)
             </p>
             <Button
               className="cursor-pointer"
-              disabled={
-                bookshelfNavigation.bookShelfCurrentPage ==
-                bookshelfNavigation.bookShelfTotalPages
-              }
-              onClick={() => pageUp()}
+              disabled={currentPage == totalPages}
+              onClick={() => setPage(currentPage + 1)}
             >
               {">"}
             </Button>
@@ -247,23 +220,21 @@ const BookshelfSetting = ({
                   <Button
                     key={page}
                     className={`${
-                      bookshelfNavigation.bookShelfCurrentPage === page
+                      currentPage === page
                         ? "bg-red-800 text-white"
                         : "bg-gray-200 text-black"
                     }`}
-                    onClick={() => selectPage(page)}
+                    onClick={() => setPage(page)}
                   >
                     {page}
                   </Button>
                 )
             )}
 
-            {bookshelfNavigation.bookShelfTotalPages > 3 && (
+            {totalPages > 3 && (
               <div className="flex gap-2">
                 <span>...</span>
-                <Button className="bg-gray-200 text-black">
-                  {bookshelfNavigation.bookShelfTotalPages}
-                </Button>
+                <Button className="bg-gray-200 text-black">{totalPages}</Button>
               </div>
             )}
           </div>

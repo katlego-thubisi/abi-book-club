@@ -49,8 +49,8 @@ const OwnedProfile = ({
           bookshelfNavigation={bookshelfNavigation}
         />
       )}
+      {currentTab === "BoM" && <BomTab user={userInfo} />}
       {currentTab === "Clubs" && <ClubsTab />}
-      {currentTab === "BoM" && <BomTab />}
     </div>
   );
 };

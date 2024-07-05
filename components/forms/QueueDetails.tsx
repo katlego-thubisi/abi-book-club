@@ -8,9 +8,6 @@ import { Checkbox } from "../ui/checkbox";
 const QueueDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const toggleProfileVisibility = async () => {
-    setIsLoading(true);
-  };
   return (
     <section
       className="flex max-sm:flex-col gap-10 border border-solid

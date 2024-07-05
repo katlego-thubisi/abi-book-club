@@ -13,10 +13,12 @@ const bookSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
+    index: true,
   },
   subtitle: {
     type: String,
     required: false,
+    index: true,
   },
   description: {
     type: String,

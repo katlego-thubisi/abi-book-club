@@ -488,12 +488,14 @@ export async function fetchUserCommunities(userId: string) {
 export async function fetchUserBookshelf({
   userId,
   searchString = "",
+  categories = [],
   pageNumber = 1,
   pageSize = 6,
   sortBy = "desc",
 }: {
   userId: string;
   searchString?: string;
+  categories?: string[];
   pageNumber?: number;
   pageSize?: number;
   sortBy?: SortOrder;
@@ -506,18 +508,15 @@ export async function fetchUserBookshelf({
     // Create a case-insensitive regular expression for the provided search string.
     const regex = new RegExp(searchString, "i");
 
-    const sortOptions = { createdAt: sortBy };
+    const sortOptions = { createdDate: sortBy };
 
     // Create an initial query object to filter users.
     const query: FilterQuery<typeof Bookshelf> = {
       userId: { $eq: userId }, // Exclude the current user from the results.
     };
     //Do aggrate search on book and authors
-    if (searchString.trim() !== "") {
-      query.$or = [
-        { username: { $regex: regex } },
-        { name: { $regex: regex } },
-      ];
+    if (categories && categories.length > 0) {
+      query.category = { $in: categories };
     }
 
     // Find all threads authored by the user with the given userId

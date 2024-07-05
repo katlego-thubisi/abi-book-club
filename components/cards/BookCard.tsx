@@ -91,7 +91,7 @@ const BookCard = ({
                            overflow-hidden cursor-pointer"
               >
                 <Image
-                  src={book.cover}
+                  src={book?.cover}
                   alt={book.title}
                   fill
                   className="object-contain"
