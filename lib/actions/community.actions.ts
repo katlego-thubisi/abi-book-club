@@ -15,6 +15,7 @@ import { updateOrCreateBook } from "./book.actions";
 import Book from "../models/book.model";
 import BookReview from "../models/bookReview.model";
 import { ICommunity } from "../types/community";
+import { IClubUser, IUser } from "../types/user";
 
 export async function createCommunity(
   name: string,
@@ -61,6 +62,138 @@ export async function createCommunity(
   } catch (error) {
     // Handle any errors
     console.error("Error creating community:", error);
+    throw error;
+  }
+}
+
+export async function fetchCommunitiesByUserId({
+  userId,
+  pageNumber = 1,
+  pageSize = 3,
+  sortBy = "desc",
+}: {
+  userId: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: SortOrder;
+}) {
+  try {
+    connectToDB();
+
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    const sortOptions = { createdDate: sortBy };
+
+    const query: FilterQuery<typeof Community> = {
+      createdBy: { $eq: userId }, // Exclude the current user from the results.
+      memebers: { $neq: userId },
+    };
+
+    const communityQueryResponse = await Community.find(query)
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .populate({
+        path: "members",
+        model: User,
+        select: "name image _id id",
+      });
+    // .populate("requests");
+
+    const totalCommunityItemsCount = await Community.countDocuments(query);
+
+    const totalPages = Math.ceil(totalCommunityItemsCount / pageSize);
+    const isNext = pageNumber < totalPages;
+
+    const returnResponse = <ICommunity[]>communityQueryResponse;
+
+    return {
+      communities: JSON.parse(JSON.stringify(returnResponse)),
+      communitiesPageSize: pageSize,
+      communitiesHasNext: isNext,
+      communitiesTotalPages: totalPages,
+      communitiesCurrentPage: pageNumber,
+    };
+  } catch (error) {
+    console.error("Error fetching user communities:", error);
+    throw error;
+  }
+}
+
+export async function fetchMembersDetailsByUserId({
+  userId,
+  pageNumber = 1,
+  pageSize = 3,
+  sortBy = "desc",
+}: {
+  userId: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: SortOrder;
+}) {
+  try {
+    connectToDB();
+
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    const sortOptions = { createdDate: sortBy };
+
+    const query: FilterQuery<typeof Community> = {
+      createdBy: { $eq: userId }, // Exclude the current user from the results.
+      members: { $nin: [userId] },
+    };
+
+    const communityQueryResponse = await Community.find(query)
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .populate({
+        path: "requests",
+        model: User,
+        select: "name surname username bio image _id id",
+      })
+      .populate({
+        path: "members",
+        model: User,
+        select: "name surname username bio image _id id",
+      });
+    // .populate("requests");
+    const communities = <ICommunity[]>communityQueryResponse;
+
+    const returnResponse = <IClubUser[]>communities
+      .map((c) => {
+        const requests = c?.requests.map((user: any) => ({
+          ...user._doc,
+          clubId: c.id,
+          clubName: c.name,
+          clubImage: c.image,
+          type: "request",
+        }));
+        const members = c?.members.map((user: any) => ({
+          ...user._doc,
+          clubId: c.id,
+          clubName: c.name,
+          clubImage: c.image,
+          type: "member",
+        }));
+        return requests?.concat(members);
+      })
+      .flat();
+
+    const totalCommunityItemsCount = await Community.countDocuments(query);
+
+    const totalPages = Math.ceil(totalCommunityItemsCount / pageSize);
+    const isNext = pageNumber < totalPages;
+
+    return {
+      users: JSON.parse(JSON.stringify(returnResponse)),
+      communitiesPageSize: pageSize,
+      communitiesHasNext: isNext,
+      communitiesTotalPages: totalPages,
+      communitiesCurrentPage: pageNumber,
+    };
+  } catch (error) {
+    console.error("Error fetching user communities:", error);
     throw error;
   }
 }
@@ -357,7 +490,7 @@ export async function declineRequestCommunity(
 export async function removeUserFromCommunity(
   userId: string,
   communityId: string,
-  pathName: string
+  pathName?: string
 ) {
   try {
     connectToDB();
@@ -388,7 +521,7 @@ export async function removeUserFromCommunity(
       { $pull: { communities: communityIdObject._id } }
     );
 
-    revalidatePath(pathName);
+    if (pathName) revalidatePath(pathName);
   } catch (error) {
     // Handle any errors
     console.error("Error removing user from community:", error);

@@ -13,32 +13,18 @@ import {
 } from "@/lib/actions/user.actions";
 import BookshelfItem from "./BookshelfItem";
 import BookshelfItemView from "../cards/BookshelfItemView";
-import AddBookCard from "../cards/AddBookCard";
-import { set } from "mongoose";
 
 interface Props {
   _userId: string;
   userId: string;
-  bookshelf: IBookshelf[];
-  bookshelfNavigation: {
-    bookShelfPageSize: number;
-    bookShelfHasNext: boolean;
-    bookShelfTotalPages: number;
-    bookShelfCurrentPage: number;
-  };
 }
 
-const BookshelfSetting = ({
-  _userId,
-  userId,
-  bookshelf,
-  bookshelfNavigation,
-}: Props) => {
+const BookshelfSetting = ({ _userId, userId }: Props) => {
   //Loading state
   const [isLoading, setIsLoading] = useState(false);
 
   //List state
-  const [userBookshelf, setUserBookshelf] = useState<IBookshelf[]>(bookshelf);
+  const [userBookshelf, setUserBookshelf] = useState<IBookshelf[]>([]);
 
   const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
 
@@ -48,13 +34,8 @@ const BookshelfSetting = ({
   const [viewOpen, setViewOpen] = useState(false);
 
   //Filtering state
-  const [searchString, setSearchString] = useState("");
-  const [currentPage, setPage] = useState(
-    bookshelfNavigation.bookShelfCurrentPage
-  );
-  const [totalPages, setTotalPages] = useState(
-    bookshelfNavigation.bookShelfTotalPages
-  );
+  const [currentPage, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const pathname = usePathname();
 
@@ -68,7 +49,6 @@ const BookshelfSetting = ({
       .then((pageResponse) => {
         setUserBookshelf(pageResponse.bookshelf);
         setTotalPages(pageResponse.bookShelfTotalPages);
-
         setIsLoading(false);
       })
       .catch((error) => {
@@ -104,8 +84,6 @@ const BookshelfSetting = ({
       setCategoryFilters([...categoryFilters, category]);
     }
   };
-
-  const selectPage = async (pageNumber: number) => {};
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 

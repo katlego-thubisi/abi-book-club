@@ -1,16 +1,58 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
+import { ICommunity } from "@/lib/types/community";
+import { fetchCommunitiesByUserId } from "@/lib/actions/community.actions";
+import CommunityCard from "../cards/CommunityCard";
+import CommunityDialog from "./CommunityDialog";
 
-const ClubDetails = () => {
+interface Props {
+  _userId: string;
+  userId: string;
+}
+
+const ClubDetails = ({ _userId, userId }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const toggleProfileVisibility = async () => {
+  const [userClublist, setUserClublist] = useState<any[]>([]);
+
+  const [currentClubItem, setClubItem] = useState<ICommunity | null>();
+  const [editOpen, setEditOpen] = useState(false);
+
+  const [currentPage, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  useEffect(() => {
     setIsLoading(true);
+    fetchCommunitiesByUserId({
+      userId: _userId,
+      pageNumber: currentPage,
+    })
+      .then((response) => {
+        setUserClublist(response.communities);
+        setTotalPages(response.communitiesTotalPages);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching user clublist", error);
+      });
+  }, [currentPage]);
+
+  const handleEdit = (club: ICommunity) => {
+    setClubItem(club);
+    setEditOpen(true);
   };
+
+  const toggleNewClub = () => {
+    setClubItem(null);
+    setEditOpen(true);
+  };
+
   return (
     <section
       className="flex max-sm:flex-col gap-10 border border-solid
@@ -24,12 +66,6 @@ const ClubDetails = () => {
         <div className="flex flex-col gap-4">
           <p className="text-black dark:text-light-1 text-sm">Filters</p>
           <div className="flex flex-col gap-4">
-            <Input
-              type="text"
-              placeholder="Search for books"
-              onChange={(event) => console.log(event.target.value)}
-              className="account-form_input"
-            />
             <div className="flex items-center space-x-2">
               <Checkbox id="terms" />
               <label
@@ -62,47 +98,79 @@ const ClubDetails = () => {
       </div>
 
       <div className="flex flex-col flex-1 gap-6">
-        <Button className="bg-red-800" onClick={toggleProfileVisibility}>
+        <Button className="bg-red-800" onClick={() => toggleNewClub()}>
           Add club
         </Button>
-        <div className="flex flex-wrap gap-4">
+        <div className="grid grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-2 gap-12">
           {/* Loop through books here */}
-          <div className="flex flex-col cursor-pointer relative">
-            <div className="relative h-60 w-40 sm:w-48 overflow-hidden">
-              <img
-                src="/assets/no-cover.jpg"
-                alt="book cover"
-                className="object-cover rounded-lg"
+          {!isLoading &&
+            userClublist &&
+            userClublist.length > 0 &&
+            userClublist.map((club) => (
+              <CommunityCard
+                onClick={() => handleEdit(club)}
+                community={JSON.parse(JSON.stringify(club))}
+                key={club?.id}
               />
-            </div>
-            <div className="mt-2 w-40">
-              <p className="text-base-semibold text-black dark:text-light-1 h-11 overflow-hidden text-ellipsis">
-                {" "}
-                Club name
-              </p>
-              <p className="text-small-medium text-gray-1 overflow-hidden  text-ellipsis">
-                @clubusername
-              </p>
-              <p className="mt-2 text-subtle-medium text-gray-1 h-16 overflow-hidden text-ellipsis">
-                Short bio about the club
-              </p>
-            </div>
-          </div>
+            ))}
         </div>
-        <div className="flex justify-between">
-          <div></div>
-          <div>
-            <p>1 of 5</p>
+        {isLoading && <p>Loading...</p>}
+        {!isLoading && userClublist.length === 0 && <p>No Clubs</p>}
+        <div className="flex items-center justify-between">
+          <div className="max-sm:hidden"></div>
+          <div className="flex items-center gap-7">
+            <Button
+              className="cursor-pointer"
+              disabled={currentPage - 1 <= 0}
+              onClick={() => setPage(currentPage - 1)}
+            >
+              {"<"}
+            </Button>
+            <p>
+              {currentPage} of {totalPages} page(s)
+            </p>
+            <Button
+              className="cursor-pointer"
+              disabled={currentPage == totalPages}
+              onClick={() => setPage(currentPage + 1)}
+            >
+              {">"}
+            </Button>
           </div>
           <div className="flex gap-3">
-            <p>1</p>
-            <p>2</p>
-            <p>3</p>
-            <p>4</p>
-            <p>5</p>
+            {/* //Create a loop to loop over the number of pages */}
+            {pages.map(
+              (page, i) =>
+                i < 3 && (
+                  <Button
+                    key={page}
+                    className={`${
+                      currentPage === page
+                        ? "bg-red-800 text-white"
+                        : "bg-gray-200 text-black"
+                    }`}
+                    onClick={() => setPage(page)}
+                  >
+                    {page}
+                  </Button>
+                )
+            )}
+
+            {totalPages > 3 && (
+              <div className="flex gap-2">
+                <span>...</span>
+                <Button className="bg-gray-200 text-black">{totalPages}</Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
+      <CommunityDialog
+        open={editOpen}
+        community={currentClubItem ? currentClubItem : null}
+        handleClose={() => setEditOpen(false)}
+        userId={userId}
+      />
     </section>
   );
 };

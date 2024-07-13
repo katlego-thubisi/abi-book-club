@@ -77,9 +77,7 @@ const QueueDetails = () => {
       </div>
 
       <div className="flex flex-col flex-1 gap-6">
-        <Button className="bg-red-800" onClick={toggleProfileVisibility}>
-          Add queue
-        </Button>
+        <Button className="bg-red-800">Add queue</Button>
         <div className="grid grid-cols-3 max-sm:hidden gap-12">
           {/* Loop through books here */}
           <div className="flex flex-col items-center cursor-pointer relative">

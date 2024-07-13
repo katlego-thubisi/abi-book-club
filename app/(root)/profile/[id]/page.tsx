@@ -31,19 +31,13 @@ async function Page({ params }: { params: { id: string } }) {
   const isFollowing = followerCheck ? true : false;
 
   return (
-    <section className="flex flex-row w-full justify-start items-start">
+    <section>
       {isOwner ? (
         <OwnedProfile
           id={params.id}
           isFollowing={isFollowing}
           userInfo={JSON.parse(JSON.stringify(fetchUserResponse.user))}
           isOwner={isOwner}
-          bookshelfNavigation={{
-            bookShelfCurrentPage: fetchUserResponse.bookShelfCurrentPage,
-            bookShelfHasNext: fetchUserResponse.bookShelfHasNext,
-            bookShelfPageSize: fetchUserResponse.bookShelfPageSize,
-            bookShelfTotalPages: fetchUserResponse.bookShelfTotalPages,
-          }}
         />
       ) : (
         <Profile

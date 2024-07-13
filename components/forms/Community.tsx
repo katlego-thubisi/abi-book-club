@@ -88,7 +88,7 @@ const Community = ({ community }: Props) => {
       }
     }
 
-    if (pathname.includes("/clubs/") && values.communityId?.trim() !== "") {
+    if (values.communityId?.trim() !== "") {
       await updateCommunityInfo(
         values.communityId,
         values.name,

@@ -67,8 +67,6 @@ export async function fetchUser(userId: string) {
   try {
     connectToDB();
 
-    const bookShelfPageSize = 6;
-
     const response = await User.findOne({ id: userId })
       .populate({
         path: "communities",
@@ -99,7 +97,7 @@ export async function fetchUser(userId: string) {
         options: {
           skip: 0,
           sort: { createdDate: "desc" },
-          limit: bookShelfPageSize,
+          limit: 6,
         },
       })
       .populate({
@@ -113,49 +111,9 @@ export async function fetchUser(userId: string) {
         select: "name surname username image id",
       });
     var returnResponse = <IUser>response;
-    let totalShelfItemsCount = 0;
-    if (
-      returnResponse &&
-      returnResponse.bookshelf &&
-      returnResponse.bookshelf.length > 0
-    ) {
-      // Define the sort options for the fetched users based on createdAt field and provided sort order.
-
-      var aggregateCount = await Bookshelf.aggregate([
-        {
-          $lookup: {
-            from: "users", // The collection name of the referenced model
-            localField: "userId", // Field in Post that references User
-            foreignField: "_id", // Field in User that is referenced
-            as: "userDetails",
-          },
-        },
-        {
-          $unwind: "$userDetails", // Unwind the resulting array to access userDetails fields
-        },
-        {
-          $match: {
-            "userDetails.id": userId, // Filter by the referenced property
-          },
-        },
-        {
-          $count: "totalPosts", // Count the number of documents that match the criteria
-        },
-      ]);
-
-      totalShelfItemsCount =
-        aggregateCount.length > 0 ? aggregateCount[0]?.totalPosts : 0;
-    }
-    const totalPages = Math.ceil(totalShelfItemsCount / bookShelfPageSize);
-    const currentPage = 1;
-    const isNext = currentPage < totalPages;
 
     return {
       user: returnResponse,
-      bookShelfPageSize,
-      bookShelfHasNext: isNext,
-      bookShelfTotalPages: totalPages,
-      bookShelfCurrentPage: currentPage,
     };
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);

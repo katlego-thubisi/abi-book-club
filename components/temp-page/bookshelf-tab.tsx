@@ -5,23 +5,12 @@ import { IUser } from "@/lib/types/user";
 
 interface Props {
   user: IUser;
-  bookshelfNavigation: {
-    bookShelfPageSize: number;
-    bookShelfHasNext: boolean;
-    bookShelfTotalPages: number;
-    bookShelfCurrentPage: number;
-  };
 }
 
-const BookshelfTab = ({ user, bookshelfNavigation }: Props) => {
+const BookshelfTab = ({ user }: Props) => {
   return (
     <section className="flex flex-col gap-8">
-      <BookshelfSetting
-        _userId={user._id}
-        userId={user.id}
-        bookshelf={user.bookshelf}
-        bookshelfNavigation={bookshelfNavigation}
-      />
+      <BookshelfSetting _userId={user._id} userId={user.id} />
     </section>
   );
 };

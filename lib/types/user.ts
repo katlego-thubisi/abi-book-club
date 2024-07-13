@@ -29,3 +29,17 @@ export type IUser = {
   visibility: boolean;
   status: string;
 };
+
+export type IClubUser = {
+  _id: string;
+  id: string;
+  clubId: string;
+  clubName: string;
+  clubImage: string;
+  bio: string;
+  name: string;
+  surname: string;
+  username: string;
+  image: string;
+  type: string;
+};

@@ -17,7 +17,7 @@ async function Page({ params }: { params: { id: string } }) {
 
   const userInfo = await fetchUser(user.id);
 
-  if (!userInfo?.onboarded) redirect("/onboarding");
+  if (!userInfo?.user.onboarded) redirect("/onboarding");
 
   const communityDetails = await fetchCommunityDetails(params.id);
   // check if current user is already a member of the community
@@ -97,7 +97,7 @@ async function Page({ params }: { params: { id: string } }) {
             </TabsContent>
             <TabsContent value="entries" className="w-full text-light-1">
               <EntriesTab
-                currentUserId={userInfo._id}
+                currentUserId={userInfo.user._id}
                 accountId={communityDetails._id}
                 accountType="Community"
               />

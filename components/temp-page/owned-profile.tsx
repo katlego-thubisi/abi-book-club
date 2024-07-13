@@ -16,25 +16,13 @@ interface Props {
   userInfo: IUser;
   isOwner: boolean;
   isFollowing: boolean;
-  bookshelfNavigation: {
-    bookShelfPageSize: number;
-    bookShelfHasNext: boolean;
-    bookShelfTotalPages: number;
-    bookShelfCurrentPage: number;
-  };
 }
 
-const OwnedProfile = ({
-  id,
-  userInfo,
-  isOwner,
-  isFollowing,
-  bookshelfNavigation,
-}: Props) => {
+const OwnedProfile = ({ id, userInfo, isOwner, isFollowing }: Props) => {
   const [currentTab, setCurrentTab] = useState("General");
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex-1 flex-col w-full">
       <ProfileSidebar
         defaultValue="General"
         setCurrentTab={(currentTab) => {
@@ -43,14 +31,9 @@ const OwnedProfile = ({
       />
       {currentTab === "General" && <GeneralTab user={userInfo} />}
       {currentTab === "Profile" && <ProfileTab user={userInfo} />}
-      {currentTab === "Bookshelf" && (
-        <BookshelfTab
-          user={userInfo}
-          bookshelfNavigation={bookshelfNavigation}
-        />
-      )}
+      {currentTab === "Bookshelf" && <BookshelfTab user={userInfo} />}
       {currentTab === "BoM" && <BomTab user={userInfo} />}
-      {currentTab === "Clubs" && <ClubsTab />}
+      {currentTab === "Clubs" && <ClubsTab user={userInfo} />}
     </div>
   );
 };

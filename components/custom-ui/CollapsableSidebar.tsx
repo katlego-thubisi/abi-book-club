@@ -18,7 +18,7 @@ const CollapsableSidebar = ({ communities, users }: Props) => {
 
   return (
     <section
-      className={`custom-scrollbar rightsidebar duration-300 ease-in-out
+      className={`custom-scrollbar rightsidebar duration-300 ease-in-out sticky
          ${
            open ? "translate-x-0" : "max-xl:translate-x-0 translate-x-[22rem]"
          } `}

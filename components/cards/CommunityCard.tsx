@@ -2,18 +2,25 @@
 
 import { ICommunity } from "@/lib/types/community";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 interface Props {
   community: ICommunity;
+  onClick?: () => void;
 }
-function CommunityCard({ community }: Props) {
+function CommunityCard({ community, onClick }: Props) {
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      router.push(`/clubs/${community?.id}`);
+    }
+  };
   return (
-    <article className="w-40 sm:w-48">
+    <article className="w-40  cursor-pointer" onClick={() => handleClick()}>
       <div className="flex flex-wrap items-center gap-3">
-        <Link
-          href={`/clubs/${community?.id}`}
-          className="relative h-60 w-full "
-        >
+        <div className="relative h-60 w-full ">
           <Image
             src={
               community?.image
@@ -24,15 +31,15 @@ function CommunityCard({ community }: Props) {
             fill
             className="object-cover rounded-lg"
           />
-        </Link>
+        </div>
       </div>
 
       <div className="mt-2">
-        <Link href={`/clubs/${community?.id}`}>
+        <div>
           <h4 className="text-base-semibold text-black dark:text-light-1 h-11 overflow-hidden text-ellipsis">
             {community?.name}
           </h4>
-        </Link>
+        </div>
         <p className="text-small-medium text-gray-1 overflow-hidden  text-ellipsis">
           @{community?.username}
         </p>

@@ -20,7 +20,7 @@ async function Page() {
   // fetch organization list created by user
   const userInfo = await fetchUser(user.id);
 
-  if (!userInfo?.onboarded) redirect("/onboarding");
+  if (!userInfo?.user.onboarded) redirect("/onboarding");
 
   // Fetch communities
   const result = await fetchCommunities({
@@ -63,7 +63,7 @@ async function Page() {
               name: "",
               image: "",
               bio: "",
-              ownerUserId: userInfo.id,
+              ownerUserId: userInfo.user.id,
             }}
           />
         </DialogContent>
