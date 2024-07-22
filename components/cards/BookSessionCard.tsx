@@ -24,25 +24,29 @@ const BookSessionCard = ({
   };
 
   return (
-    <div className="flex flex-col items-center cursor-pointer relative">
-      <div className="relative h-40 w-28">
+    <div
+      className="flex flex-row gap-4 sm:flex-col 
+    items-center cursor-pointer 
+    relative"
+    >
+      <div className="relative h-32 w-20 sm:h-40 sm:w-28">
         <img src={bookSession.bookId.cover} alt={bookSession.bookId.title} />
       </div>
       <div className="mt-2 w-40">
         <p
-          className="text-center text-small-semibold lg:text-base-semibold 
+          className="sm:text-center text-small-semibold lg:text-base-semibold 
     h-11 text-black dark:text-light-1 mt-2 
     overflow-hidden text-ellipsis"
         >
           {bookSession.bookId.title}
         </p>
         <p
-          className="text-xs text-center 
+          className="text-xs sm:text-center 
     text-black dark:text-light-1"
         >
           {bookSession.bookId.authors[0]}
         </p>
-        <div className="flex justify-around mt-2">
+        <div className="flex justify-between sm:justify-around mt-2">
           <div className="flex gap-1">
             <div
               className="cursor-pointer"

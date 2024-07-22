@@ -1,12 +1,12 @@
-import { Book } from "./book";
-import { User } from "./user";
+import { IBook } from "./book";
+import { IUser } from "./user";
 
-export interface BookSession {
+export interface IBookSession {
   id: string;
-  book: Book;
+  book: IBook;
   startData: Date;
   endDate: Date;
-  votes: User[];
+  votes: IUser[];
   status: string;
   createdDate: Date;
   updatedDate: Date;

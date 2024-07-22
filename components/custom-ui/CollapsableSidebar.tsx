@@ -38,13 +38,13 @@ const CollapsableSidebar = ({ communities, users }: Props) => {
             <div className="flex flex-col gap-3.5 justify-center mt-2.5">
               {communities.map((community) => (
                 <ClubCard
-                  key={community?.id}
-                  id={community?.id}
-                  name={community?.name}
-                  username={community?.username}
-                  imgUrl={community?.image}
-                  bio={community?.bio}
-                  members={community?.members}
+                  key={community.id}
+                  id={community.id}
+                  name={community.name}
+                  username={community.username}
+                  imgUrl={community.image}
+                  bio={community.bio}
+                  members={community.members}
                 />
               ))}
             </div>

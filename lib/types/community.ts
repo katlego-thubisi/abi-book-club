@@ -3,6 +3,7 @@ import { Entry } from "./entry";
 import { IUser } from "./user";
 
 export type ICommunity = {
+  _id?: string;
   id?: string | undefined;
   username: string;
   name: string;

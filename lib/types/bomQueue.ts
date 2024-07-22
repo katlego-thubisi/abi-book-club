@@ -1,12 +1,12 @@
-import { BookSession } from "./bookSession";
-import { Community } from "./community";
+import { IBookSession } from "./bookSession";
+import { ICommunity } from "./community";
 
-export interface BomQueue {
+export interface IBomQueue {
   id: string;
-  community: Community;
+  communityId: ICommunity;
   startDate: Date;
   endDate: Date;
-  bookSessions: BookSession[];
+  bookSessions: IBookSession[];
   status: string;
   createdDate: Date;
   updatedDate: Date;

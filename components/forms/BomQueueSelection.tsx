@@ -11,9 +11,15 @@ interface Props {
   currentQueue: any[];
   handleAddQueue: (index: number) => void;
   next: () => void;
+  back: () => void;
 }
 
-const BomQueueSelection = ({ currentQueue, handleAddQueue, next }: Props) => {
+const BomQueueSelection = ({
+  currentQueue,
+  handleAddQueue,
+  next,
+  back,
+}: Props) => {
   const form = useForm<z.infer<typeof QueueValidation>>({
     resolver: zodResolver(QueueValidation),
     defaultValues: {
@@ -97,14 +103,24 @@ const BomQueueSelection = ({ currentQueue, handleAddQueue, next }: Props) => {
             )
           )}
         </div>
-
-        <Button
-          type="submit"
-          className="bg-red-800 dark:bg-red-800 dark:text-white"
-          disabled={form.formState.isSubmitting || !isValidQueue(currentQueue)}
-        >
-          Submit
-        </Button>
+        <div className="flex justify-between">
+          <Button
+            type="submit"
+            className="bg-red-800 dark:bg-red-800 dark:text-white"
+            onClick={() => back()}
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            className="bg-red-800 dark:bg-red-800 dark:text-white"
+            disabled={
+              form.formState.isSubmitting || !isValidQueue(currentQueue)
+            }
+          >
+            Submit
+          </Button>
+        </div>
       </form>
     </Form>
   );

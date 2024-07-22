@@ -47,21 +47,21 @@ const PendingRequest = ({ _userId, userId }: Props) => {
 
   const removeMember = async (user: IClubUser) => {
     setIsLoading(true);
-    await removeUserFromCommunity(user._id, user.clubId, "/");
+    await removeUserFromCommunity(user.id, user.clubId, "/");
     setPage(1);
     setIsLoading(false);
   };
 
   const declineRequest = async (user: IClubUser) => {
     setIsLoading(true);
-    await declineRequestCommunity(user._id, user.clubId, "/");
+    await declineRequestCommunity(user.id, user.clubId, "/");
     setPage(1);
     setIsLoading(false);
   };
 
   const approveRequest = async (user: IClubUser) => {
     setIsLoading(true);
-    await approveMemberToCommunity(user._id, user.clubId, "/");
+    await approveMemberToCommunity(user.clubId, user.id, "/");
     setPage(1);
     setIsLoading(false);
   };
@@ -168,7 +168,7 @@ const PendingRequest = ({ _userId, userId }: Props) => {
                   </div>
                 )}
                 {member.type === "request" && (
-                  <div className=" grid grid-cols-1">
+                  <div className=" grid grid-cols-2">
                     <Button
                       variant="ghost"
                       onClick={() => declineRequest(member)}

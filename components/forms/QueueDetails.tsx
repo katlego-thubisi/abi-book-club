@@ -1,12 +1,51 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
+import { IBomQueue } from "@/lib/types/bomQueue";
+import { useRouter } from "next/navigation";
+import { set } from "mongoose";
+import { fetchQueueDetailsByUserId } from "@/lib/actions/community.actions";
+import BomQueue from "./BomQueue";
+import BoMQueueCard from "../cards/BoMQueueCard";
 
-const QueueDetails = () => {
+interface Props {
+  userId: string;
+  _userId: string;
+}
+
+const QueueDetails = ({ _userId, userId }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [queueList, setQueueList] = useState<IBomQueue[]>([]);
+  const [queueModal, setQueueModal] = useState(false);
+
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  const router = useRouter();
+
+  const handleAddQueue = () => {
+    setQueueModal(true);
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchQueueDetailsByUserId({
+      userId: _userId,
+      pageNumber: currentPage,
+    })
+      .then((response) => {
+        setQueueList(response.queues);
+        setTotalPages(response.queuesTotalPages);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching user clublist", error);
+      });
+  }, [currentPage]);
 
   return (
     <section
@@ -18,15 +57,31 @@ const QueueDetails = () => {
         <p className="text-small-medium w-48">
           Manage all your book club queues in one place
         </p>
-        <div className="flex flex-col gap-4">
-          <p className="text-black dark:text-light-1 text-sm">Filters</p>
-          <div className="flex flex-col gap-4">
-            {/* <Input
-              type="text"
-              placeholder="Search for books"
-              onChange={(event) => console.log(event.target.value)}
-              className="account-form_input"
-            /> */}
+        <div className={`flex flex-col gap-4 `}>
+          <p
+            className={`${
+              !showFilters && "hidden"
+            } cursor-pointer text-center sm:hidden`}
+            onClick={() => setShowFilters(false)}
+          >
+            Hide advanced filters
+          </p>
+          <p
+            className={`${
+              showFilters && "hidden"
+            } cursor-pointer text-center sm:hidden`}
+            onClick={() => setShowFilters(true)}
+          >
+            Show advanced filters
+          </p>
+          <p className="hidden sm:block text-black dark:text-light-1 text-sm">
+            Filters
+          </p>
+          <div
+            className={`${
+              !showFilters ? "hidden" : "flex flex-row flex-wrap items-center"
+            } sm:flex sm:flex-col sm:items-start gap-4`}
+          >
             <div className="flex items-center space-x-2">
               <Checkbox id="terms" />
               <label
@@ -77,148 +132,86 @@ const QueueDetails = () => {
       </div>
 
       <div className="flex flex-col flex-1 gap-6">
-        <Button className="bg-red-800">Add queue</Button>
-        <div className="grid grid-cols-3 max-sm:hidden gap-12">
-          {/* Loop through books here */}
-          <div className="flex flex-col items-center cursor-pointer relative">
-            <div className="relative h-40 w-28">
-              <img src="/assets/no-cover.jpg" alt="book cover" />
+        <Button className="bg-red-800" onClick={() => handleAddQueue()}>
+          Add queue
+        </Button>
+
+        {/* Loop through books here */}
+        {!isLoading &&
+          queueList &&
+          queueList.length > 0 &&
+          queueList.map((queue) => (
+            <BoMQueueCard queue={queue} userId={_userId} />
+          ))}
+
+        {queueModal && (
+          <BomQueue
+            open={queueModal}
+            userId={_userId}
+            handleClose={() => setQueueModal(false)}
+          />
+        )}
+
+        {!isLoading && queueList && queueList.length > 0 && (
+          <div className="flex items-center justify-center">
+            <Button className="text-center cursor-pointer w-auto p-6">
+              Publish
+            </Button>
+          </div>
+        )}
+
+        {queueList.length !== 0 && (
+          <div className="flex items-center justify-between">
+            <div className="max-sm:hidden"></div>
+            <div className="flex items-center gap-7">
+              <Button
+                className="cursor-pointer"
+                disabled={currentPage - 1 <= 0}
+                onClick={() => setPage(currentPage - 1)}
+              >
+                {"<"}
+              </Button>
+              <p>
+                {currentPage} of {totalPages} page(s)
+              </p>
+              <Button
+                className="cursor-pointer"
+                disabled={currentPage == totalPages}
+                onClick={() => setPage(currentPage + 1)}
+              >
+                {">"}
+              </Button>
             </div>
-            <div className="mt-2 w-40">
-              <p
-                className="text-center text-small-semibold lg:text-base-semibold
-               h-11 text-black dark:text-light-1 mt-2 
-                overflow-hidden text-ellipsis"
-              >
-                {" "}
-                Book name
-              </p>
-              <p
-                className="text-xs text-center 
-    text-black dark:text-light-1"
-              >
-                Juicy Jefferson
-              </p>
+            <div className="flex gap-3">
+              {/* //Create a loop to loop over the number of pages */}
+              {pages.map(
+                (page, i) =>
+                  i < 3 && (
+                    <Button
+                      key={page}
+                      className={`${
+                        currentPage === page
+                          ? "bg-red-800 text-white"
+                          : "bg-gray-200 text-black"
+                      }`}
+                      onClick={() => setPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  )
+              )}
+
+              {totalPages > 3 && (
+                <div className="flex gap-2">
+                  <span>...</span>
+                  <Button className="bg-gray-200 text-black">
+                    {totalPages}
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
-          <div className="flex flex-col items-center cursor-pointer relative">
-            <div className="relative h-40 w-28">
-              <img src="/assets/no-cover.jpg" alt="book cover" />
-            </div>
-            <div className="mt-2 w-40">
-              <p
-                className="text-center text-small-semibold lg:text-base-semibold
-               h-11 text-black dark:text-light-1 mt-2 
-                overflow-hidden text-ellipsis"
-              >
-                {" "}
-                Book name
-              </p>
-              <p
-                className="text-xs text-center 
-    text-black dark:text-light-1"
-              >
-                Juicy Jefferson
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col items-center cursor-pointer relative">
-            <div className="relative h-40 w-28">
-              <img src="/assets/no-cover.jpg" alt="book cover" />
-            </div>
-            <div className="mt-2 w-40">
-              <p
-                className="text-center text-small-semibold lg:text-base-semibold
-               h-11 text-black dark:text-light-1 mt-2 
-                overflow-hidden text-ellipsis"
-              >
-                {" "}
-                Book name
-              </p>
-              <p
-                className="text-xs text-center 
-    text-black dark:text-light-1"
-              >
-                Juicy Jefferson
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="hidden max-sm:flex flex-col ">
-          <div className="flex gap-5">
-            <div className="relative overflow-hidden h-28 w-16">
-              <img
-                src="/assets/no-cover.jpg"
-                alt="book cover"
-                className="h-36 w-16"
-              />
-            </div>
-            <div>
-              <p
-                className="text-base-semibold
-                 h-11 text-black dark:text-light-1 mt-2 
-                    overflow-hidden text-ellipsis"
-              >
-                {" "}
-                Book name
-              </p>
-              <p className="text-xs">Juicy Jefferson</p>
-            </div>
-          </div>
-          <div className="flex gap-5">
-            <div className="relative overflow-hidden h-28 w-16">
-              <img
-                src="/assets/no-cover.jpg"
-                alt="book cover"
-                className="h-36 w-16"
-              />
-            </div>
-            <div>
-              <p
-                className="text-base-semibold
-                 h-11 text-black dark:text-light-1 mt-2 
-                    overflow-hidden text-ellipsis"
-              >
-                {" "}
-                Book name
-              </p>
-              <p className="text-xs">Juicy Jefferson</p>
-            </div>
-          </div>
-          <div className="flex gap-5">
-            <div className="relative overflow-hidden h-28 w-16">
-              <img
-                src="/assets/no-cover.jpg"
-                alt="book cover"
-                className="h-36 w-16"
-              />
-            </div>
-            <div>
-              <p
-                className="text-base-semibold
-                 h-11 text-black dark:text-light-1 mt-2 
-                    overflow-hidden text-ellipsis"
-              >
-                {" "}
-                Book name
-              </p>
-              <p className="text-xs">Juicy Jefferson</p>
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <div></div>
-          <div>
-            <p>1 of 5</p>
-          </div>
-          <div className="flex gap-3">
-            <p>1</p>
-            <p>2</p>
-            <p>3</p>
-            <p>4</p>
-            <p>5</p>
-          </div>
-        </div>
+        )}
       </div>
     </section>
   );

@@ -33,6 +33,7 @@ export type IUser = {
 export type IClubUser = {
   _id: string;
   id: string;
+  _clubId: string;
   clubId: string;
   clubName: string;
   clubImage: string;

@@ -15,9 +15,10 @@ import { cn } from "@/lib/utils";
 
 interface Props {
   next: (startDate: Date, endDate: Date) => Promise<void>;
+  back: () => void;
 }
 
-const BomQueueSchedule = ({ next }: Props) => {
+const BomQueueSchedule = ({ next, back }: Props) => {
   const form = useForm<z.infer<typeof QueueValidation>>({
     resolver: zodResolver(QueueValidation),
     defaultValues: {
@@ -83,13 +84,22 @@ const BomQueueSchedule = ({ next }: Props) => {
             </Popover>
           </div>
         </div>
-        <Button
-          type="submit"
-          className="bg-red-800 dark:bg-red-800 dark:text-white"
-          disabled={form.formState.isSubmitting}
-        >
-          Submit
-        </Button>
+        <div className="flex flex-row justify-between">
+          <Button
+            type="submit"
+            className="bg-red-800 dark:bg-red-800 dark:text-white"
+            onClick={() => back()}
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            className="bg-red-800 dark:bg-red-800 dark:text-white"
+            disabled={form.formState.isSubmitting}
+          >
+            Submit
+          </Button>
+        </div>
       </form>
     </Form>
   );
