@@ -263,6 +263,7 @@ export async function fetchQueueDetailsByUserId({
     // .populate("requests");
     // const communities = <ICommunity[]>communityQueryResponse;
 
+    const communitiesResponse = <ICommunity[]>communityQueryResponse;
     const returnResponse = <IBomQueue[]>queueQueryResponse
       .map((q) => {
         return {
@@ -277,6 +278,7 @@ export async function fetchQueueDetailsByUserId({
     const isNext = pageNumber < totalPages;
 
     return {
+      communities: JSON.parse(JSON.stringify(communitiesResponse)),
       queues: JSON.parse(JSON.stringify(returnResponse)),
       queuesPageSize: pageSize,
       queuesHasNext: isNext,

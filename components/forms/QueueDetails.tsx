@@ -9,6 +9,7 @@ import { set } from "mongoose";
 import { fetchQueueDetailsByUserId } from "@/lib/actions/community.actions";
 import BomQueue from "./BomQueue";
 import BoMQueueCard from "../cards/BoMQueueCard";
+import { ICommunity } from "@/lib/types/community";
 
 interface Props {
   userId: string;
@@ -22,6 +23,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
   const [totalPages, setTotalPages] = useState(1);
   const [queueList, setQueueList] = useState<IBomQueue[]>([]);
   const [queueModal, setQueueModal] = useState(false);
+  const [communitiesFilters, setCommunitiesFilters] = useState([]);
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
@@ -38,6 +40,8 @@ const QueueDetails = ({ _userId, userId }: Props) => {
       pageNumber: currentPage,
     })
       .then((response) => {
+        console.log("Response", response);
+        setCommunitiesFilters(response.communities);
         setQueueList(response.queues);
         setTotalPages(response.queuesTotalPages);
         setIsLoading(false);
@@ -82,24 +86,23 @@ const QueueDetails = ({ _userId, userId }: Props) => {
               !showFilters ? "hidden" : "flex flex-row flex-wrap items-center"
             } sm:flex sm:flex-col sm:items-start gap-4`}
           >
-            <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Club1
-              </label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Club2
-              </label>
-            </div>
+            {communitiesFilters &&
+              communitiesFilters.length > 0 &&
+              communitiesFilters.map((community: ICommunity) => (
+                <div
+                  className="flex items-center space-x-2"
+                  key={community?._id}
+                >
+                  <Checkbox id="terms" />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    {community?.name}
+                  </label>
+                </div>
+              ))}
+
             <div className="flex items-center space-x-2">
               <Checkbox id="terms" />
               <label
@@ -137,6 +140,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
         </Button>
 
         {/* Loop through books here */}
+        {isLoading && <p>Loading...</p>}
         {!isLoading &&
           queueList &&
           queueList.length > 0 &&
@@ -183,7 +187,6 @@ const QueueDetails = ({ _userId, userId }: Props) => {
               </Button>
             </div>
             <div className="flex gap-3">
-              {/* //Create a loop to loop over the number of pages */}
               {pages.map(
                 (page, i) =>
                   i < 3 && (
