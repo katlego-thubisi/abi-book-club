@@ -2,8 +2,9 @@ import { IBook } from "./book";
 import { IUser } from "./user";
 
 export interface IBookSession {
+  _id: string;
   id: string;
-  book: IBook;
+  bookId: IBook;
   startData: Date;
   endDate: Date;
   votes: IUser[];

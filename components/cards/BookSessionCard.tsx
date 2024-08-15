@@ -33,7 +33,7 @@ const BookSessionCard = ({
     >
       <div
         className="relative h-32 w-20 sm:h-40 sm:w-28"
-        onClick={() => handleAdd(bookSession.bookId)}
+        onClick={() => handleAdd(bookSession)}
       >
         <img src={bookSession.bookId.cover} alt={bookSession.bookId.title} />
       </div>

@@ -12,17 +12,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
+import { updateBookInQueue } from "@/lib/actions/community.actions";
+import { IBookSession } from "@/lib/types/bookSession";
 
 interface Props {
   queue: IBomQueue;
   userId: string;
+  reloadQueue: () => void;
 }
 
-const BoMQueueCard = ({ queue, userId }: Props) => {
+const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
   //Check if the current user has voted for the book session
   const [showView, setShowView] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
-  const [currentBook, setBook] = useState(undefined);
+  const [currentBook, setBook] = useState<IBookSession>();
 
   const handleBookChangeView = (book: any) => {
     setBook(book);
@@ -31,7 +34,6 @@ const BoMQueueCard = ({ queue, userId }: Props) => {
 
   const handleCloseBookChange = () => {
     setShowAdd(false);
-    setBook(undefined);
   };
 
   const handleSetView = (book: any) => {
@@ -41,15 +43,17 @@ const BoMQueueCard = ({ queue, userId }: Props) => {
 
   const handleCloseView = () => {
     setShowView(false);
-    setBook(undefined);
   };
 
-  const onSubmitChangeBook = (book: any) => {
-    console.log("We are changing book from!");
-    console.log(currentBook);
-    console.log("TO!");
-    console.log(book);
+  const onSubmitChangeBook = async (book: any) => {
     //update the bomQueue with the new book.
+    await updateBookInQueue(queue.id, currentBook?._id, book);
+
+    //Close the dialog
+    handleCloseBookChange();
+
+    //Reload the shelf
+    reloadQueue();
   };
 
   return (
@@ -104,7 +108,7 @@ const BoMQueueCard = ({ queue, userId }: Props) => {
 
         <BookView
           open={showView}
-          book={currentBook}
+          book={currentBook?.bookId}
           handleClose={handleCloseView}
         />
 
@@ -118,7 +122,7 @@ const BoMQueueCard = ({ queue, userId }: Props) => {
               </DialogDescription>
             </DialogHeader>
             <BookshelfBook
-              book={currentBook}
+              book={currentBook?.bookId}
               back={() => setShowAdd(false)}
               onSubmit={(book) => onSubmitChangeBook(book)}
             />

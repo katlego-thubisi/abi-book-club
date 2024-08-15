@@ -34,6 +34,10 @@ const QueueDetails = ({ _userId, userId }: Props) => {
   };
 
   useEffect(() => {
+    fetchQueue();
+  }, [currentPage]);
+
+  const fetchQueue = () => {
     setIsLoading(true);
     fetchQueueDetailsByUserId({
       userId: _userId,
@@ -49,7 +53,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
       .catch((error) => {
         console.error("Error fetching user clublist", error);
       });
-  }, [currentPage]);
+  };
 
   return (
     <section
@@ -145,7 +149,12 @@ const QueueDetails = ({ _userId, userId }: Props) => {
           queueList &&
           queueList.length > 0 &&
           queueList.map((queue) => (
-            <BoMQueueCard key={queue.id} queue={queue} userId={_userId} />
+            <BoMQueueCard
+              key={queue.id}
+              queue={queue}
+              userId={_userId}
+              reloadQueue={() => fetchQueue()}
+            />
           ))}
 
         {queueModal && (

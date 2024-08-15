@@ -772,3 +772,47 @@ export async function addBookQueueToCommunity(
     throw error;
   }
 }
+
+export async function updateBookInQueue(
+  queueId: string,
+  previousBooksessionId: any,
+  book: any
+) {
+  try {
+    connectToDB();
+
+    // Find the queue by its unique id
+    const queue = await BomQueue.findOne({ id: queueId });
+
+    if (!queue) {
+      throw new Error("Queue not found");
+    }
+
+    //Remove the previous book session from the queue
+    queue.bookSessions.pull(previousBooksessionId);
+
+    // Find the book by its unique id
+    const bookResponse = await updateOrCreateBook(book);
+
+    const newBookSession = new BookSession({
+      bookId: bookResponse._id,
+      communityId: queue.communityId,
+      startDate: queue.startDate,
+      endDate: queue.endDate,
+      votes: [],
+    });
+
+    const sessionResponse = await newBookSession.save();
+
+    queue.bookSessions.push(sessionResponse);
+
+    // Save the updated queue
+    await queue.save();
+
+    // return queue;
+  } catch (error) {
+    // Handle any errors
+    console.error("Error updating book in queue:", error);
+    throw error;
+  }
+}
