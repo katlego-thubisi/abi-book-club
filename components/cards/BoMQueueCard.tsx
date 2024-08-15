@@ -4,6 +4,14 @@ import React, { useState } from "react";
 import BookSessionCard from "./BookSessionCard";
 import BookView from "./BookView";
 import { IBomQueue } from "@/lib/types/bomQueue";
+import BookshelfBook from "../forms/BookshelfBook";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 
 interface Props {
   queue: IBomQueue;
@@ -13,7 +21,18 @@ interface Props {
 const BoMQueueCard = ({ queue, userId }: Props) => {
   //Check if the current user has voted for the book session
   const [showView, setShowView] = useState(false);
-  const [currentBook, setBook] = useState(null);
+  const [showAdd, setShowAdd] = useState(false);
+  const [currentBook, setBook] = useState(undefined);
+
+  const handleBookChangeView = (book: any) => {
+    setBook(book);
+    setShowAdd(true);
+  };
+
+  const handleCloseBookChange = () => {
+    setShowAdd(false);
+    setBook(undefined);
+  };
 
   const handleSetView = (book: any) => {
     setBook(book);
@@ -22,7 +41,15 @@ const BoMQueueCard = ({ queue, userId }: Props) => {
 
   const handleCloseView = () => {
     setShowView(false);
-    setBook(null);
+    setBook(undefined);
+  };
+
+  const onSubmitChangeBook = (book: any) => {
+    console.log("We are changing book from!");
+    console.log(currentBook);
+    console.log("TO!");
+    console.log(book);
+    //update the bomQueue with the new book.
   };
 
   return (
@@ -70,14 +97,33 @@ const BoMQueueCard = ({ queue, userId }: Props) => {
               userId={userId}
               queueId={queue.id}
               handleView={handleSetView}
+              handleAdd={(book: any) => handleBookChangeView(book)}
             />
           );
         })}
+
         <BookView
           open={showView}
           book={currentBook}
           handleClose={handleCloseView}
         />
+
+        <Dialog open={showAdd} onOpenChange={handleCloseBookChange}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Queue</DialogTitle>
+              <DialogDescription>
+                Create a queue for members of your club to pick a book of the
+                month
+              </DialogDescription>
+            </DialogHeader>
+            <BookshelfBook
+              book={currentBook}
+              back={() => setShowAdd(false)}
+              onSubmit={(book) => onSubmitChangeBook(book)}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

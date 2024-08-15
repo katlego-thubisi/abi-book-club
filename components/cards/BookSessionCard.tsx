@@ -7,6 +7,7 @@ interface Props {
   bookSession: any;
   userId: string;
   handleView: (book: any) => void;
+  handleAdd: (book: any) => void;
 }
 
 const BookSessionCard = ({
@@ -14,6 +15,7 @@ const BookSessionCard = ({
   userId,
   queueId,
   handleView,
+  handleAdd,
 }: Props) => {
   const hasVoted = bookSession.votes.some((x: any) => x._id == userId);
 
@@ -29,7 +31,10 @@ const BookSessionCard = ({
     items-center cursor-pointer 
     relative"
     >
-      <div className="relative h-32 w-20 sm:h-40 sm:w-28">
+      <div
+        className="relative h-32 w-20 sm:h-40 sm:w-28"
+        onClick={() => handleAdd(bookSession.bookId)}
+      >
         <img src={bookSession.bookId.cover} alt={bookSession.bookId.title} />
       </div>
       <div className="mt-2 w-40">

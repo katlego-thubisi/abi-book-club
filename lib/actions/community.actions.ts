@@ -260,9 +260,6 @@ export async function fetchQueueDetailsByUserId({
         },
       ]);
 
-    // .populate("requests");
-    // const communities = <ICommunity[]>communityQueryResponse;
-
     const communitiesResponse = <ICommunity[]>communityQueryResponse;
     const returnResponse = <IBomQueue[]>queueQueryResponse
       .map((q) => {

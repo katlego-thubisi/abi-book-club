@@ -145,7 +145,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
           queueList &&
           queueList.length > 0 &&
           queueList.map((queue) => (
-            <BoMQueueCard queue={queue} userId={_userId} />
+            <BoMQueueCard key={queue.id} queue={queue} userId={_userId} />
           ))}
 
         {queueModal && (

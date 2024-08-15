@@ -8,18 +8,28 @@ import BookshelfBook from "./BookshelfBook";
 import BomQueueSchedule from "./BomQueueSchedule";
 import { addBookQueueToCommunity } from "@/lib/actions/community.actions";
 import CommunitySelection from "./CommunitySelection";
+import { IBomQueue } from "@/lib/types/bomQueue";
 
 interface Props {
   open: boolean;
   userId: string;
   communityId?: string;
+  selectedQueue?: IBomQueue;
   handleClose: () => void;
 }
 
-const BomQueue = ({ open, userId, communityId, handleClose }: Props) => {
+const BomQueue = ({
+  open,
+  userId,
+  communityId,
+  selectedQueue,
+  handleClose,
+}: Props) => {
   //   const [open, setOpen] = useState(false);
 
-  const [currentQueue, setCurrentQueue] = useState<any>([null, null, null]);
+  const [currentQueue, setCurrentQueue] = useState<any>(
+    selectedQueue ? selectedQueue.bookSessions : [null, null, null]
+  );
   const [currentCommunityId, setCurrentCommunityId] = useState(
     communityId ? communityId : null
   );

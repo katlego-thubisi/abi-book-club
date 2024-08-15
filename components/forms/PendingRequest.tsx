@@ -117,7 +117,10 @@ const PendingRequest = ({ _userId, userId }: Props) => {
             memberList &&
             memberList.length > 0 &&
             memberList.map((member) => (
-              <div className="flex flex-col cursor-pointer relative">
+              <div
+                key={member.id}
+                className="flex flex-col cursor-pointer relative"
+              >
                 <p className="text-small-medium bg-red-500 w-auto rounded-full p-2  text-center text-white">
                   {member.clubName}
                 </p>
