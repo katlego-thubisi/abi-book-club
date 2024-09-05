@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import {
+  deleteQueue,
   publishBookQueue,
   updateBookInQueue,
   updateQueueSchedule,
@@ -134,7 +135,7 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
     setPublishConfirm(true);
   };
 
-  const deleteQueue = async () => {
+  const handleDeleteQueue = async () => {
     setIsLoading(true);
 
     await deleteQueue(queue.id);
@@ -255,7 +256,7 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
       <ValidationModal
         open={deleteConfirm}
         close={() => setDeleteConfirm(false)}
-        handleSubmit={() => setDeleteConfirm(false)}
+        handleSubmit={() => handleDeleteQueue()}
         validationDescription="This will delete the queue and all its contents."
         validationTitle="Are you absolutely sure?"
         cancellationText="Cancel"
