@@ -38,13 +38,13 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
   const [publishError, setPublishError] = useState(false);
   const [publishErrorMessage, setPublishErrorMessage] = useState("");
   const [publishErrorTitle, setPublishErrorTitle] = useState("");
+  const [startReadingConfirm, setStartReadingConfirm] = useState(false);
 
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [currentBook, setBook] = useState<IBookSession>();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleBookChangeView = (book: any) => {
-    console.log("Zee book", book);
     setBook(book);
     setShowAdd(true);
   };
@@ -135,6 +135,24 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
     }
 
     setPublishConfirm(true);
+  };
+
+  const startReadingValidation = () => {
+    if (queue.startDate < new Date()) {
+      queue.status = "Voting";
+    }
+
+    setPublishConfirm(true);
+  };
+
+  const handleStartReading = async () => {
+    setIsLoading(true);
+
+    await publishBookQueue(queue.id);
+
+    reloadQueue();
+
+    setIsLoading(false);
   };
 
   const handleDeleteQueue = async () => {
@@ -231,6 +249,7 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
             />
           </DialogContent>
         </Dialog>
+
         {showAdd && (
           <BookAdd
             open={showAdd}
@@ -241,6 +260,14 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
         )}
       </div>
       <div className="flex items-center justify-center gap-2">
+        {queue.status === "Voting" && (
+          <Button
+            onClick={() => startReadingValidation()}
+            className="text-center cursor-pointer w-auto p-6"
+          >
+            Start reading
+          </Button>
+        )}
         {queue.status === "Draft" && (
           <Button
             onClick={() => publishValidation()}
@@ -256,6 +283,16 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
           Delete
         </Button>
       </div>
+
+      <ValidationModal
+        open={startReadingConfirm}
+        close={() => setStartReadingConfirm(false)}
+        handleSubmit={() => handleStartReading()}
+        validationDescription="This will start the reading period for the queue and end the voting period today"
+        validationTitle="Are you absolutely sure?"
+        cancellationText="Cancel"
+        submitText="Start reading"
+      />
 
       <ValidationModal
         open={deleteConfirm}

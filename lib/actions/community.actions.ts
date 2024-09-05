@@ -18,6 +18,7 @@ import { ICommunity } from "../types/community";
 import { IClubUser, IUser } from "../types/user";
 import { IBomQueue } from "../types/bomQueue";
 import { BookQueue } from "../types/bookQueue";
+import Bom from "../models/bom.model";
 
 export async function createCommunity(
   name: string,
@@ -879,6 +880,43 @@ export async function publishBookQueue(queueId: string) {
 
     // Update the queue status to 'published'
     queue.status = "Published";
+
+    // Save the updated queue
+    await queue.save();
+
+    return queue;
+  } catch (error) {
+    // Handle any errors
+    console.error("Error publishing queue:", error);
+    throw error;
+  }
+}
+
+export async function startReadingBookQueue(
+  queueId: string,
+  bookSessionId: string
+) {
+  try {
+    connectToDB();
+
+    // Find the queue by its unique id
+    const queue = await BomQueue.findOne({ id: queueId });
+
+    if (!queue) {
+      throw new Error("Queue not found");
+    }
+
+    // Update the queue status to 'completed'
+    queue.status = "Completed";
+
+    //Add the book session as the current book of the month
+    const bom = new Bom({
+      bookSessionId: bookSessionId,
+      communityId: queue.communityId,
+    });
+
+    //Save the new book of the month
+    await bom.save();
 
     // Save the updated queue
     await queue.save();
