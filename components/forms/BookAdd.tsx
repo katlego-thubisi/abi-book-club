@@ -8,6 +8,7 @@ import {
 } from "../ui/dialog";
 import BookshelfBook from "./BookshelfBook";
 import { IBook } from "@/lib/types/book";
+import { IBookSession } from "@/lib/types/bookSession";
 
 interface Props {
   open: boolean;

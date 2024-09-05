@@ -205,11 +205,13 @@ export async function fetchMembersDetailsByUserId({
 
 export async function fetchQueueDetailsByUserId({
   userId,
+  filters = [],
   pageNumber = 1,
   pageSize = 1,
   sortBy = "desc",
 }: {
   userId: string;
+  filters?: string[];
   pageNumber?: number;
   pageSize?: number;
   sortBy?: SortOrder;
@@ -227,13 +229,29 @@ export async function fetchQueueDetailsByUserId({
 
     const communityQueryResponse = await Community.find(communityQuery);
 
-    const query: FilterQuery<typeof Community> = {
+    const query: FilterQuery<typeof BomQueue> = {
       communityId: {
         $in: communityQueryResponse.map((c) => {
           return c._id;
         }),
       }, // Exclude the current user from the results.
     };
+
+    //seperate the club filter from the status filter
+    if (filters && filters.length > 0) {
+      const clubFilter = filters.filter((f) => f.includes("club"));
+      const statusFilter = filters.filter((f) => f.includes("status"));
+
+      if (clubFilter.length > 0) {
+        query.communityId = { $in: clubFilter.map((c) => c.split("|")[1]) };
+      }
+
+      if (statusFilter.length > 0) {
+        query.status = {
+          $in: statusFilter.map((c) => c.split("|")[1]),
+        };
+      }
+    }
 
     const queueQueryResponse = await BomQueue.find(query)
       .sort(sortOptions)
@@ -765,7 +783,7 @@ export async function addBookQueueToCommunity(
 
     revalidatePath(path);
 
-    return newBookQueue;
+    // return newBookQueue;
   } catch (error) {
     // Handle any errors
     console.error("Error adding book queue to community:", error);
@@ -887,9 +905,7 @@ export async function deleteQueue(queueId: string) {
     queue.status = "Cancelled";
 
     // Delete the queue
-    await BomQueue.updateOne(queue);
-
-    return queue;
+    await queue.save();
   } catch (error) {
     // Handle any errors
     throw error;

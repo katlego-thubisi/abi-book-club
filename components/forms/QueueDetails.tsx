@@ -5,25 +5,10 @@ import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { IBomQueue } from "@/lib/types/bomQueue";
 import { useRouter } from "next/navigation";
-import { set } from "mongoose";
-import {
-  fetchQueueDetailsByUserId,
-  publishBookQueue,
-} from "@/lib/actions/community.actions";
+import { fetchQueueDetailsByUserId } from "@/lib/actions/community.actions";
 import BomQueue from "./BomQueue";
 import BoMQueueCard from "../cards/BoMQueueCard";
 import { ICommunity } from "@/lib/types/community";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
 
 interface Props {
   userId: string;
@@ -38,6 +23,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
   const [queueList, setQueueList] = useState<IBomQueue[]>([]);
   const [queueModal, setQueueModal] = useState(false);
   const [communitiesFilters, setCommunitiesFilters] = useState([]);
+  const [queueFilters, setQueueFilters] = useState<string[]>([]);
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
@@ -49,13 +35,14 @@ const QueueDetails = ({ _userId, userId }: Props) => {
 
   useEffect(() => {
     fetchQueue();
-  }, [currentPage]);
+  }, [currentPage, queueFilters]);
 
   const fetchQueue = () => {
     setIsLoading(true);
     fetchQueueDetailsByUserId({
       userId: _userId,
       pageNumber: currentPage,
+      filters: queueFilters,
     })
       .then((response) => {
         setCommunitiesFilters(response.communities);
@@ -66,6 +53,15 @@ const QueueDetails = ({ _userId, userId }: Props) => {
       .catch((error) => {
         console.error("Error fetching user clublist", error);
       });
+  };
+
+  const selectFilter = (filter: string) => {
+    console.log(filter);
+    if (queueFilters.includes(filter)) {
+      setQueueFilters(queueFilters.filter((cat) => cat !== filter));
+    } else {
+      setQueueFilters([...queueFilters, filter]);
+    }
   };
 
   return (
@@ -110,7 +106,13 @@ const QueueDetails = ({ _userId, userId }: Props) => {
                   className="flex items-center space-x-2"
                   key={community?._id}
                 >
-                  <Checkbox id="terms" />
+                  <Checkbox
+                    id="terms"
+                    checked={queueFilters.includes(`club|${community?._id}`)}
+                    onCheckedChange={() =>
+                      selectFilter(`club|${community?._id}`)
+                    }
+                  />
                   <label
                     htmlFor="terms"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -121,7 +123,11 @@ const QueueDetails = ({ _userId, userId }: Props) => {
               ))}
 
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
+              <Checkbox
+                id="terms"
+                checked={queueFilters.includes(`status|Draft`)}
+                onCheckedChange={() => selectFilter(`status|Draft`)}
+              />
               <label
                 htmlFor="terms"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -130,7 +136,11 @@ const QueueDetails = ({ _userId, userId }: Props) => {
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
+              <Checkbox
+                id="terms"
+                checked={queueFilters.includes(`status|Voting`)}
+                onCheckedChange={() => selectFilter(`status|Voting`)}
+              />
               <label
                 htmlFor="terms"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -139,7 +149,11 @@ const QueueDetails = ({ _userId, userId }: Props) => {
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="terms" />
+              <Checkbox
+                id="terms"
+                checked={queueFilters.includes(`status|Completed`)}
+                onCheckedChange={() => selectFilter(`status|Completed`)}
+              />
               <label
                 htmlFor="terms"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -175,6 +189,7 @@ const QueueDetails = ({ _userId, userId }: Props) => {
             open={queueModal}
             userId={_userId}
             handleClose={() => setQueueModal(false)}
+            reloadQueue={() => fetchQueue()}
           />
         )}
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BookSessionCard from "./BookSessionCard";
 import BookView from "./BookView";
 import { IBomQueue } from "@/lib/types/bomQueue";
@@ -44,6 +44,7 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleBookChangeView = (book: any) => {
+    console.log("Zee book", book);
     setBook(book);
     setShowAdd(true);
   };
@@ -57,6 +58,7 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
   };
 
   const handleSetView = (book: any) => {
+    console.log("Book to view", book);
     setBook(book);
     setShowView(true);
   };
@@ -203,12 +205,13 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
             />
           );
         })}
-
-        <BookView
-          open={showView}
-          book={currentBook}
-          handleClose={handleCloseView}
-        />
+        {showView && (
+          <BookView
+            open={showView}
+            book={currentBook}
+            handleClose={handleCloseView}
+          />
+        )}
 
         <Dialog open={showDate} onOpenChange={handleCloseDateView}>
           <DialogContent>
@@ -228,13 +231,14 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
             />
           </DialogContent>
         </Dialog>
-
-        <BookAdd
-          open={showAdd}
-          close={() => setShowAdd(false)}
-          currentBook={currentBook?.bookId}
-          onSubmitBook={(book) => onSubmitChangeBook(book)}
-        />
+        {showAdd && (
+          <BookAdd
+            open={showAdd}
+            close={() => setShowAdd(false)}
+            currentBook={currentBook?.bookId}
+            onSubmitBook={(book: any) => onSubmitChangeBook(book)}
+          />
+        )}
       </div>
       <div className="flex items-center justify-center gap-2">
         {queue.status === "Draft" && (

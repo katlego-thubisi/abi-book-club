@@ -15,6 +15,7 @@ interface Props {
   userId: string;
   communityId?: string;
   selectedQueue?: IBomQueue;
+  reloadQueue?: () => void;
   handleClose: () => void;
 }
 
@@ -23,6 +24,7 @@ const BomQueue = ({
   userId,
   communityId,
   selectedQueue,
+  reloadQueue,
   handleClose,
 }: Props) => {
   //   const [open, setOpen] = useState(false);
@@ -98,6 +100,12 @@ const BomQueue = ({
       endDate,
       "/"
     );
+
+    if (reloadQueue) {
+      reloadQueue();
+    }
+
+    handleClose();
   };
 
   return (
