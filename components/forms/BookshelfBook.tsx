@@ -16,15 +16,9 @@ import Rating from "../custom-ui/RatingInput";
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "../ui/button";
+import { IBook } from "@/lib/types/book";
 interface Props {
-  book?: {
-    id: string;
-    bookId: string;
-    title: string;
-    subtitle: string;
-    authors: string[];
-    cover: string;
-  };
+  book?: IBook;
   onSubmit: (book: any) => void;
   back: () => void;
 }

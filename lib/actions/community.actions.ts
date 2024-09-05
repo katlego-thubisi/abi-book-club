@@ -788,8 +788,7 @@ export async function updateBookInQueue(
       throw new Error("Queue not found");
     }
 
-    //Remove the previous book session from the queue
-    queue.bookSessions.pull(previousBooksessionId);
+    //Replace the booksession with the new one in the same index of the array
 
     // Find the book by its unique id
     const bookResponse = await updateOrCreateBook(book);
@@ -804,7 +803,9 @@ export async function updateBookInQueue(
 
     const sessionResponse = await newBookSession.save();
 
-    queue.bookSessions.push(sessionResponse);
+    const bookSessionIndex = queue.bookSessions.indexOf(previousBooksessionId);
+
+    queue.bookSessions[bookSessionIndex] = sessionResponse._id;
 
     // Save the updated queue
     await queue.save();
@@ -813,6 +814,84 @@ export async function updateBookInQueue(
   } catch (error) {
     // Handle any errors
     console.error("Error updating book in queue:", error);
+    throw error;
+  }
+}
+
+export async function updateQueueSchedule(
+  queueId: string,
+  startDate: Date,
+  endDate: Date
+) {
+  try {
+    connectToDB();
+
+    // Find the queue by its unique id
+    const queue = await BomQueue.findOne({ id: queueId });
+
+    if (!queue) {
+      throw new Error("Queue not found");
+    }
+
+    // Update the queue with the new start and end dates
+    queue.startDate = startDate;
+    queue.endDate = endDate;
+
+    // Save the updated queue
+    await queue.save();
+
+    return queue;
+  } catch (error) {
+    // Handle any errors
+    console.error("Error updating queue schedule:", error);
+    throw error;
+  }
+}
+
+export async function publishBookQueue(queueId: string) {
+  try {
+    connectToDB();
+
+    // Find the queue by its unique id
+    const queue = await BomQueue.findOne({ id: queueId });
+
+    if (!queue) {
+      throw new Error("Queue not found");
+    }
+
+    // Update the queue status to 'published'
+    queue.status = "Published";
+
+    // Save the updated queue
+    await queue.save();
+
+    return queue;
+  } catch (error) {
+    // Handle any errors
+    console.error("Error publishing queue:", error);
+    throw error;
+  }
+}
+
+export async function deleteQueue(queueId: string) {
+  try {
+    connectToDB();
+
+    // Find the queue by its unique id
+    const queue = await BomQueue.findOne({ id: queueId });
+
+    if (!queue) {
+      throw new Error("Queue not found");
+    }
+
+    queue.status = "Cancelled";
+
+    // Delete the queue
+    await BomQueue.updateOne(queue);
+
+    return queue;
+  } catch (error) {
+    // Handle any errors
     throw error;
   }
 }

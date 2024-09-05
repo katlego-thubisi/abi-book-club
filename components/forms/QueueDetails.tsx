@@ -6,10 +6,24 @@ import { Checkbox } from "../ui/checkbox";
 import { IBomQueue } from "@/lib/types/bomQueue";
 import { useRouter } from "next/navigation";
 import { set } from "mongoose";
-import { fetchQueueDetailsByUserId } from "@/lib/actions/community.actions";
+import {
+  fetchQueueDetailsByUserId,
+  publishBookQueue,
+} from "@/lib/actions/community.actions";
 import BomQueue from "./BomQueue";
 import BoMQueueCard from "../cards/BoMQueueCard";
 import { ICommunity } from "@/lib/types/community";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface Props {
   userId: string;
@@ -44,7 +58,6 @@ const QueueDetails = ({ _userId, userId }: Props) => {
       pageNumber: currentPage,
     })
       .then((response) => {
-        console.log("Response", response);
         setCommunitiesFilters(response.communities);
         setQueueList(response.queues);
         setTotalPages(response.queuesTotalPages);
@@ -163,14 +176,6 @@ const QueueDetails = ({ _userId, userId }: Props) => {
             userId={_userId}
             handleClose={() => setQueueModal(false)}
           />
-        )}
-
-        {!isLoading && queueList && queueList.length > 0 && (
-          <div className="flex items-center justify-center">
-            <Button className="text-center cursor-pointer w-auto p-6">
-              Publish
-            </Button>
-          </div>
         )}
 
         {queueList.length !== 0 && (

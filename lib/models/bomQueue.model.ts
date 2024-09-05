@@ -6,6 +6,10 @@ const bomQueueSchema = new mongoose.Schema({
     type: String,
     default: () => uuid.v4().toString(),
   },
+  description: {
+    type: String,
+    required: false,
+  },
   communityId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Community",
@@ -28,7 +32,7 @@ const bomQueueSchema = new mongoose.Schema({
   ],
   status: {
     type: String,
-    enum: ["Draft", "Voting", "Completed", "Cancelled"],
+    enum: ["Draft", "Published", "Voting", "Completed", "Cancelled"],
     default: "Draft",
   },
   createdDate: {

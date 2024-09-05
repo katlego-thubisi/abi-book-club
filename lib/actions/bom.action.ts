@@ -100,6 +100,7 @@ export async function handleSessionVote(
     });
 
     await bookSession.save();
+
     revalidatePath(path);
   } catch (error: any) {
     throw new Error(`Failed to vote: ${error.message}`);

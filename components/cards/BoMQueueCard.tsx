@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import BookSessionCard from "./BookSessionCard";
 import BookView from "./BookView";
 import { IBomQueue } from "@/lib/types/bomQueue";
-import BookshelfBook from "../forms/BookshelfBook";
 import {
   Dialog,
   DialogContent,
@@ -12,8 +11,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { updateBookInQueue } from "@/lib/actions/community.actions";
+import {
+  publishBookQueue,
+  updateBookInQueue,
+  updateQueueSchedule,
+} from "@/lib/actions/community.actions";
 import { IBookSession } from "@/lib/types/bookSession";
+import BomQueueSchedule from "../forms/BomQueueSchedule";
+import BookAdd from "../forms/BookAdd";
+import { Button } from "../ui/button";
+import ValidationModal from "../modals/validation-modal/validation-modal";
 
 interface Props {
   queue: IBomQueue;
@@ -25,7 +32,15 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
   //Check if the current user has voted for the book session
   const [showView, setShowView] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
+  const [showDate, setShowDate] = useState(false);
+  const [publishConfirm, setPublishConfirm] = useState(false);
+  const [publishError, setPublishError] = useState(false);
+  const [publishErrorMessage, setPublishErrorMessage] = useState("");
+  const [publishErrorTitle, setPublishErrorTitle] = useState("");
+
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [currentBook, setBook] = useState<IBookSession>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleBookChangeView = (book: any) => {
     setBook(book);
@@ -34,6 +49,10 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
 
   const handleCloseBookChange = () => {
     setShowAdd(false);
+  };
+
+  const handleCloseDateView = () => {
+    setShowDate(false);
   };
 
   const handleSetView = (book: any) => {
@@ -56,9 +75,87 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
     reloadQueue();
   };
 
+  const onSubmitChangeSchedule = async (startDate: Date, endDate: Date) => {
+    //update the bomQueue with the new book.
+    await updateQueueSchedule(queue.id, startDate, endDate);
+
+    //Close the dialog
+    handleCloseDateView();
+
+    //Reload the shelf
+    reloadQueue();
+  };
+
+  const publishQueue = async () => {
+    setIsLoading(true);
+
+    await publishBookQueue(queue.id);
+
+    reloadQueue();
+
+    setIsLoading(false);
+  };
+
+  const publishValidation = () => {
+    if (queue.startDate === null || queue.endDate === null) {
+      //They have not set the dates
+      setPublishError(true);
+      setPublishErrorTitle("Please set the dates");
+      setPublishErrorMessage(
+        "You must set the start and end dates for the queue before publishing."
+      );
+      return;
+    }
+
+    if (queue.bookSessions.length !== 3) {
+      //They have not selected all the books
+      setPublishError(true);
+      setPublishErrorTitle("Please select all the books");
+      setPublishErrorMessage(
+        "You must select all the books for the queue before publishing."
+      );
+      return;
+    }
+
+    if (queue.endDate < new Date()) {
+      //They have no time to vote
+      setPublishError(true);
+      setPublishErrorTitle("Invalid voting period");
+      setPublishErrorMessage(
+        "Your club members will not have enough time to vote. Please select a valid date range."
+      );
+      return;
+    }
+
+    if (queue.startDate < new Date()) {
+      queue.status = "Voting";
+    }
+
+    setPublishConfirm(true);
+  };
+
+  const deleteQueue = async () => {
+    setIsLoading(true);
+
+    await deleteQueue(queue.id);
+
+    reloadQueue();
+
+    setIsLoading(false);
+  };
+
+  const deleteValidation = () => {
+    if (queue.status != "Completed") {
+      setDeleteConfirm(true);
+    }
+  };
+
   return (
     <div className="flex flex-col">
-      <div className="flex items-center gap-1 justify-center">
+      <div
+        className="flex items-center gap-1 justify-center"
+        onClick={() => setShowDate(true)}
+      >
         <p>
           {queue.startDate
             ? new Date(queue.startDate).toDateString()
@@ -108,11 +205,11 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
 
         <BookView
           open={showView}
-          book={currentBook?.bookId}
+          book={currentBook}
           handleClose={handleCloseView}
         />
 
-        <Dialog open={showAdd} onOpenChange={handleCloseBookChange}>
+        <Dialog open={showDate} onOpenChange={handleCloseDateView}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Queue</DialogTitle>
@@ -121,14 +218,68 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
                 month
               </DialogDescription>
             </DialogHeader>
-            <BookshelfBook
-              book={currentBook?.bookId}
-              back={() => setShowAdd(false)}
-              onSubmit={(book) => onSubmitChangeBook(book)}
+            <BomQueueSchedule
+              schedule={{ from: queue.startDate, to: queue.endDate }}
+              back={() => handleCloseBookChange()}
+              next={async (startDate, endDate) =>
+                await onSubmitChangeSchedule(startDate, endDate)
+              }
             />
           </DialogContent>
         </Dialog>
+
+        <BookAdd
+          open={showAdd}
+          close={() => setShowAdd(false)}
+          currentBook={currentBook?.bookId}
+          onSubmitBook={(book) => onSubmitChangeBook(book)}
+        />
       </div>
+      <div className="flex items-center justify-center gap-2">
+        {queue.status === "Draft" && (
+          <Button
+            onClick={() => publishValidation()}
+            className="text-center cursor-pointer w-auto p-6"
+          >
+            Publish
+          </Button>
+        )}
+        <Button
+          onClick={() => deleteValidation()}
+          className="text-center cursor-pointer w-auto p-6"
+        >
+          Delete
+        </Button>
+      </div>
+
+      <ValidationModal
+        open={deleteConfirm}
+        close={() => setDeleteConfirm(false)}
+        handleSubmit={() => setDeleteConfirm(false)}
+        validationDescription="This will delete the queue and all its contents."
+        validationTitle="Are you absolutely sure?"
+        cancellationText="Cancel"
+        submitText="Delete"
+      />
+
+      <ValidationModal
+        open={publishConfirm}
+        close={() => setPublishConfirm(false)}
+        handleSubmit={() => publishQueue()}
+        validationDescription={`This will publish the queue and notify all members of the voting period.`}
+        validationTitle={`Are you absolutely sure?`}
+        cancellationText={`Cancel`}
+        submitText={`Continue`}
+      />
+      <ValidationModal
+        open={publishError}
+        close={() => setPublishError(false)}
+        handleSubmit={() => setPublishError(false)}
+        validationDescription={publishErrorMessage}
+        validationTitle={publishErrorTitle}
+        cancellationText={`Close`}
+        submitText={`Ok`}
+      />
     </div>
   );
 };

@@ -14,11 +14,15 @@ import { addDays, format } from "date-fns";
 import { cn } from "@/lib/utils";
 
 interface Props {
+  schedule?: {
+    from: Date;
+    to: Date;
+  };
   next: (startDate: Date, endDate: Date) => Promise<void>;
   back: () => void;
 }
 
-const BomQueueSchedule = ({ next, back }: Props) => {
+const BomQueueSchedule = ({ next, back, schedule }: Props) => {
   const form = useForm<z.infer<typeof QueueValidation>>({
     resolver: zodResolver(QueueValidation),
     defaultValues: {
@@ -28,12 +32,11 @@ const BomQueueSchedule = ({ next, back }: Props) => {
   });
 
   const [date, setDate] = React.useState<any | undefined>({
-    from: new Date(),
-    to: addDays(new Date(), 20),
+    from: schedule && schedule.from ? schedule.from : new Date(),
+    to: schedule && schedule.to ? schedule.to : addDays(new Date(), 20),
   });
 
   const onFormSubmit = async () => {
-    console.log("Queue saving");
     await next(date.from, date.to);
   };
 
