@@ -14,6 +14,7 @@ import {
 import {
   deleteQueue,
   publishBookQueue,
+  startReadingBookQueue,
   updateBookInQueue,
   updateQueueSchedule,
 } from "@/lib/actions/community.actions";
@@ -22,6 +23,8 @@ import BomQueueSchedule from "../forms/BomQueueSchedule";
 import BookAdd from "../forms/BookAdd";
 import { Button } from "../ui/button";
 import ValidationModal from "../modals/validation-modal/validation-modal";
+import StartReadingModal from "../modals/start-reading-modal/start-reading-modal";
+import { set } from "mongoose";
 
 interface Props {
   queue: IBomQueue;
@@ -42,6 +45,7 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
 
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [currentBook, setBook] = useState<IBookSession>();
+  const [mostVoted, setMostVoted] = useState<IBookSession[]>();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleBookChangeView = (book: any) => {
@@ -138,17 +142,32 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
   };
 
   const startReadingValidation = () => {
-    if (queue.startDate < new Date()) {
-      queue.status = "Voting";
+    // If there are two books with the same amount of votes both should be pushed to the state array mostVoted
+    let mostVotedBooks: IBookSession[] = [];
+    let maxVotes = 0;
+
+    for (var bookSession of queue.bookSessions) {
+      if (bookSession.votes.length > maxVotes) {
+        mostVotedBooks = [bookSession];
+        maxVotes = bookSession.votes.length;
+      } else if (bookSession.votes.length === maxVotes) {
+        mostVotedBooks.push(bookSession);
+      }
     }
 
-    setPublishConfirm(true);
+    setMostVoted(mostVotedBooks);
+
+    setStartReadingConfirm(true);
   };
 
-  const handleStartReading = async () => {
+  const handleStartReading = async (
+    bookSession: IBookSession,
+    startDate: Date,
+    endDate: Date
+  ) => {
     setIsLoading(true);
 
-    await publishBookQueue(queue.id);
+    await startReadingBookQueue(queue.id, bookSession._id, startDate, endDate);
 
     reloadQueue();
 
@@ -283,8 +302,18 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
           Delete
         </Button>
       </div>
+      {mostVoted && mostVoted.length > 0 && (
+        <StartReadingModal
+          open={startReadingConfirm}
+          close={() => setStartReadingConfirm(false)}
+          bookSessions={mostVoted}
+          handleSubmit={(book: IBookSession, startDate: Date, endDate: Date) =>
+            handleStartReading(book, startDate, endDate)
+          }
+        />
+      )}
 
-      <ValidationModal
+      {/* <ValidationModal
         open={startReadingConfirm}
         close={() => setStartReadingConfirm(false)}
         handleSubmit={() => handleStartReading()}
@@ -292,7 +321,7 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
         validationTitle="Are you absolutely sure?"
         cancellationText="Cancel"
         submitText="Start reading"
-      />
+      /> */}
 
       <ValidationModal
         open={deleteConfirm}

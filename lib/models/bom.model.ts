@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { start } from "repl";
 const uuid = require("uuid");
 
 const bomSchema = new mongoose.Schema({
@@ -14,6 +15,14 @@ const bomSchema = new mongoose.Schema({
   community: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Community",
+    required: true,
+  },
+  startDate: {
+    type: Date,
+    required: true,
+  },
+  endDate: {
+    type: Date,
     required: true,
   },
   createdDate: {

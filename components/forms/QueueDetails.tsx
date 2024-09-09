@@ -145,7 +145,20 @@ const QueueDetails = ({ _userId, userId }: Props) => {
                 htmlFor="terms"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Currently voting
+                Voting
+              </label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="terms"
+                checked={queueFilters.includes(`status|Published`)}
+                onCheckedChange={() => selectFilter(`status|Published`)}
+              />
+              <label
+                htmlFor="terms"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Published
               </label>
             </div>
             <div className="flex items-center space-x-2">

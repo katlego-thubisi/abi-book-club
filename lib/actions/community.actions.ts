@@ -878,8 +878,11 @@ export async function publishBookQueue(queueId: string) {
       throw new Error("Queue not found");
     }
 
-    // Update the queue status to 'published'
-    queue.status = "Published";
+    if (queue.startDate < new Date()) {
+      queue.status = "Voting";
+    } else {
+      queue.status = "Published";
+    }
 
     // Save the updated queue
     await queue.save();
@@ -894,7 +897,9 @@ export async function publishBookQueue(queueId: string) {
 
 export async function startReadingBookQueue(
   queueId: string,
-  bookSessionId: string
+  bookSessionId: string,
+  startDate: Date,
+  endDate: Date
 ) {
   try {
     connectToDB();
@@ -911,8 +916,10 @@ export async function startReadingBookQueue(
 
     //Add the book session as the current book of the month
     const bom = new Bom({
-      bookSessionId: bookSessionId,
-      communityId: queue.communityId,
+      bookSession: bookSessionId,
+      community: queue.communityId,
+      startDate: startDate,
+      endDate: endDate,
     });
 
     //Save the new book of the month
