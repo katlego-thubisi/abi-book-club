@@ -17,6 +17,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { updateUserDetails } from "@/lib/actions/user.actions";
 
 interface Props {
   user: {
@@ -61,6 +62,15 @@ const BasicDetails = ({ user }: Props) => {
         values.image = imgRes[0].fileUrl;
       }
     }
+
+    await updateUserDetails({
+      userId: values.id,
+      name: values.name,
+      surname: values.surname,
+      username: values.username,
+      //email: values.email,
+      image: values.image,
+    });
   };
 
   const handleImage = (
@@ -93,7 +103,10 @@ const BasicDetails = ({ user }: Props) => {
     >
       <h1 className="text-heading3-bold">Basic details</h1>
       <Form {...form}>
-        <form className="flex flex-1 flex-col gap-2">
+        <form
+          className="flex flex-1 flex-col gap-2"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
           <FormField
             control={form.control}
             name="image"
@@ -194,6 +207,7 @@ const BasicDetails = ({ user }: Props) => {
                 <FormLabel className="form-label">Email</FormLabel>
                 <FormControl>
                   <Input
+                    readOnly
                     type="text"
                     className="account-form_input form-input"
                     {...field}

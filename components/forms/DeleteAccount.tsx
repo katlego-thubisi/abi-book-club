@@ -3,6 +3,9 @@
 import React, { useState } from "react";
 
 import { Button } from "../ui/button";
+import ValidationModal from "../modals/validation-modal/validation-modal";
+import { updateUserDetails } from "@/lib/actions/user.actions";
+import { useRouter } from "next/navigation";
 
 interface Props {
   user: {
@@ -12,11 +15,22 @@ interface Props {
 
 const DeleteAccount = ({ user }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const router = useRouter();
 
   const handleAccountDeletion = async () => {
-    setIsLoading(true);
-
     //Handle account deletion and log the user out
+    setIsLoading(true);
+    await updateUserDetails({
+      userId: user.id,
+      status: "archived",
+      onboarded: false,
+    });
+    setIsLoading(false);
+
+    setIsDeleted(false);
+
+    router.push("/onboarding");
   };
 
   return (
@@ -33,10 +47,20 @@ const DeleteAccount = ({ user }: Props) => {
             is irreversible.
           </label>
         </div>
-        <Button className="bg-red-800" onClick={handleAccountDeletion}>
+
+        <Button className="bg-red-800" onClick={() => setIsDeleted(true)}>
           Delete account
         </Button>
       </div>
+      <ValidationModal
+        open={isDeleted}
+        validationTitle="Are you sure you want to delete your account?"
+        validationDescription="You account will remain deactivated for 30 days before being permanently deleted. During this time, you can reactivate your account by logging in."
+        close={() => setIsDeleted(false)}
+        handleSubmit={() => handleAccountDeletion()}
+        submitText="Delete account"
+        cancellationText="Cancel"
+      />
     </section>
   );
 };

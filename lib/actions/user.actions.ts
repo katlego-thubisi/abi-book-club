@@ -124,17 +124,19 @@ interface Params {
   userId: string;
   username: string;
   name: string;
-  surname: string | undefined;
+  email: string;
+  surname?: string;
   bio: string;
   image: string;
   path: string;
-  occupation: string | undefined;
+  occupation?: string;
 }
 
 export async function updateUser({
   userId,
   bio,
   name,
+  email,
   path,
   username,
   image,
@@ -149,11 +151,13 @@ export async function updateUser({
       {
         username: username.toLowerCase(),
         name,
+        email,
         bio,
         image,
         occupation,
         surname,
         onboarded: true,
+        status: "active",
       },
       { upsert: true }
     );
@@ -164,6 +168,62 @@ export async function updateUser({
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`);
   }
+}
+
+interface UpdateParams {
+  userId: string;
+  username?: string | null;
+  name?: string | null;
+  surname?: string | null;
+  bio?: string | null;
+  image?: string | null;
+  backgroundImage?: string | null;
+  phoneNumber?: string | null;
+  path?: string | null;
+  occupation?: string | null;
+  visibility?: boolean | null;
+  status?: string | null;
+  onboarded?: boolean | null;
+}
+
+export async function updateUserDetails({
+  userId,
+  bio,
+  name,
+  path,
+  username,
+  image,
+  backgroundImage,
+  phoneNumber,
+  occupation,
+  visibility,
+  surname,
+  status,
+  onboarded,
+}: UpdateParams) {
+  connectToDB();
+
+  const updateObject = {
+    username: username ? username.toLowerCase() : null,
+    name,
+    bio,
+    image,
+    occupation,
+    backgroundImage,
+    phoneNumber,
+    surname,
+    visibility,
+    status,
+    onboarded,
+  };
+
+  const sanitizedUpdate = Object.fromEntries(
+    Object.entries(updateObject).filter(([_, v]) => v != null)
+  );
+
+  await User.findOneAndUpdate({ id: userId }, sanitizedUpdate, {
+    upsert: true,
+  });
 }
 
 export async function removeUserAddress(

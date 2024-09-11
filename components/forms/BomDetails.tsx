@@ -1,12 +1,49 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
+import { IBom } from "@/lib/types/bom";
+import { fetchBoMDetailsByUserId } from "@/lib/actions/community.actions";
+import { getMonth } from "@/lib/utils";
 
-const BomDetails = () => {
+interface Props {
+  _userId: string;
+  userId: string;
+}
+
+const BomDetails = ({ userId, _userId }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [bomList, setBomList] = useState<IBom[]>([]);
+  const [bomFilters, setBomFilters] = useState<string[]>([]);
+
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  useEffect(() => {
+    fetchBomList();
+  }, [currentPage, bomFilters]);
+
+  const fetchBomList = async () => {
+    setIsLoading(true);
+
+    fetchBoMDetailsByUserId({
+      userId: _userId,
+      pageNumber: currentPage,
+      filters: bomFilters,
+    })
+      .then((response) => {
+        setTotalPages(response.bomsTotalPages);
+        setBomList(response.boms);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching user clublist", error);
+      });
+  };
 
   return (
     <section
@@ -64,41 +101,101 @@ const BomDetails = () => {
         </Button> */}
         <div className="grid grid-cols-3 max-sm:grid-cols-1 gap-12">
           {/* Loop through books here */}
-          <div className="flex flex-col items-center cursor-pointer relative">
-            <div className="relative h-40 w-28">
-              <img src="/assets/no-cover.jpg" alt="book cover" />
-            </div>
-            <div className="mt-2 w-40">
-              <p
-                className="text-center text-small-semibold lg:text-base-semibold
+          {bomList.map((bom) => (
+            <div className="flex flex-col items-center cursor-pointer relative">
+              <div
+                className="absolute top-5 left-5 z-50 
+        rounded-full h-14 w-14  bg-white"
+              >
+                <img
+                  src={bom.community?.image}
+                  alt={bom.community?.id}
+                  className="object-cover rounded-full h-14 w-14"
+                />
+              </div>
+              {getMonth(bom.startDate.toString()) ==
+              getMonth(bom.endDate.toString()) ? (
+                <div>{getMonth(bom.startDate.toString())} </div>
+              ) : (
+                <div>
+                  {getMonth(bom.startDate.toString())} -{" "}
+                  {getMonth(bom.endDate.toString())}
+                </div>
+              )}
+
+              <div className="relative h-40 w-28">
+                <img src={bom.bookSession.bookId.cover} alt="book cover" />
+              </div>
+              <div className="mt-2 w-40">
+                <p
+                  className="text-center text-small-semibold lg:text-base-semibold
                h-11 text-black dark:text-light-1 mt-2 
                 overflow-hidden text-ellipsis"
-              >
-                {" "}
-                Book name
-              </p>
-              <p
-                className="text-xs text-center 
+                >
+                  {" "}
+                  {bom.bookSession.bookId.title}
+                </p>
+                <p
+                  className="text-xs text-center 
     text-black dark:text-light-1"
+                >
+                  {bom.bookSession.bookId.authors[0]}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+        {bomList.length !== 0 && (
+          <div className="flex items-center justify-between">
+            <div className="max-sm:hidden"></div>
+            <div className="flex items-center gap-7">
+              <Button
+                className="cursor-pointer"
+                disabled={currentPage - 1 <= 0}
+                onClick={() => setPage(currentPage - 1)}
               >
-                Juicy Jefferson
+                {"<"}
+              </Button>
+              <p>
+                {currentPage} of {totalPages} page(s)
               </p>
+              <Button
+                className="cursor-pointer"
+                disabled={currentPage == totalPages}
+                onClick={() => setPage(currentPage + 1)}
+              >
+                {">"}
+              </Button>
+            </div>
+            <div className="flex gap-3">
+              {pages.map(
+                (page, i) =>
+                  i < 3 && (
+                    <Button
+                      key={page}
+                      className={`${
+                        currentPage === page
+                          ? "bg-red-800 text-white"
+                          : "bg-gray-200 text-black"
+                      }`}
+                      onClick={() => setPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  )
+              )}
+
+              {totalPages > 3 && (
+                <div className="flex gap-2">
+                  <span>...</span>
+                  <Button className="bg-gray-200 text-black">
+                    {totalPages}
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-        <div className="flex justify-between">
-          <div></div>
-          <div>
-            <p>1 of 5</p>
-          </div>
-          <div className="flex gap-3">
-            <p>1</p>
-            <p>2</p>
-            <p>3</p>
-            <p>4</p>
-            <p>5</p>
-          </div>
-        </div>
+        )}
       </div>
     </section>
   );

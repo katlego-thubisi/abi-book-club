@@ -5,6 +5,7 @@ export const UserValidation = z
   .object({
     userId: z.string(),
     profile_photo: z.string().url().nonempty(),
+    email: z.string(),
     name: z
       .string()
       .min(3, { message: "Minimum 3 characters." })

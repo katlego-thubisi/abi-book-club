@@ -3,6 +3,7 @@
 import React, { ChangeEvent, useState } from "react";
 
 import { Switch } from "../ui/switch";
+import { updateUserDetails } from "@/lib/actions/user.actions";
 
 interface Props {
   user: {
@@ -19,6 +20,11 @@ const ProfileVisisbility = ({ user }: Props) => {
     setIsLoading(true);
     setProfileVisibility(value);
     // Call API to update visibility
+
+    await updateUserDetails({
+      userId: user.id,
+      visibility: value,
+    });
 
     setIsLoading(false);
   };
@@ -39,6 +45,7 @@ const ProfileVisisbility = ({ user }: Props) => {
           </label>
         </div>
         <Switch
+          disabled={isLoading}
           checked={profileVisibility}
           onCheckedChange={(e) => toggleProfileVisibility(e)}
         />

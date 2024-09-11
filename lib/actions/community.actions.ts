@@ -19,6 +19,7 @@ import { IClubUser, IUser } from "../types/user";
 import { IBomQueue } from "../types/bomQueue";
 import { BookQueue } from "../types/bookQueue";
 import Bom from "../models/bom.model";
+import { IBom } from "../types/bom";
 
 export async function createCommunity(
   name: string,
@@ -300,6 +301,109 @@ export async function fetchQueueDetailsByUserId({
       queuesHasNext: isNext,
       queuesTotalPages: totalPages,
       queuesCurrentPage: pageNumber,
+    };
+  } catch (error) {
+    console.error("Error fetching user community queues:", error);
+    throw error;
+  }
+}
+
+export async function fetchBoMDetailsByUserId({
+  userId,
+  filters = [],
+  pageNumber = 1,
+  pageSize = 1,
+  sortBy = "desc",
+}: {
+  userId: string;
+  filters?: string[];
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: SortOrder;
+}) {
+  try {
+    connectToDB();
+
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    const sortOptions = { createdDate: sortBy };
+
+    const communityQuery: FilterQuery<typeof Community> = {
+      createdBy: { $eq: userId }, // Exclude the current user from the results.
+    };
+
+    const communityQueryResponse = await Community.find(communityQuery);
+
+    const query: FilterQuery<typeof Bom> = {
+      community: {
+        $in: communityQueryResponse.map((c) => {
+          return c._id;
+        }),
+      }, // Exclude the current user from the results.
+    };
+
+    //seperate the club filter from the status filter
+    if (filters && filters.length > 0) {
+      const clubFilter = filters.filter((f) => f.includes("club"));
+      const statusFilter = filters.filter((f) => f.includes("status"));
+
+      if (clubFilter.length > 0) {
+        query.community = { $in: clubFilter.map((c) => c.split("|")[1]) };
+      }
+
+      if (statusFilter.length > 0) {
+        query.status = {
+          $in: statusFilter.map((c) => c.split("|")[1]),
+        };
+      }
+    }
+
+    const queueQueryResponse = await Bom.find(query)
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .populate([
+        {
+          path: "bookSession",
+          model: BookSession,
+          populate: [
+            {
+              path: "bookId",
+              model: Book,
+            },
+            {
+              path: "votes",
+              model: User,
+            },
+          ],
+        },
+        {
+          path: "community",
+          model: Community,
+        },
+      ]);
+
+    const communitiesResponse = <ICommunity[]>communityQueryResponse;
+    const returnResponse = <IBom[]>queueQueryResponse
+      .map((q) => {
+        return {
+          ...q._doc,
+        };
+      })
+      .flat();
+
+    const totalQueryItemsCount = await Bom.countDocuments(query);
+
+    const totalPages = Math.ceil(totalQueryItemsCount / pageSize);
+    const isNext = pageNumber < totalPages;
+
+    return {
+      communities: JSON.parse(JSON.stringify(communitiesResponse)),
+      boms: JSON.parse(JSON.stringify(returnResponse)),
+      bomsPageSize: pageSize,
+      bomsHasNext: isNext,
+      bomsTotalPages: totalPages,
+      bomsCurrentPage: pageNumber,
     };
   } catch (error) {
     console.error("Error fetching user community queues:", error);

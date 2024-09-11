@@ -1,10 +1,12 @@
-import { BookSession } from "./bookSession";
-import { Community } from "./community";
+import { IBookSession } from "./bookSession";
+import { ICommunity } from "./community";
 
-export interface Bom {
+export interface IBom {
   id: string;
-  bookSession: BookSession;
-  community: Community;
+  bookSession: IBookSession;
+  community: ICommunity;
+  startDate: Date;
+  endDate: Date;
   createdDate: Date;
   updatedDate: Date;
 }

@@ -12,7 +12,7 @@ const BomTab = ({ user }: Props) => {
     <section className="flex flex-col gap-8">
       <QueueDetails _userId={user._id} userId={user.id} />
 
-      <BomDetails />
+      <BomDetails _userId={user._id} userId={user.id} />
     </section>
   );
 };
