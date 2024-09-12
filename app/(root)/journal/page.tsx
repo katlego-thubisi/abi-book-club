@@ -35,7 +35,7 @@ export default async function Home() {
                   <EntryCard
                     key={post._id}
                     id={post._id}
-                    currentUserId={userInfo?._id || ""}
+                    currentUserId={userInfo?.user?._id || ""}
                     content={post.text}
                     author={{
                       name: post.author.name,
