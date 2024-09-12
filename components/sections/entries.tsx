@@ -6,7 +6,7 @@ const Entries = async () => {
   const result = await fetchPosts(1, 30);
 
   return (
-    <section className="mt-9 flex flex-col gap-10">
+    <section className="flex flex-col gap-10">
       {result.posts.map((post: any, index) => (
         <EntryCard
           key={post._id}

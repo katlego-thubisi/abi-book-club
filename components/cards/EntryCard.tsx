@@ -78,6 +78,41 @@ const EntryCard = ({
 
   const [isClient, setIsClient] = useState(false);
 
+  const handleContentCheck = () => {
+    //Ensure that the content uploaded is not an image. If it is an image exclude it from the count.
+
+    //Check if content includes an image tag
+    const imageTag = content.includes("<img");
+
+    //Check how many characters there are before the image tag
+    const contentSplit = content.split("<img");
+    let contentBeforeImage = 0;
+    let contentAfterImage = 0;
+    if (contentSplit && contentSplit[0]) {
+      contentBeforeImage = contentSplit[0].length;
+    }
+
+    //check how many characters are after the image
+    if (contentSplit && contentSplit[1]) {
+      contentAfterImage = contentSplit[1].length;
+    }
+
+    //If the content before the image tag is less than 400 characters, return the content and the image tag
+    if (contentBeforeImage < 400 && imageTag && contentAfterImage < 400) {
+      return true;
+    }
+
+    if (contentBeforeImage < 400 && imageTag && contentAfterImage > 400) {
+      return false;
+    }
+
+    if (contentBeforeImage > 400) {
+      return false;
+    }
+
+    return true;
+  };
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -124,8 +159,9 @@ const EntryCard = ({
                   dangerouslySetInnerHTML={{
                     __html: isEntryPage
                       ? content
-                      : content.slice(0, 400) +
-                        `${content.length > 400 ? "..." : ""}`,
+                      : !isEntryPage && handleContentCheck()
+                      ? content
+                      : content.slice(0, 400) + "...",
                   }}
                 ></div>
               )}
@@ -247,7 +283,6 @@ const EntryCard = ({
           </AlertDialogContent>
         </AlertDialog>
       </article>
-      <hr className="bg-gray-100 dark:bg-dark-4" />
     </>
   );
 };

@@ -19,7 +19,7 @@ async function Page() {
   return (
     <section>
       <Entries />
-      <Communities />
+      {/* <Communities /> */}
     </section>
   );
 }
