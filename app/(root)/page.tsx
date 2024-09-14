@@ -3,6 +3,7 @@ import Communities from "@/components/sections/communities";
 import Entries from "@/components/sections/entries";
 
 import { fetchCommunities } from "@/lib/actions/community.actions";
+import { fetchPosts } from "@/lib/actions/journal.actions";
 
 async function Page() {
   // Fetch communities
@@ -16,9 +17,11 @@ async function Page() {
   //   ? result.communities.filter((c) => c?.status === "active")
   //   : [];
 
+  const result = await fetchPosts(1, 5);
+
   return (
     <section>
-      <Entries />
+      <Entries initialPosts={result.posts} />
       {/* <Communities /> */}
     </section>
   );

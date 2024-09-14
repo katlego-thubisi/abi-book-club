@@ -84,33 +84,20 @@ const EntryCard = ({
     //Check if content includes an image tag
     const imageTag = content.includes("<img");
 
+    let cleanContent = content;
     //Check how many characters there are before the image tag
-    const contentSplit = content.split("<img");
-    let contentBeforeImage = 0;
-    let contentAfterImage = 0;
-    if (contentSplit && contentSplit[0]) {
-      contentBeforeImage = contentSplit[0].length;
+    if (imageTag) {
+      cleanContent = content.replace(/<img[^>]*>/g, "");
     }
+    const contentLength = cleanContent.length;
 
-    //check how many characters are after the image
-    if (contentSplit && contentSplit[1]) {
-      contentAfterImage = contentSplit[1].length;
-    }
-
-    //If the content before the image tag is less than 400 characters, return the content and the image tag
-    if (contentBeforeImage < 400 && imageTag && contentAfterImage < 400) {
+    if (contentLength < 400) {
       return true;
     }
 
-    if (contentBeforeImage < 400 && imageTag && contentAfterImage > 400) {
+    if (contentLength > 400) {
       return false;
     }
-
-    if (contentBeforeImage > 400) {
-      return false;
-    }
-
-    return true;
   };
 
   useEffect(() => {
@@ -165,13 +152,15 @@ const EntryCard = ({
                   }}
                 ></div>
               )}
-              {content.length > 400 && !isEntryPage && (
-                <Link href={`/journal/${id}`}>
-                  <p className="mt-1 cursor-pointer text-blue hover:underline">
-                    Read More
-                  </p>
-                </Link>
-              )}
+              {content.length > 400 &&
+                !isEntryPage &&
+                !handleContentCheck() && (
+                  <Link href={`/journal/${id}`}>
+                    <p className="mt-1 cursor-pointer text-blue hover:underline">
+                      Read More
+                    </p>
+                  </Link>
+                )}
             </div>
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
