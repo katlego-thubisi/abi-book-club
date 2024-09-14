@@ -56,7 +56,6 @@ const QueueDetails = ({ _userId, userId }: Props) => {
   };
 
   const selectFilter = (filter: string) => {
-    console.log(filter);
     if (queueFilters.includes(filter)) {
       setQueueFilters(queueFilters.filter((cat) => cat !== filter));
     } else {

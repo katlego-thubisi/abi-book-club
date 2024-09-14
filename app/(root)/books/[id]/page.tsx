@@ -66,9 +66,14 @@ async function Page({ params }: { params: { id: string } }) {
           {bookDetails.title}
         </p>
         <p className="text-black dark:text-light-1">
-          {bookDetails?.reviews?.reduce((totalRating: number, review: any) => {
-            return totalRating + review.rating;
-          }, 0)}
+          {bookDetails.reviews && bookDetails.reviews.length > 0
+            ? bookDetails?.reviews?.reduce(
+                (totalRating: number, review: any) => {
+                  return totalRating + (review.rating ? review.rating : 0);
+                },
+                0
+              ) / bookDetails?.reviews?.length
+            : 0}
         </p>
         <Rating
           defaultRating={

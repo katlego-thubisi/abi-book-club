@@ -25,6 +25,7 @@ import { Button } from "../ui/button";
 import ValidationModal from "../modals/validation-modal/validation-modal";
 import StartReadingModal from "../modals/start-reading-modal/start-reading-modal";
 import { set } from "mongoose";
+import PublishModal from "../modals/publish-modal/publish-modal";
 
 interface Props {
   queue: IBomQueue;
@@ -93,10 +94,10 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
     reloadQueue();
   };
 
-  const publishQueue = async () => {
+  const publishQueue = async (publishThread?: string) => {
     setIsLoading(true);
 
-    await publishBookQueue(queue.id);
+    await publishBookQueue(queue.id, userId, publishThread);
 
     reloadQueue();
 
@@ -333,15 +334,12 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
         submitText="Delete"
       />
 
-      <ValidationModal
+      <PublishModal
         open={publishConfirm}
         close={() => setPublishConfirm(false)}
-        handleSubmit={() => publishQueue()}
-        validationDescription={`This will publish the queue and notify all members of the voting period.`}
-        validationTitle={`Are you absolutely sure?`}
-        cancellationText={`Cancel`}
-        submitText={`Continue`}
+        handleSubmit={(publishThread) => publishQueue(publishThread)}
       />
+
       <ValidationModal
         open={publishError}
         close={() => setPublishError(false)}

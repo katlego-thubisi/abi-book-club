@@ -17,20 +17,25 @@ export async function createBook(book: any) {
   }
 }
 
-export async function fetchBooks() {
+export async function fetchBooks(pageNumber = 1, pageSize = 15) {
   try {
     connectToDB();
 
-    const booksQuery = Book.find();
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    const booksQuery = Book.find().skip(skipAmount).limit(pageSize);
 
     const books = await booksQuery.exec();
 
     for (const book of books) {
       const reviews = await BookReview.find({ bookId: book._id });
-      book.reviews = reviews;
+      book._doc.reviews = reviews;
     }
 
-    return <IBook[]>books;
+    const totalBookCount = await Book.countDocuments();
+    const isNext = totalBookCount > skipAmount + books.length;
+    const booksResult = <IBook[]>books;
+    return { books: JSON.parse(JSON.stringify(booksResult)), isNext };
   } catch (error) {
     console.error(`Failed to fetch books: ${error}`);
     throw new Error(`Failed to fetch books: ${error}`);

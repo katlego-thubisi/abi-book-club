@@ -46,6 +46,7 @@ interface Props {
   }[];
   likes: [];
   isComment?: boolean;
+  queueId: string;
 }
 
 const EntryCard = ({
@@ -57,6 +58,7 @@ const EntryCard = ({
   comments,
   likes,
   isComment,
+  queueId,
   currentUserId,
 }: Props) => {
   const pathname = usePathname();
@@ -152,6 +154,8 @@ const EntryCard = ({
                   }}
                 ></div>
               )}
+              {queueId && <div>Render queue: {queueId}</div>}
+
               {content.length > 400 &&
                 !isEntryPage &&
                 !handleContentCheck() && (

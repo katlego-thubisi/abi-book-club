@@ -69,6 +69,12 @@ const BomQueue = ({
     setCurrentView("add");
   };
 
+  const handleRemoveFromQueue = (index: number) => {
+    const newQueue = currentQueue;
+    newQueue[index] = null;
+    setCurrentQueue(newQueue);
+  };
+
   const handleSubmitCommunity = () => {
     setCurrentView("queue");
   };
@@ -128,6 +134,7 @@ const BomQueue = ({
         {currentView === "queue" && (
           <BomQueueSelection
             currentQueue={currentQueue}
+            handleRemoveQueue={(index) => handleRemoveFromQueue(index)}
             handleAddQueue={(index) => handleAddToQueue(index)}
             next={() => handleSubmitQueue()}
             back={() => back()}

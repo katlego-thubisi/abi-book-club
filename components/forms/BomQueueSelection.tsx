@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 interface Props {
   currentQueue: any[];
   handleAddQueue: (index: number) => void;
+  handleRemoveQueue: (index: number) => void;
   next: () => void;
   back: () => void;
 }
@@ -17,6 +18,7 @@ interface Props {
 const BomQueueSelection = ({
   currentQueue,
   handleAddQueue,
+  handleRemoveQueue,
   next,
   back,
 }: Props) => {
@@ -38,7 +40,6 @@ const BomQueueSelection = ({
   };
 
   const onFormSubmit = () => {
-    console.log("Queue Saved");
     next();
   };
   return (
@@ -87,6 +88,7 @@ const BomQueueSelection = ({
                     alt="Close"
                     width={20}
                     height={20}
+                    onClick={() => handleRemoveQueue(index)}
                   />
                 </div>
               </div>

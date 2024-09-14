@@ -23,6 +23,14 @@ const entrySchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  queueId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "BomQueue",
+  },
+  bookId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Book",
+  },
   parentId: {
     type: String,
   },

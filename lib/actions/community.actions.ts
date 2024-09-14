@@ -1,6 +1,6 @@
 "use server";
 
-import { FilterQuery, model, SortOrder } from "mongoose";
+import { FilterQuery, SortOrder } from "mongoose";
 
 import Community from "../models/community.model";
 import Entry from "../models/entry.model";
@@ -15,9 +15,8 @@ import { updateOrCreateBook } from "./book.actions";
 import Book from "../models/book.model";
 import BookReview from "../models/bookReview.model";
 import { ICommunity } from "../types/community";
-import { IClubUser, IUser } from "../types/user";
+import { IClubUser } from "../types/user";
 import { IBomQueue } from "../types/bomQueue";
-import { BookQueue } from "../types/bookQueue";
 import Bom from "../models/bom.model";
 import { IBom } from "../types/bom";
 
@@ -971,7 +970,11 @@ export async function updateQueueSchedule(
   }
 }
 
-export async function publishBookQueue(queueId: string) {
+export async function publishBookQueue(
+  queueId: string,
+  userId?: string,
+  publishBlurb?: string
+) {
   try {
     connectToDB();
 
@@ -990,6 +993,13 @@ export async function publishBookQueue(queueId: string) {
 
     // Save the updated queue
     await queue.save();
+
+    const createEntry = await Entry.create({
+      text: publishBlurb,
+      author: userId,
+      community: queue.communityId,
+      queueId: queue._id,
+    });
 
     return queue;
   } catch (error) {
