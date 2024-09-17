@@ -9,6 +9,9 @@ import Entry from "../models/entry.model";
 import Community from "../models/community.model";
 import Like from "../models/like.model";
 import { IEntry } from "../types/entry";
+import BomQueue from "../models/bomQueue.model";
+import BookSession from "../models/bookSession.model";
+import Book from "../models/book.model";
 
 export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   connectToDB();
@@ -40,6 +43,20 @@ export async function fetchPosts(pageNumber = 1, pageSize = 20) {
     .populate({
       path: "likes", // Populate the likes field
       model: Like,
+    })
+    .populate({
+      path: "queueId",
+      model: BomQueue,
+      populate: [
+        {
+          path: "bookSessions",
+          model: BookSession,
+          populate: {
+            path: "bookId",
+            model: Book,
+          },
+        },
+      ],
     });
 
   // Count the total number of top-level posts (threads) i.e., threads that are not comments.
@@ -173,6 +190,16 @@ export async function fetchEntryById(threadId: string) {
         path: "community",
         model: Community,
         select: "_id id name image",
+      })
+      .populate({
+        path: "queueId",
+        model: BomQueue,
+        populate: [
+          {
+            path: "bookSessions",
+            model: BookSession,
+          },
+        ],
       }) // Populate the community field with _id and name
       .populate({
         path: "children", // Populate the children field

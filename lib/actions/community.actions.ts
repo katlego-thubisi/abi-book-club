@@ -267,10 +267,10 @@ export async function fetchQueueDetailsByUserId({
               path: "bookId",
               model: Book,
             },
-            {
-              path: "votes",
-              model: User,
-            },
+            // {
+            //   path: "votes",
+            //   model: User,
+            // },
           ],
         },
         {

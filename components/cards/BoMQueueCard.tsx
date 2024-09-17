@@ -24,17 +24,20 @@ import BookAdd from "../forms/BookAdd";
 import { Button } from "../ui/button";
 import ValidationModal from "../modals/validation-modal/validation-modal";
 import StartReadingModal from "../modals/start-reading-modal/start-reading-modal";
-import { set } from "mongoose";
 import PublishModal from "../modals/publish-modal/publish-modal";
+import CSBookSessionCard from "./BookSessionCard/CSBookSessionCard";
+import { handleSessionVote } from "@/lib/actions/bom.action";
 
 interface Props {
   queue: IBomQueue;
   userId: string;
-  reloadQueue: () => void;
+  reloadQueue?: () => void;
+  isOwner?: boolean;
 }
 
-const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
+const BoMQueueCard = ({ queue, userId, reloadQueue, isOwner }: Props) => {
   //Check if the current user has voted for the book session
+  const [currentQueue, setCurrentQueue] = useState<IBomQueue>(queue);
   const [showView, setShowView] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
   const [showDate, setShowDate] = useState(false);
@@ -50,8 +53,12 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleBookChangeView = (book: any) => {
-    setBook(book);
-    setShowAdd(true);
+    if (isOwner) {
+      setBook(book);
+      setShowAdd(true);
+    } else {
+      handleSetView(book?.bookId);
+    }
   };
 
   const handleCloseBookChange = () => {
@@ -63,7 +70,6 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
   };
 
   const handleSetView = (book: any) => {
-    console.log("Book to view", book);
     setBook(book);
     setShowView(true);
   };
@@ -74,38 +80,45 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
 
   const onSubmitChangeBook = async (book: any) => {
     //update the bomQueue with the new book.
-    await updateBookInQueue(queue.id, currentBook?._id, book);
+    await updateBookInQueue(currentQueue.id, currentBook?._id, book);
 
     //Close the dialog
     handleCloseBookChange();
 
-    //Reload the shelf
-    reloadQueue();
+    if (reloadQueue) {
+      //Reload the shelf
+      reloadQueue();
+    }
   };
 
   const onSubmitChangeSchedule = async (startDate: Date, endDate: Date) => {
     //update the bomQueue with the new book.
-    await updateQueueSchedule(queue.id, startDate, endDate);
+    await updateQueueSchedule(currentQueue.id, startDate, endDate);
 
     //Close the dialog
     handleCloseDateView();
 
-    //Reload the shelf
-    reloadQueue();
+    if (reloadQueue) {
+      //Reload the shelf
+      reloadQueue();
+    }
   };
 
   const publishQueue = async (publishThread?: string) => {
     setIsLoading(true);
 
-    await publishBookQueue(queue.id, userId, publishThread);
+    await publishBookQueue(currentQueue.id, userId, publishThread);
 
-    reloadQueue();
+    if (reloadQueue) {
+      //Reload the shelf
+      reloadQueue();
+    }
 
     setIsLoading(false);
   };
 
   const publishValidation = () => {
-    if (queue.startDate === null || queue.endDate === null) {
+    if (currentQueue.startDate === null || currentQueue.endDate === null) {
       //They have not set the dates
       setPublishError(true);
       setPublishErrorTitle("Please set the dates");
@@ -115,7 +128,7 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
       return;
     }
 
-    if (queue.bookSessions.length !== 3) {
+    if (currentQueue.bookSessions.length !== 3) {
       //They have not selected all the books
       setPublishError(true);
       setPublishErrorTitle("Please select all the books");
@@ -125,7 +138,7 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
       return;
     }
 
-    if (queue.endDate < new Date()) {
+    if (currentQueue.endDate < new Date()) {
       //They have no time to vote
       setPublishError(true);
       setPublishErrorTitle("Invalid voting period");
@@ -135,8 +148,8 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
       return;
     }
 
-    if (queue.startDate < new Date()) {
-      queue.status = "Voting";
+    if (currentQueue.startDate < new Date()) {
+      currentQueue.status = "Voting";
     }
 
     setPublishConfirm(true);
@@ -147,7 +160,7 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
     let mostVotedBooks: IBookSession[] = [];
     let maxVotes = 0;
 
-    for (var bookSession of queue.bookSessions) {
+    for (var bookSession of currentQueue.bookSessions) {
       if (bookSession.votes.length > maxVotes) {
         mostVotedBooks = [bookSession];
         maxVotes = bookSession.votes.length;
@@ -168,9 +181,17 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
   ) => {
     setIsLoading(true);
 
-    await startReadingBookQueue(queue.id, bookSession._id, startDate, endDate);
+    await startReadingBookQueue(
+      currentQueue.id,
+      bookSession._id,
+      startDate,
+      endDate
+    );
 
-    reloadQueue();
+    if (reloadQueue) {
+      //Reload the shelf
+      reloadQueue();
+    }
 
     setIsLoading(false);
   };
@@ -178,34 +199,66 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
   const handleDeleteQueue = async () => {
     setIsLoading(true);
 
-    await deleteQueue(queue.id);
+    await deleteQueue(currentQueue.id);
 
-    reloadQueue();
+    if (reloadQueue) {
+      //Reload the shelf
+      reloadQueue();
+    }
 
     setIsLoading(false);
   };
 
   const deleteValidation = () => {
-    if (queue.status != "Completed") {
+    if (currentQueue.status != "Completed") {
       setDeleteConfirm(true);
     }
+  };
+
+  const handleBookVote = async (bookSession: any) => {
+    //if the user has already voted for another book session in the queue, remove the vote
+    const bookSessions = currentQueue.bookSessions;
+
+    for (var book of bookSessions) {
+      //If he voted for another book remove it
+
+      if (book.votes.find((x: any) => x == userId) && book.id != bookSession) {
+        book.votes = book.votes.filter((vote: any) => vote != userId);
+      }
+
+      //If he voted for this book remove it
+      if (book.votes.find((x) => x == userId) && book.id == bookSession) {
+        book.votes = book.votes.filter((vote: any) => vote != userId);
+      }
+
+      //if he has not voted for any book add the vote for his book
+      if (!book.votes.find((x) => x == userId) && book.id == bookSession) {
+        book.votes.push(userId);
+      }
+    }
+
+    setCurrentQueue({ ...currentQueue, bookSessions: bookSessions });
+
+    await handleSessionVote(currentQueue.id, bookSession, userId, "/");
   };
 
   return (
     <div className="flex flex-col">
       <div
         className="flex items-center gap-1 justify-center"
-        onClick={() => setShowDate(true)}
+        onClick={() => {
+          isOwner && setShowDate(true);
+        }}
       >
         <p>
-          {queue.startDate
-            ? new Date(queue.startDate).toDateString()
+          {currentQueue.startDate
+            ? new Date(currentQueue.startDate).toDateString()
             : "Select start date"}
         </p>
         <p> to </p>
         <p>
-          {queue.endDate
-            ? new Date(queue.endDate).toDateString()
+          {currentQueue.endDate
+            ? new Date(currentQueue.endDate).toDateString()
             : "Select end date"}
         </p>
       </div>
@@ -218,28 +271,31 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
          bg-purple-300 h-4 w-20 z-50 m-auto rotate-45"
         >
           <p className="text-white text-subtle-medium  text-center w-full">
-            {queue.status}
+            {currentQueue.status}
           </p>
         </div>
-        <div
-          className="absolute top-0 left-0 z-50 
+        {currentQueue.communityId && currentQueue.communityId.image && (
+          <div
+            className="absolute top-0 left-0 z-50 
         rounded-full h-14 w-14  bg-white"
-        >
-          <img
-            src={queue.communityId?.image}
-            alt={queue.communityId?.id}
-            className="object-cover rounded-full h-14 w-14"
-          />
-        </div>
-        {queue.bookSessions.map((item: any, index: number) => {
+          >
+            <img
+              src={currentQueue.communityId?.image}
+              alt={currentQueue.communityId?.id}
+              className="object-cover rounded-full h-14 w-14"
+            />
+          </div>
+        )}
+        {currentQueue.bookSessions.map((item: any, index: number) => {
           return (
-            <BookSessionCard
+            <CSBookSessionCard
               key={index}
               bookSession={item}
               userId={userId}
-              queueId={queue.id}
+              queueId={currentQueue.id}
               handleView={handleSetView}
               handleAdd={(book: any) => handleBookChangeView(book)}
+              handleVote={(bookSession: any) => handleBookVote(bookSession)}
             />
           );
         })}
@@ -261,7 +317,10 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
               </DialogDescription>
             </DialogHeader>
             <BomQueueSchedule
-              schedule={{ from: queue.startDate, to: queue.endDate }}
+              schedule={{
+                from: currentQueue.startDate,
+                to: currentQueue.endDate,
+              }}
               back={() => handleCloseBookChange()}
               next={async (startDate, endDate) =>
                 await onSubmitChangeSchedule(startDate, endDate)
@@ -280,7 +339,7 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
         )}
       </div>
       <div className="flex items-center justify-center gap-2">
-        {queue.status === "Voting" && (
+        {isOwner && currentQueue.status === "Voting" && (
           <Button
             onClick={() => startReadingValidation()}
             className="text-center cursor-pointer w-auto p-6"
@@ -288,7 +347,7 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
             Start reading
           </Button>
         )}
-        {queue.status === "Draft" && (
+        {isOwner && currentQueue.status === "Draft" && (
           <Button
             onClick={() => publishValidation()}
             className="text-center cursor-pointer w-auto p-6"
@@ -296,12 +355,14 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
             Publish
           </Button>
         )}
-        <Button
-          onClick={() => deleteValidation()}
-          className="text-center cursor-pointer w-auto p-6"
-        >
-          Delete
-        </Button>
+        {isOwner && (
+          <Button
+            onClick={() => deleteValidation()}
+            className="text-center cursor-pointer w-auto p-6"
+          >
+            Delete
+          </Button>
+        )}
       </div>
       {mostVoted && mostVoted.length > 0 && (
         <StartReadingModal
@@ -313,16 +374,6 @@ const BoMQueueCard = ({ queue, userId, reloadQueue }: Props) => {
           }
         />
       )}
-
-      {/* <ValidationModal
-        open={startReadingConfirm}
-        close={() => setStartReadingConfirm(false)}
-        handleSubmit={() => handleStartReading()}
-        validationDescription="This will start the reading period for the queue and end the voting period today"
-        validationTitle="Are you absolutely sure?"
-        cancellationText="Cancel"
-        submitText="Start reading"
-      /> */}
 
       <ValidationModal
         open={deleteConfirm}

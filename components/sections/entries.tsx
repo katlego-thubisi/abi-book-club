@@ -2,14 +2,16 @@
 
 import { fetchPosts } from "@/lib/actions/journal.actions";
 import React, { useEffect, useState } from "react";
-import EntryCard from "../cards/EntryCard";
 import { IEntry } from "@/lib/types/entry";
 import { useInView } from "react-intersection-observer";
+import CSEntryCard from "../cards/EntryCard/CSEntryCard";
 
 interface Props {
+  userId: string;
   initialPosts: IEntry[];
 }
-const Entries = ({ initialPosts }: Props) => {
+
+const Entries = ({ initialPosts, userId }: Props) => {
   const [page, setPage] = useState(2);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -20,7 +22,7 @@ const Entries = ({ initialPosts }: Props) => {
     if (isInView) {
       handleFetchPosts();
     }
-  }, [isInView]);
+  }, [isInView, initialPosts]);
 
   const handleFetchPosts = async () => {
     setLoading(true);
@@ -35,11 +37,12 @@ const Entries = ({ initialPosts }: Props) => {
 
   return (
     <section className="flex flex-col gap-10">
-      {posts.map((post: any, index) => (
-        <EntryCard
+      {posts.map((post: IEntry, index: number) => (
+        <CSEntryCard
           key={post._id}
           id={post._id}
-          currentUserId={""}
+          queueId={post?.queueId}
+          currentUserId={userId}
           content={post.text}
           author={{
             name: post.author.name,
@@ -57,7 +60,7 @@ const Entries = ({ initialPosts }: Props) => {
                 }
               : null
           }
-          createdAt={post.createdAt}
+          createdAt={post.createdAt.toString()}
           comments={JSON.parse(JSON.stringify(post.children))}
           likes={JSON.parse(JSON.stringify(post.likes))}
         />

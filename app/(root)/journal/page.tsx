@@ -30,11 +30,12 @@ export default async function Home() {
             <p className="no-result">No entries found</p>
           ) : (
             <>
-              {result.posts.map((post: any, index) => (
+              {result.posts.map((post: any, index: number) => (
                 <>
                   <EntryCard
                     key={post._id}
                     id={post._id}
+                    queueId={post?.queueId}
                     currentUserId={userInfo?.user?._id || ""}
                     content={post.text}
                     author={{

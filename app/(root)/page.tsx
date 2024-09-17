@@ -1,28 +1,27 @@
-import CommunityCard from "@/components/cards/CommunityCard";
-import Communities from "@/components/sections/communities";
 import Entries from "@/components/sections/entries";
 
-import { fetchCommunities } from "@/lib/actions/community.actions";
 import { fetchPosts } from "@/lib/actions/journal.actions";
+import { fetchUser } from "@/lib/actions/user.actions";
+import { currentUser } from "@clerk/nextjs";
+import { Suspense } from "react";
 
 async function Page() {
-  // Fetch communities
-  // const result = await fetchCommunities({
-  //   searchString: "",
-  //   pageNumber: 1,
-  //   pageSize: 4,
-  // });
-
-  // const activeCommunities = result.communities
-  //   ? result.communities.filter((c) => c?.status === "active")
-  //   : [];
-
   const result = await fetchPosts(1, 5);
+
+  const user = await currentUser();
+
+  let userInfo: any = null;
+
+  if (user) userInfo = await fetchUser(user?.id);
 
   return (
     <section>
-      <Entries initialPosts={result.posts} />
-      {/* <Communities /> */}
+      <Suspense fallback={<div>Loading journal entries...</div>}>
+        <Entries
+          initialPosts={result.posts}
+          userId={userInfo?.user?._id.toString() || ""}
+        />
+      </Suspense>
     </section>
   );
 }

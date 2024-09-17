@@ -80,15 +80,17 @@ const BomQueueSelection = ({
                   {queue.title}
                 </p>
                 <div
-                  className="absolute translate-x-20 group-hover:translate-x-0 
+                  className="absolute z-50 translate-x-20 group-hover:translate-x-0 
               duration-500 right-0 bottom-0 rounded-lg"
+                  onClick={() => {
+                    handleRemoveQueue(index);
+                  }}
                 >
                   <Image
                     src="/assets/delete.svg"
                     alt="Close"
                     width={20}
                     height={20}
-                    onClick={() => handleRemoveQueue(index)}
                   />
                 </div>
               </div>

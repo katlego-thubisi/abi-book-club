@@ -14,6 +14,8 @@ import Book from "../models/book.model";
 import BookReview from "../models/bookReview.model";
 import { IUser } from "../types/user";
 import { IBookshelf } from "../types/bookshelf";
+import BomQueue from "../models/bomQueue.model";
+import BookSession from "../models/bookSession.model";
 
 export async function fetchAllUserDetails(userId: string) {
   try {
@@ -462,6 +464,16 @@ export async function fetchUserPosts(userId: string) {
             model: User,
             select: "name image id", // Select the "name" and "_id" fields from the "User" model
           },
+        },
+        {
+          path: "queueId",
+          model: BomQueue,
+          populate: [
+            {
+              path: "bookSessions",
+              model: BookSession,
+            },
+          ],
         },
       ],
     });

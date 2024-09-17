@@ -7,7 +7,7 @@ export interface IBookSession {
   bookId: IBook;
   startData: Date;
   endDate: Date;
-  votes: IUser[];
+  votes: string[];
   status: string;
   createdDate: Date;
   updatedDate: Date;

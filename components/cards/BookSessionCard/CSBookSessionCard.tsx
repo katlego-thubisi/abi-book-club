@@ -1,7 +1,7 @@
 import { handleSessionVote } from "@/lib/actions/bom.action";
 import { IBookSession } from "@/lib/types/bookSession";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 
 interface Props {
   queueId: string;
@@ -9,22 +9,24 @@ interface Props {
   userId: string;
   handleView: (book: any) => void;
   handleAdd: (book: any) => void;
+  handleVote: (bookSession: any) => void;
 }
 
-const BookSessionCard = ({
+const CSBookSessionCard = ({
   bookSession,
   userId,
   queueId,
   handleView,
   handleAdd,
+  handleVote,
 }: Props) => {
   const hasVoted = bookSession.votes.some((x: any) => x == userId);
 
   const pathname = usePathname();
 
-  const handleVote = async (bookSessionId: string) => {
-    await handleSessionVote(queueId, bookSessionId, userId, pathname);
-  };
+  // const handleVote = async (bookSessionId: string) => {
+  //   await handleSessionVote(queueId, bookSessionId, userId, pathname);
+  // };
 
   return (
     <div
@@ -82,4 +84,4 @@ const BookSessionCard = ({
   );
 };
 
-export default BookSessionCard;
+export default CSBookSessionCard;

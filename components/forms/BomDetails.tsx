@@ -102,7 +102,10 @@ const BomDetails = ({ userId, _userId }: Props) => {
         <div className="grid grid-cols-3 max-sm:grid-cols-1 gap-12">
           {/* Loop through books here */}
           {bomList.map((bom) => (
-            <div className="flex flex-col items-center cursor-pointer relative">
+            <div
+              key={bom.id}
+              className="flex flex-col items-center cursor-pointer relative"
+            >
               <div
                 className="absolute top-5 left-5 z-50 
         rounded-full h-14 w-14  bg-white"
