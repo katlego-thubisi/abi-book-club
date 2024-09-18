@@ -68,10 +68,13 @@ const CSEntryCard = ({
   const pathname = usePathname();
 
   const [stateLikes, setStateLikes] = useState(likes);
-  const [likeTimeout, setLikeTimeout] = useState<any>(null);
   const [isLiked, setIsLiked] = useState(false);
 
   const handleLike = async () => {
+    if (!currentUserId || currentUserId.trim() === "") {
+      router.push("/sign-in");
+      return;
+    }
     //Only run this function if the timeout is null
     setStateLikes((prev: any) => {
       return prev.find((l: any) => l.user === currentUserId)

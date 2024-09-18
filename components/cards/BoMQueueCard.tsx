@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import BookSessionCard from "./BookSessionCard";
 import BookView from "./BookView";
 import { IBomQueue } from "@/lib/types/bomQueue";
@@ -27,6 +27,7 @@ import StartReadingModal from "../modals/start-reading-modal/start-reading-modal
 import PublishModal from "../modals/publish-modal/publish-modal";
 import CSBookSessionCard from "./BookSessionCard/CSBookSessionCard";
 import { handleSessionVote } from "@/lib/actions/bom.action";
+import { useRouter } from "next/navigation";
 
 interface Props {
   queue: IBomQueue;
@@ -37,6 +38,7 @@ interface Props {
 
 const BoMQueueCard = ({ queue, userId, reloadQueue, isOwner }: Props) => {
   //Check if the current user has voted for the book session
+  const router = useRouter();
   const [currentQueue, setCurrentQueue] = useState<IBomQueue>(queue);
   const [showView, setShowView] = useState(false);
   const [showAdd, setShowAdd] = useState(false);
@@ -216,6 +218,10 @@ const BoMQueueCard = ({ queue, userId, reloadQueue, isOwner }: Props) => {
   };
 
   const handleBookVote = async (bookSession: any) => {
+    if (!userId || userId.trim() === "") {
+      router.push("/sign-in");
+      return;
+    }
     //if the user has already voted for another book session in the queue, remove the vote
     const bookSessions = currentQueue.bookSessions;
 
