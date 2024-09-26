@@ -198,6 +198,10 @@ export async function fetchEntryById(threadId: string) {
           {
             path: "bookSessions",
             model: BookSession,
+            populate: {
+              path: "bookId",
+              model: Book,
+            },
           },
         ],
       }) // Populate the community field with _id and name

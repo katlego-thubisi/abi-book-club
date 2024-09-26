@@ -4,6 +4,7 @@ import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import Comment from "@/components/forms/Comment";
+import CSEntryCard from "@/components/cards/EntryCard/CSEntryCard";
 
 const Page = async ({ params }: { params: { id: string } }) => {
   if (!params.id) return null;
@@ -18,12 +19,14 @@ const Page = async ({ params }: { params: { id: string } }) => {
 
   const entry = await fetchEntryById(params.id);
 
+  console.log("Queue id", entry.queueId);
   return (
     <section className="relative">
       <div>
-        <EntryCard
+        <CSEntryCard
           key={entry._id}
           id={entry._id}
+          queueId={JSON.parse(JSON.stringify(entry?.queueId))}
           currentUserId={userInfo?.user._id || ""}
           parentId={entry.parentId}
           content={entry.text}

@@ -223,20 +223,26 @@ const CSEntryCard = ({
             {comments.length > 0 && (
               <div className="flex gap-2">
                 <div className="flex relative ml-2.5">
-                  {comments.map((comment, index) => {
-                    return (
-                      index < 4 && (
-                        <Image
-                          key={index}
-                          src={comment.author.image}
-                          alt={`${comment.author.name} profile image`}
-                          width={24}
-                          height={24}
-                          className="cursor-pointer object-contain -ml-2.5 bg-dark-2 rounded-full border-2 border-dark-2"
-                        />
-                      )
-                    );
-                  })}
+                  {comments
+                    .filter(
+                      (obj, index, self) =>
+                        index ===
+                        self.findIndex((o) => o.author.name === obj.author.name)
+                    )
+                    .map((comment, index) => {
+                      return (
+                        index < 4 && (
+                          <Image
+                            key={index}
+                            src={comment.author.image}
+                            alt={`${comment.author.name} profile image`}
+                            width={24}
+                            height={24}
+                            className="cursor-pointer object-contain -ml-2.5 bg-dark-2 rounded-full border-2 border-dark-2"
+                          />
+                        )
+                      );
+                    })}
                 </div>
 
                 <Link href={`/journal/${id}`}>

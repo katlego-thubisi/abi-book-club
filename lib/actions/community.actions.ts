@@ -506,11 +506,13 @@ export async function fetchCommunityPosts(id: string) {
 }
 
 export async function fetchCommunities({
+  userId = "",
   searchString = "",
   pageNumber = 1,
   pageSize = 20,
   sortBy = "desc",
 }: {
+  userId?: string;
   searchString?: string;
   pageNumber?: number;
   pageSize?: number;
@@ -526,7 +528,9 @@ export async function fetchCommunities({
     const regex = new RegExp(searchString, "i");
 
     // Create an initial query object to filter communities.
-    const query: FilterQuery<typeof Community> = {};
+    const query: FilterQuery<typeof Community> = {
+      createdBy: { $ne: userId }, // Exclude the current user from the results.
+    };
 
     // If the search string is not empty, add the $or operator to match either username or name fields.
     if (searchString.trim() !== "") {
