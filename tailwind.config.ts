@@ -14,6 +14,35 @@ module.exports = {
       screens: {
         "2xl": "1400px",
       },
+      fontFamily: {
+        sans: [
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
+          "Apple Color Emoji",
+          "Segoe UI Emoji",
+          "Segoe UI Symbol",
+          "Noto Color Emoji",
+        ],
+        serif: [
+          "ui-serif",
+          "Georgia, Cambria",
+          "Times New Roman",
+          "Times",
+          "serif",
+        ],
+        mono: [
+          "ui-monospace",
+          "SFMono-Regular",
+          "Menlo",
+          "Monaco",
+          "Consolas",
+          "Liberation Mono",
+          "Courier New",
+          "monospace",
+        ],
+        montilles: ["cursive"],
+      },
     },
     fontSize: {
       "heading1-bold": [
@@ -212,5 +241,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar-hide")],
 };

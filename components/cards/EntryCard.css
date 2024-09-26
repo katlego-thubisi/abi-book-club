@@ -1,0 +1,34 @@
+.parent-text h1 {
+  font-size: xx-large;
+  line-height: 34px;
+}
+.parent-text h2 {
+  font-size: x-large;
+  line-height: 34px;
+}
+.parent-text h3 {
+  font-size: larger;
+  line-height: 34px;
+}
+.parent-text h4 {
+  font-size: large;
+  line-height: 34px;
+}
+.parent-text h5 {
+  font-size: medium;
+  line-height: 34px;
+}
+.parent-text h6 {
+  font-size: small;
+  line-height: 34px;
+}
+
+.parent-text ul {
+  list-style: inside;
+  margin-left: 1rem;
+}
+
+.parent-text ol {
+  list-style: decimal inside;
+  margin-left: 1rem;
+}

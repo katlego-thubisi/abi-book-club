@@ -28,33 +28,47 @@ import { updateUser } from "@/lib/actions/user.actions";
 interface Props {
   user: {
     id: string;
-    objectId: string;
     username: string;
     name: string;
+    email?: string;
+    surname?: string;
     bio: string;
     image: string;
+    occupation?: string;
   };
   btnTitle: string;
+  handleClose?: () => void;
+  onboarderd?: boolean;
 }
 
-const AccountProfile = ({ user, btnTitle }: Props) => {
+const AccountProfile = ({ user, btnTitle, handleClose, onboarderd }: Props) => {
   const router = useRouter();
+
   const pathname = usePathname();
+
   const { startUpload } = useUploadThing("media");
 
   const [files, setFiles] = useState<File[]>([]);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<z.infer<typeof UserValidation>>({
     resolver: zodResolver(UserValidation),
     defaultValues: {
+      userId: user?.id ? user.id : "",
       profile_photo: user?.image ? user.image : "",
       name: user?.name ? user.name : "",
+      email: user?.email ? user.email : "",
+      surname: user?.surname ? user.surname : "",
+      occupation: user?.occupation ? user.occupation : "",
       username: user?.username ? user.username : "",
       bio: user?.bio ? user.bio : "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof UserValidation>) => {
+    setIsLoading(true);
+
     const blob = values.profile_photo;
 
     const hasImageChanged = isBase64Image(blob);
@@ -68,18 +82,24 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
 
     await updateUser({
       name: values.name,
+      surname: values.surname,
       path: pathname,
       username: values.username,
+      email: values.email,
       userId: user.id,
       bio: values.bio,
       image: values.profile_photo,
+      occupation: values.occupation,
     });
 
-    if (pathname === "/profile/edit") {
-      router.back();
+    if (pathname.includes("profile")) {
+      router.refresh();
+      if (handleClose) handleClose();
     } else {
       router.push("/");
+      if (handleClose) handleClose();
     }
+    setIsLoading(false);
   };
 
   const handleImage = (
@@ -108,81 +128,41 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
   return (
     <Form {...form}>
       <form
-        className='flex flex-col justify-start gap-10'
+        className="flex flex-col justify-start sm:gap-10 gap-5 max-h-96  sm:max-h-none overflow-y-scroll scrollbar-hide"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
           control={form.control}
-          name='profile_photo'
+          name="profile_photo"
           render={({ field }) => (
-            <FormItem className='flex items-center gap-4'>
-              <FormLabel className='account-form_image-label'>
+            <FormItem className="flex items-center gap-4">
+              <FormLabel className="account-form_image-label overflow-hidden">
                 {field.value ? (
                   <Image
                     src={field.value}
-                    alt='profile_icon'
+                    alt="profile_icon"
                     width={96}
                     height={96}
                     priority
-                    className='rounded-full object-contain'
+                    className="rounded-full object-contain"
                   />
                 ) : (
                   <Image
-                    src='/assets/profile.svg'
-                    alt='profile_icon'
+                    src="/assets/profile.svg"
+                    alt="profile_icon"
                     width={24}
                     height={24}
-                    className='object-contain'
+                    className="object-contain"
                   />
                 )}
               </FormLabel>
-              <FormControl className='flex-1 text-base-semibold text-gray-200'>
+              <FormControl className="flex-1 text-base-semibold dark:text-gray-200">
                 <Input
-                  type='file'
-                  accept='image/*'
-                  placeholder='Add profile photo'
-                  className='account-form_image-input'
+                  type="file"
+                  accept="image/*"
+                  placeholder="Add profile photo"
+                  className="account-form_image-input form-label"
                   onChange={(e) => handleImage(e, field.onChange)}
-                />
-              </FormControl>
-              <FormMessage/>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='name'
-          render={({ field }) => (
-            <FormItem className='flex w-full flex-col gap-3'>
-              <FormLabel className='text-base-semibold text-light-2'>
-                Name
-              </FormLabel>
-              <FormControl>
-                <Input
-                  type='text'
-                  className='account-form_input no-focus'
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage/>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name='username'
-          render={({ field }) => (
-            <FormItem className='flex w-full flex-col gap-3'>
-              <FormLabel className='text-base-semibold text-light-2'>
-                Username
-              </FormLabel>
-              <FormControl>
-                <Input
-                  type='text'
-                  className='account-form_input no-focus'
-                  {...field}
                 />
               </FormControl>
               <FormMessage />
@@ -192,26 +172,122 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
 
         <FormField
           control={form.control}
-          name='bio'
+          name="name"
           render={({ field }) => (
-            <FormItem className='flex w-full flex-col gap-3'>
-              <FormLabel className='text-base-semibold text-light-2'>
-                Bio
-              </FormLabel>
+            <FormItem className="flex w-full flex-col gap-3">
+              <FormLabel className="form-label">Name</FormLabel>
               <FormControl>
-                <Textarea
-                  rows={10}
-                  className='account-form_input no-focus'
+                <Input
+                  type="text"
+                  className="account-form_input form-input"
                   {...field}
                 />
               </FormControl>
-              <FormMessage/>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {onboarderd && (
+          <FormField
+            control={form.control}
+            name="surname"
+            render={({ field }) => (
+              <FormItem className="flex w-full flex-col gap-3">
+                <FormLabel className="form-label">Surname</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    className="account-form_input form-input"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem className="flex w-full flex-col gap-3">
+              <FormLabel className="form-label">Username</FormLabel>
+              <FormControl>
+                <Input
+                  type="text"
+                  className="account-form_input form-input"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type='submit' className='bg-red-800'>
-          {btnTitle}
+        {onboarderd && (
+          <FormField
+            control={form.control}
+            name="occupation"
+            render={({ field }) => (
+              <FormItem className="flex w-full flex-col gap-3">
+                <FormLabel className="form-label">Occupation</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    className="account-form_input form-input"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem className="flex w-full flex-col gap-3">
+              <FormLabel className="form-label">Bio</FormLabel>
+              <FormControl>
+                <Textarea
+                  rows={2}
+                  className="account-form_input form-input resize-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button
+          type="submit"
+          className="bg-red-800 dark:bg-red-800 dark:text-white"
+          disabled={form.formState.isSubmitting || isLoading}
+        >
+          {form.formState.isSubmitting || isLoading ? "Submitting" : btnTitle}
+          {form.formState.isSubmitting ||
+            (isLoading && (
+              <svg
+                aria-hidden="true"
+                className="w-6 h-6 ml-2 text-slate-200 animate-spin dark:text-slate-600 fill-red-800"
+                viewBox="0 0 100 101"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="currentFill"
+                />
+              </svg>
+            ))}
         </Button>
       </form>
     </Form>

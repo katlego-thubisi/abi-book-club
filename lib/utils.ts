@@ -41,3 +41,32 @@ export function formatThreadCount(count: number): string {
     return `${threadCount} ${threadWord}`;
   }
 }
+
+export function timeDifferenceForDate(date: Date) {
+  const timeDifference = Math.floor((Date.now() - date.getTime()) / 1000); // Difference in seconds
+
+  let timeString = "";
+  if (timeDifference < 60) {
+    timeString = `${timeDifference}s`; // Append "s" for seconds
+  } else if (timeDifference < 3600) {
+    const minutes = Math.floor(timeDifference / 60);
+    timeString = `${minutes}m`; // Append "m" for minutes
+  } else if (timeDifference < 86400) {
+    const hours = Math.floor(timeDifference / 3600);
+    timeString = `${hours}h`; // Append "h" for hours
+  } else if (timeDifference < 31536000) {
+    const days = Math.floor(timeDifference / 86400);
+    timeString = `${days}d`; // Append "d" for days
+  } else {
+    const years = Math.floor(timeDifference / 31536000);
+    timeString = `${years}y`; // Append "y" for years
+  }
+
+  return timeString;
+}
+
+//Write a function that only return the month of the date having recived a date string
+export function getMonth(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleString("default", { month: "long" });
+}
